@@ -1,51 +1,62 @@
-nama_singkat: "Darul Marhamah ABS"
-nama_lengkap: "SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School"
-slogan: "Karena Wanita adalah Rahim Peradaban"
-deskripsi: "Boarding school putri di Kota Makassar yang membina muslimah penghafal Al-Qur'an, berakhlak mulia, dan unggul dalam ilmu."
+nama_singkat: Darul Marhamah ABS
+nama_lengkap: SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School
+slogan: Karena Wanita adalah Rahim Peradaban
+deskripsi: Boarding school putri di Kota Makassar yang membina muslimah
+  penghafal Al-Qur'an, berakhlak mulia, dan unggul dalam ilmu.
 whatsapp: "6285211869470"
-telepon: "0852-1186-9470"
-email: "[email sekolah]"
-jam_kantor: "Senin – Sabtu, 07.30 – 15.00 WITA"
-yayasan: "[Nama Yayasan]"
-tahun_berdiri: "[tahun berdiri]"
-sejarah: |-
-  Darul Marhamah Al-Qur'an Boarding School adalah sekolah berasrama khusus putri di Kota Makassar dengan jenjang SMP dan SMA. Berangkat dari keyakinan "Karena Wanita adalah Rahim Peradaban", kami mendidik santriwati agar menjadi muslimah yang cerdas, shalihah, dan kelak melahirkan generasi terbaik.
+telepon: 0852-1186-9470
+jam_kantor: Senin – Sabtu, 07.30 – 15.00 WITA
+yayasan: Yayasan Mutiara Alquran Alislamiyah
+tahun_berdiri: "2023"
+sejarah: >-
+  Darul Marhamah Al-Qur'an Boarding School adalah sekolah berasrama khusus putri
+  di Kota Makassar dengan jenjang SMP dan SMA. Berangkat dari keyakinan "Karena
+  Wanita adalah Rahim Peradaban", kami mendidik santriwati agar menjadi muslimah
+  yang cerdas, shalihah, dan kelak melahirkan generasi terbaik.
 
-  Dengan jenjang SMP dan SMA dalam satu lembaga, pembinaan santriwati dapat berlangsung berkesinambungan selama enam tahun. [Tambahkan sejarah singkat, tahun berdiri, dan nama yayasan.]
-visi: "Terwujudnya generasi Qur'ani yang beriman, berilmu, berakhlak mulia, mandiri, dan siap menjadi pemimpin umat. [Ganti dengan visi resmi]"
+
+  Dengan jenjang SMP dan SMA dalam satu lembaga, pembinaan santriwati dapat
+  berlangsung berkesinambungan selama enam tahun. [Tambahkan sejarah singkat,
+  tahun berdiri, dan nama yayasan.]
+visi: '"Menjadi sekolah model Al-Qur’an"'
 misi:
-  - "Menyelenggarakan pendidikan yang memadukan nilai-nilai Islam dengan ilmu pengetahuan dan teknologi."
-  - "Membina santriwati agar gemar membaca, menghafal, memahami, dan mengamalkan Al-Qur'an."
-  - "Membiasakan ibadah dan adab islami dalam kehidupan sehari-hari."
-  - "Mengembangkan potensi akademik dan non-akademik santriwati secara optimal."
-  - "Menumbuhkan jiwa kepemimpinan, kemandirian, dan kepedulian sosial."
+  - Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani
+  - Melahirkan Muslimah Penghafal Al-Qur'an yang Mutqin
+  - Melahirkan Muslimah Da'iyah Pejuang Al-Qur'an
+  - Melahirkan Muslimah yang Peka dengan Lingkungan Sosialnya
+  - Melahirkan Muslimah yang Kreatif, Inovatif dan Pantang Menyerah
+  - Melahirkan Calon Ibu Pendidik Generasi Al-Qur'an
 smp:
-  nama: "SMP Islam Terpadu Darul Marhamah Al-Qur'an Boarding School"
+  nama: SMP Islam Terpadu Darul Marhamah Al-Qur'an Boarding School
   npsn: "70036850"
-  alamat: "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar"
+  alamat: Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar
   kepala_sekolah: "[Nama Kepala SMP]"
   akreditasi: "[A]"
-  target_hafalan: "[5 juz]"
-  keterangan: "Untuk lulusan SD/MI (putri). Fokus pada tahsin, dasar hafalan, dan penguatan akhlak."
-  peta: "Jl. Sukamaju 3 No 66 Tamamaung Makassar"
+  target_hafalan: "[15 juz]"
+  keterangan: Untuk lulusan SD/MI (putri). Fokus pada tahsin, dasar hafalan, dan
+    penguatan akhlak.
+  peta: Jl. Sukamaju 3 No 66 Tamamaung Makassar
 sma:
-  nama: "SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School"
+  nama: SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School
   npsn: "70043438"
-  alamat: "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar"
-  kepala_sekolah: "[Nama Kepala SMA]"
+  alamat: Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar
+  kepala_sekolah: Abdullah, S.H., M.H.
   akreditasi: "[A]"
-  target_hafalan: "[10 juz]"
-  keterangan: "Untuk lulusan SMP/MTs (putri). Fokus pada hafalan lanjutan, bahasa Arab, dan persiapan kuliah."
-  peta: "Jl. Perintis Kemerdekaan 3 BTN Asal Mula Makassar"
+  target_hafalan: "[30 juz]"
+  peta: Jl. Perintis Kemerdekaan 3 BTN Asal Mula Blok E2/B Tamalanrea Indah Kota
+    Makassar
 statistik:
-  - { angka: "[300]", label: "Santriwati" }
-  - { angka: "[35]", label: "Guru & Staf" }
-  - { angka: "[50]", label: "Penghafal 5+ Juz" }
-  - { angka: "[100]", label: "Prestasi" }
-foto_sekolah: ""
-youtube: ""
+  - angka: "[300]"
+    label: Santriwati
+  - angka: "[35]"
+    label: Guru & Staf
+  - angka: "[50]"
+    label: Penghafal 10+ Juz
+  - angka: "[100]"
+    label: Prestasi
+youtube: https://www.youtube.com/watch?v=blhCKCdn8Ew
 sosmed:
-  facebook: ""
-  instagram: ""
-  youtube: ""
-  tiktok: ""
+  facebook: https://www.facebook.com/people/Darul-Marhamah-Al-Quran-Boarding-School-Makassar/100063824633527/
+  instagram: https://www.instagram.com/darulmarhamah_abs/
+  youtube: https://www.youtube.com/@marhamahtv6242
+  tiktok: https://www.tiktok.com/@darul.marhamah.abs?lang=en
