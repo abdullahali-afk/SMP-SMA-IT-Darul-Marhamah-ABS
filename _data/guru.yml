@@ -1,0 +1,13 @@
+daftar:
+  - { nama: "[Nama Kepala SMP]", jabatan: "Kepala SMP", foto: "" }
+  - { nama: "[Nama Kepala SMA]", jabatan: "Kepala SMA", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Wakasek Kurikulum", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Wakasek Kesiswaan", foto: "" }
+  - { nama: "[Nama Ustadzah]", jabatan: "Koordinator Tahfidz", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Arab", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Matematika", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Inggris", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru IPA", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Fiqih & Aqidah", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Indonesia", foto: "" }
+  - { nama: "[Nama Ustadzah]", jabatan: "Musyrifah Asrama", foto: "" }

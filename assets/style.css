@@ -179,3 +179,17 @@ footer li{margin-bottom:6px}
 .sosmed{display:flex;gap:10px;margin-top:10px}
 .sosmed a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:.8rem;font-weight:700}
 .sosmed a:hover{background:var(--emas);color:var(--hijau-tua)}
+/* Berita detail & gambar */
+.berita .gambar{position:relative;overflow:hidden;text-decoration:none}
+.berita .gambar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.berita h3 a{color:inherit;text-decoration:none}
+.berita h3 a:hover{color:var(--emas)}
+.page-hero .label{margin-bottom:12px}
+.artikel{max-width:780px}
+.artikel p,.artikel ul,.artikel ol{margin-bottom:14px}
+.artikel ul,.artikel ol{padding-left:22px}
+.artikel h2,.artikel h3{color:var(--hijau-tua);margin:24px 0 10px}
+.artikel img{border-radius:12px;margin:16px 0}
+.artikel .sampul{width:100%;aspect-ratio:16/9;object-fit:cover;margin:0 0 24px}
+.foto{position:relative;overflow:hidden}
+.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}

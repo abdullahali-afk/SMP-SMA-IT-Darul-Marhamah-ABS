@@ -1,0 +1,1 @@
+{%- if include.foto and include.foto != "" -%}<img src="{{ include.foto | relative_url }}" alt="{{ include.alt | escape }}" loading="lazy">{%- else -%}{{ include.ikon }}{%- endif -%}

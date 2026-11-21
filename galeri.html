@@ -1,49 +1,10 @@
-<!DOCTYPE html>
-<!-- ============================================================
-  Website SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School
-  Teks yang ditandai [ ... ] adalah contoh, silakan ganti dengan data asli.
-============================================================= -->
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galeri | SMP-SMA IT Darul Marhamah ABS</title>
-<meta name="description" content="Galeri foto kegiatan, prestasi, dan fasilitas SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School.">
-<meta property="og:title" content="Galeri | SMP-SMA IT Darul Marhamah ABS">
-<meta property="og:description" content="Galeri foto kegiatan, prestasi, dan fasilitas SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School.">
-<meta name="theme-color" content="#0f5132">
-<link rel="icon" href="assets/favicon.png" type="image/png">
-<meta property="og:image" content="assets/logo-512.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
-</head>
-<body>
-<div class="topbar"><div class="wadah"><span>📞 0852-1186-9470 &nbsp;·&nbsp; 📍 Kota Makassar</span><span>Senin – Sabtu, 07.30 – 15.00 WITA</span></div></div>
-<header><div class="wadah nav">
-  <a href="index.html" class="logo"><img src="assets/logo.png" alt="Logo Darul Marhamah Al-Qur'an Boarding School" width="52" height="52"><span><b>Darul Marhamah ABS</b><small>SMP & SMA Islam Terpadu · Makassar</small></span></a>
-  <button class="burger" aria-label="Buka menu">☰</button>
-  <ul class="menu"><li><a href="index.html" class="">Beranda</a></li><li><a href="profil.html" class="panah">Profil</a><ul class="sub"><li><a href="profil.html#selayang">Selayang Pandang</a></li><li><a href="profil.html#visi-misi">Visi & Misi</a></li><li><a href="profil.html#program">Program Unggulan</a></li><li><a href="profil.html#fasilitas">Fasilitas</a></li><li><a href="guru.html">Guru & Staf</a></li><li><a href="index.html#testimoni">Testimoni</a></li></ul></li><li><a href="sekolah.html" class="panah">Sekolah</a><ul class="sub"><li><a href="sekolah.html#smp">SMP IT Darul Marhamah ABS</a></li><li><a href="sekolah.html#sma">SMA IT Darul Marhamah ABS</a></li></ul></li><li><a href="berita.html" class="">Berita</a></li><li><a href="galeri.html" class="aktif">Galeri</a></li><li><a href="kontak.html" class="">Kontak</a></li><li><a href="ppdb.html" class="tombol-ppdb">Info PPDB</a></li></ul>
-</div></header>
-<main>
-<section class="page-hero pola"><div class="wadah"><h1>Galeri</h1><p>Dokumentasi kegiatan dan fasilitas sekolah</p></div></section>
+---
+layout: default
+title: Galeri
+description: Galeri foto kegiatan, prestasi, dan fasilitas SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School.
+---
+{% include hero.html judul="Galeri" sub="Dokumentasi kegiatan dan fasilitas sekolah" %}
 <section><div class="wadah">
   <div class="filter"><button class="aktif" data-k="semua">Semua</button><button data-k="kegiatan">Kegiatan</button><button data-k="prestasi">Prestasi</button><button data-k="fasilitas">Fasilitas</button></div>
-  <div class="galeri"><figure data-k="kegiatan">🕌<figcaption>Shalat berjamaah</figcaption></figure><figure data-k="kegiatan">📖<figcaption>Halaqah tahfidz</figcaption></figure><figure data-k="prestasi">🏆<figcaption>Juara MHQ</figcaption></figure><figure data-k="fasilitas">🏫<figcaption>Gedung sekolah</figcaption></figure><figure data-k="kegiatan">⛺<figcaption>Persami Pramuka</figcaption></figure><figure data-k="fasilitas">🔬<figcaption>Laboratorium IPA</figcaption></figure><figure data-k="prestasi">🥇<figcaption>Olimpiade sains</figcaption></figure><figure data-k="fasilitas">📚<figcaption>Perpustakaan</figcaption></figure><figure data-k="kegiatan">🍳<figcaption>Ekskul tata boga</figcaption></figure><figure data-k="kegiatan">🎤<figcaption>Muhadharah</figcaption></figure><figure data-k="prestasi">🎖️<figcaption>Lomba pidato</figcaption></figure><figure data-k="fasilitas">⚽<figcaption>Lapangan olahraga</figcaption></figure></div>
-  <p class="catatan" style="margin-top:30px">💡 Untuk memasang foto asli: unggah foto ke folder <code>assets/img/</code>, lalu ganti emoji di dalam <code>&lt;figure&gt;</code> dengan <code>&lt;img src="assets/img/namafoto.jpg" alt="..."&gt;</code>. Foto bisa diklik untuk diperbesar.</p>
+  <div class="galeri">{% for g in site.data.galeri.daftar %}<figure data-k="{{ g.kategori }}">{% include media.html foto=g.foto ikon=g.ikon alt=g.judul %}<figcaption>{{ g.judul }}</figcaption></figure>{% endfor %}</div>
 </div></section>
-
-</main>
-<footer><div class="wadah grid g4">
-  <div><img src="assets/logo.png" alt="" width="90" height="90" style="margin-bottom:10px"><p>SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School: boarding school putri jenjang SMP dan SMA yang memadukan kurikulum nasional, pendidikan diniyah, dan tahfidzul Qur'an.</p>
-    <div class="sosmed"><a href="#" aria-label="Facebook">FB</a><a href="#" aria-label="Instagram">IG</a><a href="#" aria-label="YouTube">YT</a><a href="#" aria-label="TikTok">TT</a></div></div>
-  <div><h4>Tautan</h4><ul><li><a href="index.html">Beranda</a></li><li><a href="profil.html">Profil</a></li><li><a href="sekolah.html">Sekolah</a></li><li><a href="berita.html">Berita</a></li><li><a href="galeri.html">Galeri</a></li><li><a href="kontak.html">Kontak</a></li><li><a href="ppdb.html">Info PPDB</a></li></ul></div>
-  <div><h4>Sekolah</h4><ul><li><a href="sekolah.html#smp">SMP IT Darul Marhamah ABS</a></li><li><a href="sekolah.html#sma">SMA IT Darul Marhamah ABS</a></li><li><a href="ppdb.html">Penerimaan Santriwati Baru</a></li><li><a href="ppdb.html#brosur">Unduh Brosur</a></li></ul></div>
-  <div><h4>Kontak</h4><ul><li>📍 <b>SMA:</b> Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar<br><b>SMP:</b> Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar</li><li>📞 <a href="https://wa.me/6285211869470">0852-1186-9470</a></li><li>✉️ [email sekolah]</li></ul></div>
-</div><div class="hak"><i>"Karena Wanita adalah Rahim Peradaban"</i><br>© <span class="tahun">2026</span> SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School. Seluruh hak dilindungi.</div></footer>
-<a class="wa" href="https://wa.me/6285211869470?text=Assalamu%27alaikum%2C%20saya%20ingin%20bertanya%20tentang%20pendaftaran%20murid%20baru%20SMP-SMA%20IT%20Darul%20Marhamah%20ABS." target="_blank" rel="noopener" aria-label="Chat WhatsApp Admin PPDB" title="Chat Admin PPDB">💬</a>
-<div class="lightbox"><img alt=""></div>
-<script src="assets/script.js"></script>
-</body>
-</html>

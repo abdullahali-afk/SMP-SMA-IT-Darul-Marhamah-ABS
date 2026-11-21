@@ -1,0 +1,397 @@
+# Konfigurasi panel admin Pages CMS (https://app.pagescms.org)
+# Login dengan akun GitHub pemilik repository ini.
+media:
+  input: assets/img
+  output: /assets/img
+content:
+- name: berita
+  label: Berita
+  type: collection
+  path: _posts
+  filename: '{year}-{month}-{day}-{primary}.md'
+  view:
+    fields:
+    - title
+    - kategori
+    - date
+    primary: title
+    sort:
+    - date
+    default:
+      sort: date
+      order: desc
+  fields:
+  - name: title
+    label: Judul berita
+    type: string
+    required: true
+  - name: date
+    label: Tanggal
+    type: date
+    required: true
+  - name: kategori
+    label: Kategori
+    type: select
+    options:
+      values:
+      - Prestasi
+      - Kegiatan
+      - Akademik
+      - PPDB
+      - Pengumuman
+  - name: gambar
+    label: Foto utama
+    type: image
+    description: Opsional. Ukuran ideal mendatar (16:9).
+  - name: ringkasan
+    label: Ringkasan singkat
+    type: text
+    description: 1-2 kalimat yang tampil di daftar berita.
+  - name: body
+    label: Isi berita
+    type: rich-text
+- name: sekolah
+  label: Data Sekolah & Kontak
+  type: file
+  path: _data/sekolah.yml
+  fields:
+  - name: nama_singkat
+    label: Nama singkat (di menu atas)
+    type: string
+  - name: nama_lengkap
+    label: Nama lengkap
+    type: string
+  - name: slogan
+    label: Slogan
+    type: string
+  - name: deskripsi
+    label: Deskripsi singkat (di halaman depan)
+    type: text
+  - name: whatsapp
+    label: Nomor WhatsApp untuk tombol & formulir
+    type: string
+    description: Format 62..., tanpa + dan tanpa 0 di depan. Contoh 6285211869470
+  - name: telepon
+    label: Nomor telepon (yang ditampilkan)
+    type: string
+  - name: email
+    label: Email
+    type: string
+  - name: jam_kantor
+    label: Jam kantor
+    type: string
+  - name: yayasan
+    label: Nama yayasan
+    type: string
+  - name: tahun_berdiri
+    label: Tahun berdiri
+    type: string
+  - name: sejarah
+    label: Selayang pandang / sejarah singkat
+    type: text
+  - name: visi
+    label: Visi
+    type: text
+  - name: misi
+    label: Misi
+    type: string
+    list: true
+  - name: smp
+    label: Data SMP
+    type: object
+    fields:
+    - name: nama
+      label: Nama resmi
+      type: string
+    - name: npsn
+      label: NPSN
+      type: string
+    - name: alamat
+      label: Alamat
+      type: string
+    - name: kepala_sekolah
+      label: Kepala sekolah
+      type: string
+    - name: akreditasi
+      label: Akreditasi
+      type: string
+    - name: target_hafalan
+      label: Target hafalan
+      type: string
+    - name: keterangan
+      label: Keterangan singkat
+      type: text
+    - name: peta
+      label: Kata kunci lokasi Google Maps
+      type: string
+  - name: sma
+    label: Data SMA
+    type: object
+    fields:
+    - name: nama
+      label: Nama resmi
+      type: string
+    - name: npsn
+      label: NPSN
+      type: string
+    - name: alamat
+      label: Alamat
+      type: string
+    - name: kepala_sekolah
+      label: Kepala sekolah
+      type: string
+    - name: akreditasi
+      label: Akreditasi
+      type: string
+    - name: target_hafalan
+      label: Target hafalan
+      type: string
+    - name: keterangan
+      label: Keterangan singkat
+      type: text
+    - name: peta
+      label: Kata kunci lokasi Google Maps
+      type: string
+  - name: statistik
+    label: Angka statistik (halaman depan)
+    type: object
+    list: true
+    fields:
+    - name: angka
+      label: Angka
+      type: string
+    - name: label
+      label: Keterangan
+      type: string
+  - name: foto_sekolah
+    label: Foto gedung sekolah
+    type: image
+  - name: youtube
+    label: Kode video YouTube profil sekolah
+    type: string
+    description: Dari link youtube.com/watch?v=ABC123, isi ABC123 saja. Kosongkan untuk menyembunyikan.
+  - name: sosmed
+    label: Media sosial (link lengkap, kosongkan jika tidak ada)
+    type: object
+    fields:
+    - name: facebook
+      label: Facebook
+      type: string
+    - name: instagram
+      label: Instagram
+      type: string
+    - name: youtube
+      label: YouTube
+      type: string
+    - name: tiktok
+      label: TikTok
+      type: string
+- name: ppdb
+  label: Info PPDB
+  type: file
+  path: _data/ppdb.yml
+  fields:
+  - name: tahun_ajaran
+    label: Tahun ajaran
+    type: string
+  - name: status
+    label: Status pendaftaran
+    type: string
+    description: 'Contoh: Pendaftaran dibuka / Pendaftaran ditutup'
+  - name: alur
+    label: Alur pendaftaran
+    type: object
+    list: true
+    fields:
+    - name: judul
+      label: Langkah
+      type: string
+    - name: isi
+      label: Penjelasan
+      type: text
+  - name: gelombang
+    label: Jadwal gelombang
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Gelombang
+      type: string
+    - name: waktu
+      label: Waktu
+      type: string
+  - name: syarat
+    label: Persyaratan
+    type: string
+    list: true
+  - name: biaya
+    label: Rincian biaya
+    type: object
+    list: true
+    fields:
+    - name: komponen
+      label: Komponen
+      type: string
+    - name: smp
+      label: Biaya SMP
+      type: string
+    - name: sma
+      label: Biaya SMA
+      type: string
+  - name: catatan_biaya
+    label: Catatan biaya
+    type: text
+  - name: rekening
+    label: Rekening pembayaran
+    type: string
+  - name: brosur
+    label: Brosur PPDB (PDF/gambar)
+    type: file
+- name: guru
+  label: Guru & Staf
+  type: file
+  path: _data/guru.yml
+  fields:
+  - name: daftar
+    label: Daftar guru & staf
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Nama
+      type: string
+    - name: jabatan
+      label: Jabatan / mata pelajaran
+      type: string
+    - name: foto
+      label: Foto
+      type: image
+- name: galeri
+  label: Galeri Foto
+  type: file
+  path: _data/galeri.yml
+  fields:
+  - name: daftar
+    label: Foto
+    type: object
+    list: true
+    fields:
+    - name: judul
+      label: Keterangan foto
+      type: string
+    - name: kategori
+      label: Kategori
+      type: select
+      options:
+        values:
+        - kegiatan
+        - prestasi
+        - fasilitas
+    - name: foto
+      label: Foto
+      type: image
+    - name: ikon
+      label: Ikon cadangan (jika belum ada foto)
+      type: string
+- name: testimoni
+  label: Testimoni
+  type: file
+  path: _data/testimoni.yml
+  fields:
+  - name: daftar
+    label: Testimoni
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Nama
+      type: string
+    - name: keterangan
+      label: Keterangan (wali santriwati / alumni)
+      type: string
+    - name: isi
+      label: Isi testimoni
+      type: text
+    - name: foto
+      label: Foto
+      type: image
+- name: fasilitas
+  label: Fasilitas & Ekstrakurikuler
+  type: file
+  path: _data/fasilitas.yml
+  fields:
+  - name: fasilitas
+    label: Fasilitas
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Nama
+      type: string
+    - name: ikon
+      label: Ikon (emoji)
+      type: string
+    - name: foto
+      label: Foto
+      type: image
+  - name: ekstrakurikuler
+    label: Ekstrakurikuler
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Nama
+      type: string
+    - name: ikon
+      label: Ikon (emoji)
+      type: string
+    - name: foto
+      label: Foto
+      type: image
+- name: program
+  label: Program Unggulan
+  type: file
+  path: _data/program.yml
+  fields:
+  - name: unggulan
+    label: Program unggulan (4 kartu)
+    type: object
+    list: true
+    fields:
+    - name: ikon
+      label: Ikon (emoji)
+      type: string
+    - name: judul
+      label: Judul
+      type: string
+    - name: isi
+      label: Penjelasan
+      type: text
+  - name: keunggulan
+    label: Keunggulan singkat
+    type: object
+    list: true
+    fields:
+    - name: judul
+      label: Judul
+      type: string
+    - name: isi
+      label: Penjelasan
+      type: text
+  - name: kurikulum
+    label: Rincian program pembelajaran
+    type: object
+    list: true
+    fields:
+    - name: ikon
+      label: Ikon (emoji)
+      type: string
+    - name: judul
+      label: Judul
+      type: string
+    - name: isi
+      label: Penjelasan
+      type: text
+  - name: biaya_ringan
+    label: Keterangan biaya ringan & cicilan
+    type: text

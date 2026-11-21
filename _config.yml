@@ -1,0 +1,13 @@
+# Pengaturan website (Jekyll, dibangun otomatis oleh GitHub Pages)
+title: "SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School"
+lang: id
+url: "https://abdullahali-afk.github.io"
+# Jika nanti memakai domain sendiri (misal darulmarhamah.sch.id), ubah baseurl menjadi ""
+baseurl: "/SMP-SMA-IT-Darul-Marhamah-ABS"
+timezone: Asia/Makassar
+permalink: /berita/:year/:month/:title.html
+markdown: kramdown
+exclude: [README.md, Gemfile, Gemfile.lock, vendor]
+defaults:
+  - scope: { path: "", type: posts }
+    values: { layout: post }

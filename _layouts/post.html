@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<section class="page-hero pola"><div class="wadah" style="max-width:860px">
+  <span class="label">{{ page.kategori }}</span>
+  <h1>{{ page.title }}</h1>
+  <p>{% include tanggal.html d=page.date %}</p>
+</div></section>
+<section class="bg-putih"><div class="wadah artikel">
+  {% if page.gambar and page.gambar != "" %}<img src="{{ page.gambar | relative_url }}" alt="{{ page.title | escape }}" class="sampul">{% endif %}
+  {%- assign perbaiki = 'src="' | append: site.baseurl | append: '/assets/' -%}
+  {{ content | replace: 'src="/assets/', perbaiki }}
+  <p style="margin-top:40px"><a href="{{ '/berita.html' | relative_url }}" class="btn btn-hijau">← Kembali ke Arsip Berita</a></p>
+</div></section>

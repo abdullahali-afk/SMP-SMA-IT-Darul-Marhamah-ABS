@@ -1,0 +1,8 @@
+---
+title: "Tim Sains Lolos ke Olimpiade Sains Tingkat Provinsi"
+date: 2026-10-10
+kategori: "Prestasi"
+gambar: ""
+ringkasan: "[Contoh berita] Tiga santriwati mewakili sekolah pada OSN bidang Biologi, Kimia, dan Matematika."
+---
+[Contoh berita] Tiga santriwati lolos mewakili sekolah pada Olimpiade Sains Nasional tingkat provinsi bidang Biologi, Kimia, dan Matematika.

@@ -1,0 +1,16 @@
+unggulan:
+  - { ikon: "📖", judul: "Tahfidzul Qur'an", isi: "Halaqah hafalan harian dengan target [minimal 5 juz SMP / 10 juz SMA] dan setoran rutin kepada musyrifah." }
+  - { ikon: "🗣️", judul: "Bahasa Arab", isi: "Penguasaan bahasa Arab aktif untuk memahami Al-Qur'an, hadits, dan kitab para ulama." }
+  - { ikon: "🕌", judul: "Praktik Ibadah", isi: "Bimbingan langsung wudhu, shalat, dzikir, dan ibadah harian sesuai tuntunan sunnah." }
+  - { ikon: "📜", judul: "Hafalan Hadits", isi: "Menghafal hadits-hadits pilihan beserta penjelasan singkat dan pengamalannya." }
+keunggulan:
+  - { judul: "Kurikulum Terintegrasi.", isi: "Kurikulum nasional dan kurikulum diniyah berjalan bersama dalam satu jadwal." }
+  - { judul: "Adab Sebelum Ilmu.", isi: "Pembiasaan adab harian: salam, berbakti kepada orang tua, dan menghormati guru." }
+  - { judul: "Lingkungan Islami.", isi: "Shalat berjamaah, dzikir pagi-petang, dan tilawah menjadi rutinitas setiap hari di asrama." }
+kurikulum:
+  - { ikon: "📖", judul: "Tahfidzul Qur'an & Tahsin", isi: "Santriwati dibimbing memperbaiki bacaan (tahsin) lalu menambah hafalan secara bertahap dengan metode talaqqi dan murajaah terjadwal. Ujian tasmi' diadakan setiap semester." }
+  - { ikon: "🗣️", judul: "Bahasa Arab Aktif", isi: "Pembelajaran nahwu, sharaf, dan percakapan sehari-hari, dilengkapi hari berbahasa Arab dan muhadharah." }
+  - { ikon: "📘", judul: "Tafsir Ringkas", isi: "Mengkaji makna ayat-ayat yang dihafal agar hafalan disertai pemahaman dan pengamalan." }
+  - { ikon: "📜", judul: "Hafalan Hadits & Adab", isi: "Hafalan hadits arbain dan hadits adab, dipraktikkan dalam keseharian di sekolah dan asrama." }
+  - { ikon: "🧪", judul: "Kurikulum Nasional", isi: "Mata pelajaran umum (Kurikulum Merdeka) tetap diajarkan lengkap sehingga lulusan siap melanjutkan ke jenjang berikutnya, negeri maupun swasta." }
+biaya_ringan: "Uang pangkal dapat dicicil [3 kali] dalam setahun. Tersedia beasiswa untuk santriwati berprestasi dan penghafal Al-Qur'an. [Sesuaikan]"
