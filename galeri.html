@@ -8,3 +8,10 @@ description: Galeri foto kegiatan, prestasi, dan fasilitas SMP & SMA IT Darul Ma
   <div class="filter"><button class="aktif" data-k="semua">Semua</button><button data-k="kegiatan">Kegiatan</button><button data-k="prestasi">Prestasi</button><button data-k="fasilitas">Fasilitas</button></div>
   <div class="galeri">{% for g in site.data.galeri.daftar %}<figure data-k="{{ g.kategori }}">{% include media.html foto=g.foto ikon=g.ikon alt=g.judul %}<figcaption>{{ g.judul }}</figcaption></figure>{% endfor %}</div>
 </div></section>
+{%- assign vids = site.data.video.daftar -%}
+<section class="bg-putih" id="video"><div class="wadah">
+  {% include judul.html k="Video" t="Video Kegiatan Sekolah" %}
+  {% if vids.size > 0 %}<div class="grid g2">{% for v in vids %}{% include youtube.html url=v.url judul=v.judul %}{% endfor %}</div>
+  {% else %}<p style="text-align:center;color:var(--abu)">Belum ada video.</p>{% endif %}
+  {% if site.data.sekolah.sosmed.youtube != "" %}<p style="text-align:center;margin-top:24px"><a href="{{ site.data.sekolah.sosmed.youtube }}" class="btn btn-emas" target="_blank" rel="noopener">Kunjungi Channel YouTube</a></p>{% endif %}
+</div></section>

@@ -65,17 +65,20 @@ title: Beranda
   <p style="text-align:center;margin-top:30px"><a href="{{ '/berita.html' | relative_url }}" class="btn btn-hijau">Arsip Berita</a></p>
 </div></section>
 
-{% if s.youtube != "" %}
-<section><div class="wadah" style="max-width:860px">
-  {% include judul.html k="Dokumentasi Video" t="Profil Sekolah dalam Video" %}
-  <iframe class="video" src="https://www.youtube.com/embed/{{ s.youtube }}" title="Video profil sekolah" allowfullscreen loading="lazy"></iframe>
+{%- assign vids = site.data.video.daftar -%}
+{% if vids.size > 0 %}
+<section id="video"><div class="wadah">
+  {% include judul.html k="Dokumentasi Video" t="Video Kegiatan Sekolah" %}
+  <div style="max-width:860px;margin:0 auto">{% assign v0 = vids.first %}{% include youtube.html url=v0.url judul=v0.judul %}</div>
+  {% if vids.size > 1 %}<div class="grid g3" style="margin-top:24px">{% for v in vids offset:1 limit:3 %}{% include youtube.html url=v.url judul=v.judul %}{% endfor %}</div>{% endif %}
+  <p style="text-align:center;margin-top:24px"><a href="{{ '/galeri.html#video' | relative_url }}" class="btn btn-hijau">Semua Video</a>{% if s.sosmed.youtube != "" %} <a href="{{ s.sosmed.youtube }}" class="btn btn-emas" target="_blank" rel="noopener">Channel YouTube</a>{% endif %}</p>
 </div></section>
 {% endif %}
 
 <section class="bg-putih"><div class="wadah grid g2" style="align-items:start">
   <div>
     {% include judul.html k="Visi" t="Visi Sekolah" kiri=true %}
-    <p style="font-size:1.1rem;font-style:italic;margin-bottom:24px">"{{ s.visi }}"</p>
+    <p style="font-size:1.1rem;font-style:italic;margin-bottom:24px">"{{ s.visi | remove: '"' }}"</p>
     <div class="kartu"><h3>📍 Alamat</h3><p><b>SMA:</b> {{ s.sma.alamat }}<br><b>SMP:</b> {{ s.smp.alamat }}</p>
     <h3 style="margin-top:14px">🕐 Jam Kantor</h3><p>{{ s.jam_kantor }}</p>
     <h3 style="margin-top:14px">📞 Telepon / WhatsApp</h3><p><a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a></p></div>

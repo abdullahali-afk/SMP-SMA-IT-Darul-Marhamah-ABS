@@ -35,7 +35,9 @@
       <li><a href="{{ '/sekolah.html#smp' | relative_url }}">SMP IT Darul Marhamah ABS</a></li>
       <li><a href="{{ '/sekolah.html#sma' | relative_url }}">SMA IT Darul Marhamah ABS</a></li></ul></li>
     <li><a href="{{ '/berita.html' | relative_url }}"{% if u == '/berita' or page.layout == 'post' %} class="aktif"{% endif %}>Berita</a></li>
-    <li><a href="{{ '/galeri.html' | relative_url }}"{% if u == '/galeri' %} class="aktif"{% endif %}>Galeri</a></li>
+    <li><a href="{{ '/galeri.html' | relative_url }}" class="panah{% if u == '/galeri' %} aktif{% endif %}">Galeri</a><ul class="sub">
+      <li><a href="{{ '/galeri.html' | relative_url }}">Foto</a></li>
+      <li><a href="{{ '/galeri.html#video' | relative_url }}">Video</a></li></ul></li>
     <li><a href="{{ '/kontak.html' | relative_url }}"{% if u == '/kontak' %} class="aktif"{% endif %}>Kontak</a></li>
     <li><a href="{{ '/ppdb.html' | relative_url }}" class="tombol-ppdb">Info PPDB</a></li>
   </ul>

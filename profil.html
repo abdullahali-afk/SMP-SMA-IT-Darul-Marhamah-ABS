@@ -13,7 +13,7 @@ description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & 
 </div></section>
 
 <section id="visi-misi"><div class="wadah grid g2">
-  <div class="kartu"><h3>🌟 Visi</h3><p style="font-size:1.05rem;color:var(--teks)">"{{ s.visi }}"</p></div>
+  <div class="kartu"><h3>🌟 Visi</h3><p style="font-size:1.05rem;color:var(--teks)">"{{ s.visi | remove: '"' }}"</p></div>
   <div class="kartu"><h3>🎯 Misi</h3><ol class="misi">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol></div>
 </div></section>
 

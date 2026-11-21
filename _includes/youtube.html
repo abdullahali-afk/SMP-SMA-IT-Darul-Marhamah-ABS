@@ -1,0 +1,15 @@
+{%- assign u = include.url | strip -%}
+{%- assign id = "" -%}
+{%- if u contains "v=" -%}{%- assign id = u | split: "v=" | last | split: "&" | first -%}
+{%- elsif u contains "youtu.be/" -%}{%- assign id = u | split: "youtu.be/" | last | split: "?" | first -%}
+{%- elsif u contains "/shorts/" -%}{%- assign id = u | split: "/shorts/" | last | split: "?" | first -%}
+{%- elsif u contains "/embed/" -%}{%- assign id = u | split: "/embed/" | last | split: "?" | first -%}
+{%- elsif u contains "/live/" -%}{%- assign id = u | split: "/live/" | last | split: "?" | first -%}
+{%- elsif u.size == 11 -%}{%- assign id = u -%}{%- endif -%}
+{%- assign id = id | split: "#" | first | remove: "/" | strip -%}
+{%- if id != "" -%}
+<div class="video-kartu">
+  <iframe class="video" src="https://www.youtube-nocookie.com/embed/{{ id }}?rel=0" title="{{ include.judul | escape }}" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  {%- if include.judul and include.judul != "" %}<h3>{{ include.judul }}</h3>{% endif %}
+</div>
+{%- endif -%}

@@ -166,10 +166,6 @@ content:
   - name: foto_sekolah
     label: Foto gedung sekolah
     type: image
-  - name: youtube
-    label: Kode video YouTube profil sekolah
-    type: string
-    description: Dari link youtube.com/watch?v=ABC123, isi ABC123 saja. Kosongkan untuk menyembunyikan.
   - name: sosmed
     label: Media sosial (link lengkap, kosongkan jika tidak ada)
     type: object
@@ -247,6 +243,23 @@ content:
   - name: brosur
     label: Brosur PPDB (PDF/gambar)
     type: file
+- name: video
+  label: Video YouTube
+  type: file
+  path: _data/video.yml
+  fields:
+  - name: daftar
+    label: Daftar video (video pertama tampil besar di halaman depan)
+    type: object
+    list: true
+    fields:
+    - name: judul
+      label: Judul video
+      type: string
+    - name: url
+      label: Link YouTube
+      type: string
+      description: 'Tempel link video biasa, contoh https://www.youtube.com/watch?v=xxxx atau https://youtu.be/xxxx (bukan link channel).'
 - name: guru
   label: Guru & Staf
   type: file
