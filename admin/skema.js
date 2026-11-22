@@ -471,6 +471,71 @@ window.SKEMA = [
   ]
  },
  {
+  "kunci": "program_pendidikan",
+  "label": "Visi & Misi Program",
+  "ikon": "🎓",
+  "fields": [
+   {
+    "name": "judul",
+    "label": "Judul bagian",
+    "type": "string"
+   },
+   {
+    "name": "pengantar",
+    "label": "Kalimat pengantar",
+    "type": "text"
+   },
+   {
+    "name": "daftar",
+    "label": "Program pendidikan",
+    "type": "object",
+    "list": true,
+    "fields": [
+     {
+      "name": "nama",
+      "label": "Nama singkat program",
+      "type": "string",
+      "description": "Contoh: Program Tahfizh"
+     },
+     {
+      "name": "nama_lengkap",
+      "label": "Nama lengkap program",
+      "type": "string"
+     },
+     {
+      "name": "ikon",
+      "label": "Ikon (emoji)",
+      "type": "string"
+     },
+     {
+      "name": "jenjang",
+      "label": "Jenjang yang memakai visi & misi ini",
+      "type": "string",
+      "list": true,
+      "description": "Contoh: SMP, SMA"
+     },
+     {
+      "name": "ringkasan",
+      "label": "Penjelasan singkat program",
+      "type": "text"
+     },
+     {
+      "name": "visi",
+      "label": "Visi",
+      "type": "text"
+     },
+     {
+      "name": "misi",
+      "label": "Misi",
+      "type": "string",
+      "list": true,
+      "description": "Satu baris untuk satu poin misi"
+     }
+    ]
+   }
+  ]
+ },
+ {
   "kunci": "ppdb",
   "label": "Info PPDB",
   "ikon": "📝",

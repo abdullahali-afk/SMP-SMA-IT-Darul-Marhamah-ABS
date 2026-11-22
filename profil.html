@@ -12,10 +12,36 @@ description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & 
   <p>Berdiri: {{ s.tahun_berdiri }} · Yayasan: {{ s.yayasan }}</p></div>
 </div></section>
 
-<section id="visi-misi"><div class="wadah grid g2">
-  <div class="kartu"><h3>🌟 Visi</h3><p style="font-size:1.05rem;color:var(--teks)">"{{ s.visi | remove: '"' }}"</p></div>
-  <div class="kartu"><h3>🎯 Misi</h3><ol class="misi-nomor">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol></div>
+<section id="visi-misi"><div class="wadah">
+  {% include judul.html k="Visi & Misi" t="Visi & Misi Sekolah" %}
+  <div class="grid g2">
+    <div class="kartu"><h3>🌟 Visi</h3><p style="font-size:1.05rem;color:var(--teks)">"{{ s.visi | remove: '"' }}"</p></div>
+    <div class="kartu"><h3>🎯 Misi</h3><ol class="misi-nomor">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol></div>
+  </div>
 </div></section>
+
+{%- assign pp = site.data.program_pendidikan -%}
+{%- if pp.daftar.size > 0 %}
+<section class="bg-putih" id="visi-misi-program"><div class="wadah">
+  {% include judul.html k="Program Pendidikan" t=pp.judul %}
+  {% if pp.pengantar and pp.pengantar != "" %}<p class="pengantar-program">{{ pp.pengantar }}</p>{% endif %}
+  {% if pp.daftar.size > 1 %}<nav class="pilih-program" aria-label="Pilih program">{% for p in pp.daftar %}<a href="#{{ p.nama | slugify }}">{{ p.ikon }} {{ p.nama }}</a>{% endfor %}</nav>{% endif %}
+  <div class="grid g2 program-vm">
+  {%- for p in pp.daftar %}
+    <article class="kartu-program" id="{{ p.nama | slugify }}">
+      <div class="kp-kepala"><span class="kp-ikon">{{ p.ikon | default: "🎓" }}</span><div><h3>{{ p.nama_lengkap | default: p.nama }}</h3>
+        {% if p.jenjang.size > 0 %}<div class="kp-jenjang">{% for j in p.jenjang %}<span>{{ j }}</span>{% endfor %}</div>{% endif %}</div></div>
+      {% if p.ringkasan and p.ringkasan != "" %}<p class="kp-ringkas">{{ p.ringkasan }}</p>{% endif %}
+      <h4>🌟 Visi</h4>
+      <blockquote class="visi">{{ p.visi | remove: '"' }}</blockquote>
+      <h4>🎯 Misi</h4>
+      <ol class="misi-nomor">{% for m in p.misi %}<li>{{ m }}</li>{% endfor %}</ol>
+      {% if p.jenjang.size > 1 %}<p class="kp-catatan">Visi dan misi ini berlaku sama untuk jenjang {{ p.jenjang | join: " dan " }}.</p>{% endif %}
+    </article>
+  {%- endfor %}
+  </div>
+</div></section>
+{%- endif %}
 
 <section class="bg-putih" id="identitas"><div class="wadah">
   {% include judul.html k="Identitas" t="Data Sekolah" %}
@@ -29,6 +55,7 @@ description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & 
     <tr><td>Status</td><td>Swasta</td><td>Swasta</td></tr>
     <tr><td>Jenis</td><td colspan="2">Boarding school (berasrama) khusus putri</td></tr>
     <tr><td>Yayasan</td><td colspan="2">{{ s.yayasan }}</td></tr>
+    {% if pp.daftar.size > 0 %}<tr><td>Program pendidikan</td><td colspan="2">{{ pp.daftar | map: "nama" | join: " dan " }} (masing-masing untuk SMP dan SMA)</td></tr>{% endif %}
     <tr><td>Kurikulum</td><td colspan="2">Kurikulum Merdeka + Kurikulum Diniyah + Tahfidz</td></tr>
   </table></div>
 </div></section>

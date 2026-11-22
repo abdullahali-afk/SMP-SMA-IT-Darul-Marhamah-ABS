@@ -227,26 +227,33 @@ async function halamanKonten(kunci) {
   const bagian = window.SKEMA.find(s => s.kunci === kunci);
   if (!bagian) return tolak();
   kerangka(bagian.ikon + ' ' + bagian.label, 'Memuat…');
-  const awal = location.hash;
+  const awal0 = location.hash;
   const { data: baris, error } = await sb.from('konten').select('data, diubah').eq('kunci', kunci).maybeSingle();
-  if (location.hash !== awal) return;
+  if (location.hash !== awal0) return;
   if (error) return kerangka(bagian.label, null, h('div', { class: 'pesan galat' }, pesanGalat(error)));
-  const data = baris ? salin(baris.data) : {};
+  let ada = !!baris, data = baris ? salin(baris.data) : null, info = null;
+  if (!data) {
+    // Belum pernah disimpan dari panel: mulai dari isi yang sekarang tampil di website
+    try { const awal = await (await fetch('data-awal.json', { cache: 'no-store' })).json(); data = awal && awal[kunci] ? salin(awal[kunci]) : {}; } catch (e) { data = {}; }
+    if (location.hash !== awal0) return;
+    info = h('div', { class: 'pesan info', style: 'margin-bottom:14px' }, 'Bagian ini belum pernah disimpan dari panel. Isian di bawah diambil dari website saat ini; klik Simpan agar mulai dikelola dari panel.');
+  }
   const form = h('div', { class: 'panel' }, ...bagian.fields.map(f => medan(f, data, kunci)));
   const btn = h('button', { class: 'btn btn-emas' }, '💾 Simpan perubahan');
   const ket = h('small', { style: 'color:var(--abu)' }, baris ? 'Terakhir diubah: ' + new Date(baris.diubah).toLocaleString('id-ID') : '');
   btn.addEventListener('click', async () => {
     sibuk(btn, true, 'Menyimpan…');
-    const q = baris
+    const q = ada
       ? sb.from('konten').update({ data, diubah: new Date().toISOString() }).eq('kunci', kunci).select()
       : sb.from('konten').insert({ kunci, data }).select();
     const { data: hasil, error } = await q;
     sibuk(btn, false, '💾 Simpan perubahan');
     if (error || !hasil || !hasil.length) return toast('Gagal menyimpan: ' + (error ? pesanGalat(error) : 'tidak ada akses'), true);
+    ada = true; if (info) info.remove();
     ket.textContent = 'Tersimpan ' + new Date().toLocaleTimeString('id-ID') + '. Website diperbarui dalam beberapa menit.';
     toast('Perubahan tersimpan.');
   });
-  kerangka(bagian.ikon + ' ' + bagian.label, 'Ubah isian lalu klik Simpan.', form, h('div', { class: 'aksi-simpan' }, btn, ket));
+  kerangka(bagian.ikon + ' ' + bagian.label, 'Ubah isian lalu klik Simpan.', info, form, h('div', { class: 'aksi-simpan' }, btn, ket));
 }
 
 function nilaiAwal(f) {

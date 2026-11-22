@@ -27,6 +27,8 @@ title: Beranda
     {% include judul.html k="Visi dan Misi" t="Visi & Misi Darul Marhamah" kiri=true %}
     <blockquote class="visi">{{ s.visi | remove: '"' }}</blockquote>
     <ol class="misi-nomor">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol>
+    {%- assign pp = site.data.program_pendidikan -%}
+    {% if pp.daftar.size > 0 %}<div class="vm-program"><span>Visi & misi program:</span>{% for p in pp.daftar %}<a href="{{ '/profil.html' | relative_url }}#{{ p.nama | slugify }}">{{ p.ikon }} {{ p.nama }}</a>{% endfor %}</div>{% endif %}
   </div>
 </div></section>
 

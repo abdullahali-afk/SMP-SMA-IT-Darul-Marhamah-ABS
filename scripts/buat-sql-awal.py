@@ -2,7 +2,7 @@
 Jalankan: python3 scripts/buat-sql-awal.py"""
 import json, os, re, glob, yaml, datetime
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KUNCI = ["menu","sekolah","beranda","ppdb","program","fasilitas","guru","struktur","galeri","testimoni","video","download"]
+KUNCI = ["menu","sekolah","program_pendidikan","beranda","ppdb","program","fasilitas","guru","struktur","galeri","testimoni","video","download"]
 def q(s): return "$isi$" + s + "$isi$"
 def conv(o):
     if isinstance(o,(datetime.date,datetime.datetime)): return o.isoformat()
