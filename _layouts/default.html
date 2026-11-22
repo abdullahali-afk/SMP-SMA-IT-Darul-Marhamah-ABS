@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% if page.title %}{{ page.title }} | {% endif %}{{ s.nama_lengkap }}</title>
+<title>{% if page.title and page.title != "Beranda" %}{{ page.title }} | {% endif %}{{ s.nama_lengkap }}</title>
 <meta name="description" content="{{ page.description | default: page.ringkasan | default: s.deskripsi | strip_html | escape }}">
 <meta property="og:title" content="{{ page.title | default: s.nama_lengkap | escape }}">
 <meta property="og:description" content="{{ page.description | default: page.ringkasan | default: s.deskripsi | strip_html | escape }}">
@@ -17,49 +17,36 @@
 <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
 </head>
 <body>
-<div class="topbar"><div class="wadah"><span>📞 {{ s.telepon }} &nbsp;·&nbsp; 📍 Kota Makassar</span><span>{{ s.jam_kantor }}</span></div></div>
-<header><div class="wadah nav">
-  <a href="{{ '/' | relative_url }}" class="logo"><img src="{{ '/assets/logo.png' | relative_url }}" alt="Logo {{ s.nama_singkat }}" width="52" height="52"><span><b>{{ s.nama_singkat }}</b><small>SMP & SMA Islam Terpadu · Makassar</small></span></a>
+<div class="topbar"><div class="wadah">
+  <span class="tb-kontak"><a href="mailto:{{ s.email }}">✉️ {{ s.email }}</a><a href="https://wa.me/{{ s.whatsapp }}">📞 {{ s.telepon }}</a></span>
+  <span class="tb-sosmed">{% include sosmed.html %}</span>
+</div></div>
+<header class="kepala-situs"><div class="wadah nav">
+  <a href="{{ '/' | relative_url }}" class="logo"><img src="{{ '/assets/logo.png' | relative_url }}" alt="Logo {{ s.nama_singkat }}" width="64" height="64"><span><b>Darul Marhamah</b><small>SMP & SMA Islam Terpadu · Al-Qur'an Boarding School</small></span></a>
+  <div class="aksi-kepala">
+    <form action="{{ '/cari.html' | relative_url }}" class="cari-kepala" role="search"><input name="q" type="search" placeholder="Cari..." aria-label="Cari"><button aria-label="Cari">🔍</button></form>
+    <a href="{{ '/ppdb.html#daftar' | relative_url }}" class="btn btn-emas btn-kecil">Daftar Sekarang</a>
+  </div>
   <button class="burger" aria-label="Buka menu">☰</button>
-  {%- assign u = page.url | remove: '.html' -%}
-  <ul class="menu">
-    <li><a href="{{ '/' | relative_url }}"{% if u == '/' or u == '/index' %} class="aktif"{% endif %}>Beranda</a></li>
-    <li><a href="{{ '/profil.html' | relative_url }}" class="panah{% if u == '/profil' or u == '/guru' %} aktif{% endif %}">Profil</a><ul class="sub">
-      <li><a href="{{ '/profil.html#selayang' | relative_url }}">Selayang Pandang</a></li>
-      <li><a href="{{ '/profil.html#visi-misi' | relative_url }}">Visi & Misi</a></li>
-      <li><a href="{{ '/profil.html#program' | relative_url }}">Program Unggulan</a></li>
-      <li><a href="{{ '/profil.html#fasilitas' | relative_url }}">Fasilitas</a></li>
-      <li><a href="{{ '/guru.html' | relative_url }}">Guru & Staf</a></li>
-      <li><a href="{{ '/#testimoni' | relative_url }}">Testimoni</a></li></ul></li>
-    <li><a href="{{ '/sekolah.html' | relative_url }}" class="panah{% if u == '/sekolah' %} aktif{% endif %}">Sekolah</a><ul class="sub">
-      <li><a href="{{ '/sekolah.html#smp' | relative_url }}">SMP IT Darul Marhamah ABS</a></li>
-      <li><a href="{{ '/sekolah.html#sma' | relative_url }}">SMA IT Darul Marhamah ABS</a></li></ul></li>
-    <li><a href="{{ '/berita.html' | relative_url }}"{% if u == '/berita' or page.layout == 'post' %} class="aktif"{% endif %}>Berita</a></li>
-    <li><a href="{{ '/galeri.html' | relative_url }}" class="panah{% if u == '/galeri' %} aktif{% endif %}">Galeri</a><ul class="sub">
-      <li><a href="{{ '/galeri.html' | relative_url }}">Foto</a></li>
-      <li><a href="{{ '/galeri.html#video' | relative_url }}">Video</a></li></ul></li>
-    <li><a href="{{ '/kontak.html' | relative_url }}"{% if u == '/kontak' %} class="aktif"{% endif %}>Kontak</a></li>
-    <li><a href="{{ '/ppdb.html' | relative_url }}" class="tombol-ppdb">Info PPDB</a></li>
-  </ul>
 </div></header>
+<nav class="menu-bar" aria-label="Menu utama"><div class="wadah">
+  {% include menu.html %}
+  <a href="{{ '/cari.html' | relative_url }}" class="cari-hp">🔍 Cari</a>
+</div></nav>
 <main>
 {{ content }}
 </main>
-<footer><div class="wadah grid g4">
-  <div><img src="{{ '/assets/logo.png' | relative_url }}" alt="" width="90" height="90" style="margin-bottom:10px">
-    <p>{{ s.nama_lengkap }}: boarding school putri jenjang SMP dan SMA yang memadukan kurikulum nasional, pendidikan diniyah, dan tahfidzul Qur'an.</p>
-    <div class="sosmed">
-      {%- if s.sosmed.facebook != "" %}<a href="{{ s.sosmed.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">FB</a>{% endif -%}
-      {%- if s.sosmed.instagram != "" %}<a href="{{ s.sosmed.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">IG</a>{% endif -%}
-      {%- if s.sosmed.youtube != "" %}<a href="{{ s.sosmed.youtube }}" target="_blank" rel="noopener" aria-label="YouTube">YT</a>{% endif -%}
-      {%- if s.sosmed.tiktok != "" %}<a href="{{ s.sosmed.tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">TT</a>{% endif -%}
-    </div></div>
-  <div><h4>Tautan</h4><ul>
-    <li><a href="{{ '/' | relative_url }}">Beranda</a></li><li><a href="{{ '/profil.html' | relative_url }}">Profil</a></li><li><a href="{{ '/guru.html' | relative_url }}">Guru & Staf</a></li><li><a href="{{ '/berita.html' | relative_url }}">Berita</a></li><li><a href="{{ '/galeri.html' | relative_url }}">Galeri</a></li><li><a href="{{ '/kontak.html' | relative_url }}">Kontak</a></li></ul></div>
-  <div><h4>Sekolah</h4><ul><li><a href="{{ '/sekolah.html#smp' | relative_url }}">SMP IT Darul Marhamah ABS</a></li><li><a href="{{ '/sekolah.html#sma' | relative_url }}">SMA IT Darul Marhamah ABS</a></li><li><a href="{{ '/ppdb.html' | relative_url }}">Penerimaan Santriwati Baru</a></li>{% if site.data.ppdb.brosur != "" %}<li><a href="{{ site.data.ppdb.brosur | relative_url }}">Unduh Brosur</a></li>{% endif %}</ul></div>
-  <div><h4>Kontak</h4><ul><li>📍 <b>SMA:</b> {{ s.sma.alamat }}</li><li>📍 <b>SMP:</b> {{ s.smp.alamat }}</li><li>📞 <a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a></li><li>✉️ {{ s.email }}</li></ul></div>
-</div><div class="hak"><i>"{{ s.slogan }}"</i><br>© {{ site.time | date: "%Y" }} {{ s.nama_lengkap }}. Seluruh hak dilindungi.</div></footer>
-<a class="wa" href="https://wa.me/{{ s.whatsapp }}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang pendaftaran santriwati baru " | append: s.nama_singkat | uri_escape }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp Admin PPDB" title="Chat Admin PPDB">💬</a>
+<footer><div class="wadah grid kaki">
+  <div><img src="{{ '/assets/logo.png' | relative_url }}" alt="" width="96" height="96" style="margin-bottom:12px">
+    <p><b style="color:#fff">{{ s.nama_lengkap }}</b></p>
+    <p style="margin-top:6px"><i>"{{ s.slogan }}"</i></p>
+    <div class="sosmed" style="margin-top:14px">{% include sosmed.html %}</div></div>
+  <div><h4>Link Cepat</h4><ul>
+    <li><a href="{{ '/profil.html' | relative_url }}">Tentang Darul Marhamah</a></li><li><a href="{{ '/sekolah.html' | relative_url }}">Program Pendidikan</a></li><li><a href="{{ '/galeri.html' | relative_url }}">Kehidupan Asrama</a></li><li><a href="{{ '/berita.html' | relative_url }}">Berita & Prestasi</a></li><li><a href="{{ '/download.html' | relative_url }}">Download</a></li></ul></div>
+  <div><h4>Jenjang Pendidikan</h4><ul><li><a href="{{ '/sekolah.html#smp' | relative_url }}">SMP Islam Terpadu</a></li><li><a href="{{ '/sekolah.html#sma' | relative_url }}">SMA Islam Terpadu</a></li><li><a href="{{ '/sekolah.html#program' | relative_url }}">Program Tahfidz</a></li><li><a href="{{ '/ppdb.html' | relative_url }}">Penerimaan Santriwati Baru</a></li></ul></div>
+  <div><h4>Temukan Kami</h4><ul><li>📍 <b>SMA:</b> {{ s.sma.alamat }}</li><li>📍 <b>SMP:</b> {{ s.smp.alamat }}</li><li>📞 <a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a></li><li>✉️ <a href="mailto:{{ s.email }}">{{ s.email }}</a></li><li>🕐 {{ s.jam_kantor }}</li></ul></div>
+</div><div class="hak">© {{ site.time | date: "%Y" }} {{ s.nama_lengkap }}</div></footer>
+<a class="wa" href="https://wa.me/{{ s.whatsapp }}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: s.nama_singkat | uri_escape }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp" title="Chat WhatsApp">💬</a>
 <div class="lightbox"><img alt=""></div>
 <script src="{{ '/assets/script.js' | relative_url }}"></script>
 </body>

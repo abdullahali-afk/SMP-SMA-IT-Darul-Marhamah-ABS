@@ -1,0 +1,9 @@
+daftar:
+  - { jabatan: "Ketua Yayasan", nama: "[Nama]", foto: "" }
+  - { jabatan: "Kepala SMA", nama: "Abdullah, S.H., M.H.", foto: "" }
+  - { jabatan: "Kepala SMP", nama: "[Nama]", foto: "" }
+  - { jabatan: "Wakil Kepala Bidang Kurikulum", nama: "[Nama]", foto: "" }
+  - { jabatan: "Wakil Kepala Bidang Kesantriwatian", nama: "[Nama]", foto: "" }
+  - { jabatan: "Koordinator Tahfidz", nama: "[Nama]", foto: "" }
+  - { jabatan: "Kepala Asrama", nama: "[Nama]", foto: "" }
+  - { jabatan: "Tata Usaha", nama: "[Nama]", foto: "" }

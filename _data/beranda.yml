@@ -1,0 +1,48 @@
+# Isi khusus halaman depan (Beranda)
+hero:
+  - judul_arab: "أَهْلًا وَسَهْلًا بِكُمْ فِي دَارِ الْمَرْحَمَة"
+    judul: "Selamat Datang di Darul Marhamah Al-Qur'an Boarding School"
+    sub: "SMP & SMA Islam Terpadu khusus putri di Kota Makassar. Karena Wanita adalah Rahim Peradaban."
+    foto: ""
+    tombol: "MENJADI BAGIAN"
+    link: "/ppdb.html"
+  - judul_arab: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
+    judul: "Mencetak Muslimah Penghafal Al-Qur'an"
+    sub: "Program tahfidz terbimbing, bahasa Arab aktif, dan pembinaan adab di lingkungan asrama yang aman."
+    foto: ""
+    tombol: "INFO PPDB"
+    link: "/ppdb.html"
+tautan:
+  - { ikon: "🏫", judul: "Tentang Darul Marhamah", isi: "Mengenal sejarah, visi misi, dan lembaga yang menaungi sekolah.", link: "/profil.html" }
+  - { ikon: "🌙", judul: "Kehidupan Asrama", isi: "Keseharian santriwati: ibadah berjamaah, halaqah tahfidz, dan kegiatan asrama.", link: "/galeri.html" }
+  - { ikon: "⭐", judul: "Mengapa Memilih Kami", isi: "Alasan orang tua mempercayakan pendidikan putrinya kepada kami.", link: "/#alasan" }
+  - { ikon: "🤝", judul: "Ruang Kolaborasi", isi: "Peluang kerja sama dengan orang tua, alumni, lembaga, dan masyarakat.", link: "/layanan.html" }
+foto_visi: ""
+capaian:
+  judul: "Capaian Kami"
+  teks: "Sejak berdiri pada tahun 2023, Darul Marhamah Al-Qur'an Boarding School terus berkembang dalam membina muslimah penghafal Al-Qur'an di Kota Makassar. [Sesuaikan teks capaian sekolah.]"
+alasan:
+  foto: ""
+  daftar:
+    - { judul: "Fokus Al-Qur'an", isi: "Target hafalan terukur dengan setoran harian dan ujian tasmi' berkala." }
+    - { judul: "Bahasa Arab Aktif", isi: "Bahasa Arab menjadi bekal memahami Al-Qur'an, hadits, dan kitab para ulama." }
+    - { judul: "Pembinaan Karakter", isi: "Adab islami dibiasakan setiap hari bersama ustadzah dan musyrifah." }
+    - { judul: "Asrama Putri yang Aman", isi: "Lingkungan khusus putri yang terjaga, nyaman, dan diawasi 24 jam." }
+    - { judul: "Kurikulum Lengkap", isi: "Kurikulum nasional tetap utuh sehingga lulusan siap ke jenjang berikutnya." }
+alumni:
+  judul: "Kontribusi dan Kiprah Alumni"
+  teks: "Alumni Darul Marhamah diharapkan menjadi muslimah yang berperan di keluarga dan masyarakat: sebagai pendidik, penghafal Al-Qur'an, dan da'iyah. [Tambahkan kisah alumni.]"
+  link: "/testimoni.html"
+layanan:
+  - { nama: "Layanan Akademik", link: "/kontak.html" }
+  - { nama: "Layanan Asrama", link: "/kontak.html" }
+  - { nama: "Administrasi / Tata Usaha", link: "/kontak.html" }
+  - { nama: "Keuangan & Rekening", link: "/layanan.html#rekening" }
+  - { nama: "Media dan Humas", link: "/kontak.html" }
+call_center:
+  - { bagian: "Akademik", nomor: "0852-1186-9470" }
+  - { bagian: "Keuangan", nomor: "0852-1186-9470" }
+  - { bagian: "Keasramaan", nomor: "0852-1186-9470" }
+  - { bagian: "Kesantriwatian", nomor: "0852-1186-9470" }
+  - { bagian: "PPDB", nomor: "0852-1186-9470" }
+mitra: []

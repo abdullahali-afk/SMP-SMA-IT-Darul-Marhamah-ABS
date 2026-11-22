@@ -50,6 +50,37 @@ content:
   - name: body
     label: Isi berita
     type: rich-text
+- name: menu
+  label: Menu Website
+  type: file
+  path: _data/menu.yml
+  fields:
+  - name: daftar
+    label: Menu utama
+    type: object
+    list: true
+    fields:
+    - name: judul
+      label: Judul menu
+      type: string
+    - name: link
+      label: Link
+      type: string
+      description: Contoh /profil.html atau https://...
+    - name: tombol
+      label: Tampil sebagai tombol oranye
+      type: boolean
+    - name: sub
+      label: Submenu
+      type: object
+      list: true
+      fields:
+      - name: judul
+        label: Judul
+        type: string
+      - name: link
+        label: Link
+        type: string
 - name: sekolah
   label: Data Sekolah & Kontak
   type: file
@@ -182,6 +213,168 @@ content:
     - name: tiktok
       label: TikTok
       type: string
+- name: beranda
+  label: Halaman Depan (Beranda)
+  type: file
+  path: _data/beranda.yml
+  fields:
+  - name: hero
+    label: Banner utama (slide)
+    type: object
+    list: true
+    fields:
+    - name: judul_arab
+      label: Kalimat Arab (opsional)
+      type: string
+    - name: judul
+      label: Judul besar
+      type: string
+    - name: sub
+      label: Teks kecil
+      type: text
+    - name: foto
+      label: Foto latar (opsional, mendatar)
+      type: image
+    - name: tombol
+      label: Tulisan tombol
+      type: string
+    - name: link
+      label: Link tombol
+      type: string
+      description: Contoh /ppdb.html
+  - name: tautan
+    label: 4 kotak tautan di bawah banner
+    type: object
+    list: true
+    fields:
+    - name: ikon
+      label: Ikon (emoji)
+      type: string
+    - name: judul
+      label: Judul
+      type: string
+    - name: isi
+      label: Keterangan
+      type: text
+    - name: link
+      label: Link
+      type: string
+      description: Contoh /profil.html
+  - name: foto_visi
+    label: Foto di samping Visi & Misi
+    type: image
+  - name: capaian
+    label: Capaian
+    type: object
+    fields:
+    - name: judul
+      label: Judul
+      type: string
+    - name: teks
+      label: Teks
+      type: text
+  - name: alasan
+    label: Alasan memilih
+    type: object
+    fields:
+    - name: foto
+      label: Foto
+      type: image
+    - name: daftar
+      label: Alasan
+      type: object
+      list: true
+      fields:
+      - name: judul
+        label: Judul
+        type: string
+      - name: isi
+        label: Penjelasan
+        type: text
+  - name: alumni
+    label: Kiprah alumni
+    type: object
+    fields:
+    - name: judul
+      label: Judul
+      type: string
+    - name: teks
+      label: Teks
+      type: text
+    - name: link
+      label: Link tombol
+      type: string
+  - name: layanan
+    label: Daftar layanan
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Nama layanan
+      type: string
+    - name: link
+      label: Link
+      type: string
+  - name: call_center
+    label: Call center
+    type: object
+    list: true
+    fields:
+    - name: bagian
+      label: Bagian
+      type: string
+    - name: nomor
+      label: Nomor WhatsApp/telepon
+      type: string
+  - name: mitra
+    label: Mitra / kerja sama (logo)
+    type: object
+    list: true
+    fields:
+    - name: nama
+      label: Nama mitra
+      type: string
+    - name: logo
+      label: Logo
+      type: image
+- name: struktur
+  label: Struktur Organisasi
+  type: file
+  path: _data/struktur.yml
+  fields:
+  - name: daftar
+    label: Pengurus (paling atas tampil sendiri di puncak)
+    type: object
+    list: true
+    fields:
+    - name: jabatan
+      label: Jabatan
+      type: string
+    - name: nama
+      label: Nama
+      type: string
+    - name: foto
+      label: Foto
+      type: image
+- name: download
+  label: Download
+  type: file
+  path: _data/download.yml
+  fields:
+  - name: daftar
+    label: Dokumen
+    type: object
+    list: true
+    fields:
+    - name: judul
+      label: Nama dokumen
+      type: string
+    - name: kategori
+      label: Kategori
+      type: string
+    - name: file
+      label: File (PDF/gambar)
+      type: file
 - name: ppdb
   label: Info PPDB
   type: file
@@ -259,7 +452,7 @@ content:
     - name: url
       label: Link YouTube
       type: string
-      description: 'Tempel link video biasa, contoh https://www.youtube.com/watch?v=xxxx atau https://youtu.be/xxxx (bukan link channel).'
+      description: Tempel link video biasa, contoh https://www.youtube.com/watch?v=xxxx atau https://youtu.be/xxxx (bukan link channel).
 - name: guru
   label: Guru & Staf
   type: file
@@ -276,6 +469,13 @@ content:
     - name: jabatan
       label: Jabatan / mata pelajaran
       type: string
+    - name: kategori
+      label: Kategori
+      type: select
+      options:
+        values:
+        - Guru
+        - Tenaga Kependidikan
     - name: foto
       label: Foto
       type: image
@@ -300,6 +500,7 @@ content:
         - kegiatan
         - prestasi
         - fasilitas
+        - wisuda
     - name: foto
       label: Foto
       type: image
@@ -319,6 +520,14 @@ content:
     - name: nama
       label: Nama
       type: string
+    - name: kategori
+      label: Kelompok
+      type: select
+      options:
+        values:
+        - Orang Tua
+        - Alumni
+        - Tokoh
     - name: keterangan
       label: Keterangan (wali santriwati / alumni)
       type: string

@@ -4,7 +4,7 @@ title: Profil Sekolah
 description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School Makassar.
 ---
 {%- assign s = site.data.sekolah -%}
-{% include hero.html judul="Profil Sekolah" sub=s.nama_lengkap %}
+{% include hero.html judul="Profil Darul Marhamah" sub=s.nama_lengkap induk="Tentang Kami" %}
 <section class="bg-putih" id="selayang"><div class="wadah grid g2" style="align-items:center">
   <div class="foto" style="aspect-ratio:4/3">{% include media.html foto=s.foto_sekolah ikon="🏫" alt="Gedung sekolah" %}</div>
   <div>{% include judul.html k="Selayang Pandang" t="Sekilas Tentang Kami" kiri=true %}
@@ -14,20 +14,10 @@ description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & 
 
 <section id="visi-misi"><div class="wadah grid g2">
   <div class="kartu"><h3>🌟 Visi</h3><p style="font-size:1.05rem;color:var(--teks)">"{{ s.visi | remove: '"' }}"</p></div>
-  <div class="kartu"><h3>🎯 Misi</h3><ol class="misi">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol></div>
+  <div class="kartu"><h3>🎯 Misi</h3><ol class="misi-nomor">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol></div>
 </div></section>
 
-<section class="bg-putih" id="program"><div class="wadah">
-  {% include judul.html k="Program Unggulan" t="Program Pembelajaran" %}
-  <div class="grid g2">{% for p in site.data.program.kurikulum %}<div class="program"><div class="no">{{ p.ikon }}</div><div><h3>{{ p.judul }}</h3><p>{{ p.isi }}</p></div></div>{% endfor %}</div>
-</div></section>
-
-<section id="fasilitas"><div class="wadah">
-  {% include judul.html k="Fasilitas" t="Sarana dan Prasarana" %}
-  <div class="grid g3">{% for f in site.data.fasilitas.fasilitas %}<div class="ubin"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
-</div></section>
-
-<section class="bg-putih"><div class="wadah">
+<section class="bg-putih" id="identitas"><div class="wadah">
   {% include judul.html k="Identitas" t="Data Sekolah" %}
   <div class="tabel-wrap"><table class="tabel">
     <tr><th style="width:25%">Keterangan</th><th>SMP</th><th>SMA</th></tr>

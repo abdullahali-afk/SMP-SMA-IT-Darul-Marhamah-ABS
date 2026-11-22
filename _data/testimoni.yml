@@ -1,4 +1,4 @@
 daftar:
-  - { nama: "[Nama Orang Tua]", keterangan: "Wali santriwati kelas VIII", isi: "Alhamdulillah, sejak sekolah di sini putri kami semakin rajin shalat dan hafalannya terus bertambah. Ustadzahnya sabar dan perhatian. [Contoh testimoni, ganti dengan yang asli]", foto: "" }
-  - { nama: "[Nama Orang Tua]", keterangan: "Wali santriwati kelas XI", isi: "Kami senang karena pelajaran umum dan agama sama-sama diperhatikan. Putri kami jadi lebih mandiri dan sopan. [Contoh testimoni]", foto: "" }
-  - { nama: "[Nama Alumni]", keterangan: "Alumni angkatan [I]", isi: "Bekal hafalan dan bahasa Arab dari sekolah sangat membantu saya ketika melanjutkan kuliah. [Contoh testimoni]", foto: "" }
+  - { nama: "[Nama Orang Tua]", kategori: "Orang Tua", keterangan: "Wali santriwati kelas VIII", isi: "Alhamdulillah, sejak sekolah di sini putri kami semakin rajin shalat dan hafalannya terus bertambah. Ustadzahnya sabar dan perhatian. [Contoh testimoni, ganti dengan yang asli]", foto: "" }
+  - { nama: "[Nama Orang Tua]", kategori: "Orang Tua", keterangan: "Wali santriwati kelas XI", isi: "Kami senang karena pelajaran umum dan agama sama-sama diperhatikan. Putri kami jadi lebih mandiri dan sopan. [Contoh testimoni]", foto: "" }
+  - { nama: "[Nama Alumni]", kategori: "Alumni", keterangan: "Alumni angkatan [I]", isi: "Bekal hafalan dan bahasa Arab dari sekolah sangat membantu saya ketika melanjutkan kuliah. [Contoh testimoni]", foto: "" }

@@ -1,0 +1,13 @@
+{%- assign u = page.url | remove: '.html' -%}{%- if u == '/index' -%}{%- assign u = '/' -%}{%- endif -%}
+<ul class="menu">
+{%- for m in site.data.menu.daftar -%}
+  {%- assign aktif = false -%}
+  {%- assign mp = m.link | split: '#' | first | split: '?' | first | remove: '.html' -%}
+  {%- if mp == u -%}{%- assign aktif = true -%}{%- endif -%}
+  {%- for x in m.sub -%}{%- assign xp = x.link | split: '#' | first | split: '?' | first | remove: '.html' -%}{%- if xp == u and xp != '/' -%}{%- assign aktif = true -%}{%- endif -%}{%- endfor -%}
+  {%- if page.layout == 'post' and mp == '/berita' -%}{%- assign aktif = true -%}{%- endif -%}
+  {%- assign luar = false -%}{%- if m.link contains '://' -%}{%- assign luar = true -%}{%- endif -%}
+  <li><a href="{% if luar %}{{ m.link }}{% else %}{{ m.link | relative_url }}{% endif %}" class="{% if m.sub.size > 0 %}panah {% endif %}{% if aktif %}aktif {% endif %}{% if m.tombol %}tombol-ppdb{% endif %}"{% if luar %} target="_blank" rel="noopener"{% endif %}>{{ m.judul }}</a>
+  {%- if m.sub.size > 0 -%}<ul class="sub">{%- for x in m.sub -%}<li><a href="{% if x.link contains '://' %}{{ x.link }}{% else %}{{ x.link | relative_url }}{% endif %}"{% if x.link contains '://' %} target="_blank" rel="noopener"{% endif %}>{{ x.judul }}</a></li>{%- endfor -%}</ul>{%- endif -%}</li>
+{%- endfor -%}
+</ul>

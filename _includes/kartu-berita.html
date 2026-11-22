@@ -1,4 +1,4 @@
 {%- assign b = include.b -%}
 <article class="berita"><a href="{{ b.url | relative_url }}" class="gambar">{% if b.gambar and b.gambar != "" %}<img src="{{ b.gambar | relative_url }}" alt="" loading="lazy">{% else %}{% case b.kategori %}{% when "Prestasi" %}🏆{% when "Akademik" %}📚{% when "PPDB" %}📝{% when "Pengumuman" %}📢{% else %}🕌{% endcase %}{% endif %}</a>
-<div class="isi"><span class="label">{{ b.kategori }}</span><span class="tgl">{% include tanggal.html d=b.date %}</span><h3><a href="{{ b.url | relative_url }}">{{ b.title }}</a></h3><p>{{ b.ringkasan | default: b.excerpt | strip_html | truncatewords: 30 }}</p>
-<a href="{{ b.url | relative_url }}" style="font-weight:600;font-size:.9rem;margin-top:8px">Baca selengkapnya →</a></div></article>
+<div class="isi"><span class="tgl">📅 {% include tanggal.html d=b.date %} · {{ b.kategori }}</span><h3><a href="{{ b.url | relative_url }}">{{ b.title }}</a></h3><p>{{ b.ringkasan | default: b.excerpt | strip_html | truncatewords: 26, " […]" }}</p>
+<a href="{{ b.url | relative_url }}" class="lanjut">Baca Selengkapnya ›</a></div></article>

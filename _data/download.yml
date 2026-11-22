@@ -1,0 +1,4 @@
+daftar:
+  - { judul: "Kalender Akademik 2026/2027", kategori: "Akademik", file: "" }
+  - { judul: "Brosur PPDB 2027/2028", kategori: "PPDB", file: "" }
+  - { judul: "Logo Darul Marhamah ABS", kategori: "Identitas", file: "/assets/logo-512.png" }

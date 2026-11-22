@@ -5,10 +5,10 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
 ---
 {%- assign s = site.data.sekolah -%}{%- assign d = site.data.ppdb -%}
 {% capture judulppdb %}Penerimaan Santriwati Baru {{ d.tahun_ajaran }}{% endcapture %}
-{% include hero.html judul=judulppdb sub="SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School (khusus putri)" %}
-<section class="bg-putih"><div class="wadah">
+{% include hero.html judul=judulppdb sub="SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School (khusus putri)" induk="PPDB" %}
+<section class="bg-putih" id="panduan"><div class="wadah">
   <p style="text-align:center;margin-bottom:24px"><span class="label" style="font-size:.9rem;padding:6px 16px">{{ d.status }}</span></p>
-  {% include judul.html k="Alur" t="Alur Pendaftaran" %}
+  {% include judul.html k="Panduan" t="Panduan Pendaftaran" %}
   <div class="alur">{% for a in d.alur %}<div><h3>{{ a.judul }}</h3><p>{{ a.isi }}</p></div>{% endfor %}</div>
 </div></section>
 
@@ -20,7 +20,12 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
   <div class="kartu"><h3>📋 Persyaratan</h3><ul class="daftar">{% for x in d.syarat %}<li>{{ x }}</li>{% endfor %}</ul></div>
 </div></section>
 
-<section class="bg-putih"><div class="wadah">
+<section class="bg-hijau-muda" id="kenapa"><div class="wadah">
+  {% include judul.html k="Kenapa Darul Marhamah" t="Alasan Memilih Kami" %}
+  <div class="grid g3">{% for a in site.data.beranda.alasan.daftar %}<div class="kartu"><span class="no-bulat">{{ forloop.index }}</span><h3>{{ a.judul }}</h3><p>{{ a.isi }}</p></div>{% endfor %}</div>
+</div></section>
+
+<section class="bg-putih" id="biaya"><div class="wadah">
   {% include judul.html k="Biaya" t="Rincian Biaya" %}
   <div class="tabel-wrap"><table class="tabel">
     <tr><th>Komponen</th><th>SMP</th><th>SMA</th></tr>

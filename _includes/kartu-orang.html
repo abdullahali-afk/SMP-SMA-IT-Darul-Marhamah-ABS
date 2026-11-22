@@ -1,0 +1,2 @@
+{%- assign o = include.o -%}
+<div class="kartu guru"><div class="foto bulat">{% if o.foto and o.foto != "" %}<img src="{{ o.foto | relative_url }}" alt="{{ o.nama | escape }}">{% else %}{% assign kata = o.jabatan | split: " " %}{{ kata[0] | slice: 0 }}{{ kata[1] | slice: 0 }}{% endif %}</div><h3>{{ o.nama }}</h3><p>{{ o.jabatan }}</p></div>

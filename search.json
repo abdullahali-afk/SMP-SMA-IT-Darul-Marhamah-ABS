@@ -1,0 +1,12 @@
+---
+layout: null
+---
+[
+{%- for p in site.posts -%}
+{"jenis":"Berita","judul":{{ p.title | jsonify }},"tanggal":{{ p.date | date: "%d-%m-%Y" | jsonify }},"url":{{ p.url | relative_url | jsonify }},"isi":{{ p.content | strip_html | normalize_whitespace | jsonify }}},
+{%- endfor -%}
+{%- for pg in site.pages -%}{%- if pg.title and pg.url != "/search.json" and pg.url != "/404.html" and pg.url != "/cari.html" -%}
+{"jenis":"Halaman","judul":{{ pg.title | jsonify }},"tanggal":"","url":{{ pg.url | relative_url | jsonify }},"isi":{{ pg.description | default: "" | append: " " | append: pg.title | jsonify }}},
+{%- endif -%}{%- endfor -%}
+{"jenis":"Halaman","judul":"Kontak","tanggal":"","url":{{ "/kontak.html" | relative_url | jsonify }},"isi":{{ site.data.sekolah.sma.alamat | append: " " | append: site.data.sekolah.smp.alamat | jsonify }}}
+]

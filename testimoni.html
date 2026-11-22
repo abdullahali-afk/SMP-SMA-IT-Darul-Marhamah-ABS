@@ -1,0 +1,13 @@
+---
+layout: default
+title: Testimoni
+description: Testimoni orang tua, alumni, dan tokoh tentang Darul Marhamah Al-Qur'an Boarding School.
+---
+{% include hero.html judul="Testimoni" sub="Kata mereka tentang Darul Marhamah" induk="Tentang Kami" %}
+{% assign grup = site.data.testimoni.daftar | group_by: "kategori" %}
+{% for g in grup %}
+<section class="{% cycle '', 'bg-putih' %}"><div class="wadah">
+  {% include judul.html k="Testimoni" t=g.name %}
+  <div class="grid g3">{% for t in g.items %}{% include kartu-testi.html t=t %}{% endfor %}</div>
+</div></section>
+{% endfor %}

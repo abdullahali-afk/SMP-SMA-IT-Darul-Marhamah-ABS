@@ -5,7 +5,7 @@ description: Galeri foto kegiatan, prestasi, dan fasilitas SMP & SMA IT Darul Ma
 ---
 {% include hero.html judul="Galeri" sub="Dokumentasi kegiatan dan fasilitas sekolah" %}
 <section><div class="wadah">
-  <div class="filter"><button class="aktif" data-k="semua">Semua</button><button data-k="kegiatan">Kegiatan</button><button data-k="prestasi">Prestasi</button><button data-k="fasilitas">Fasilitas</button></div>
+  <div class="filter"><button class="aktif" data-k="semua">Semua</button><button data-k="kegiatan">Kegiatan Santriwati</button><button data-k="prestasi">Prestasi</button><button data-k="fasilitas">Gedung & Fasilitas</button><button data-k="wisuda">Wisuda</button></div>
   <div class="galeri">{% for g in site.data.galeri.daftar %}<figure data-k="{{ g.kategori }}">{% include media.html foto=g.foto ikon=g.ikon alt=g.judul %}<figcaption>{{ g.judul }}</figcaption></figure>{% endfor %}</div>
 </div></section>
 {%- assign vids = site.data.video.daftar -%}

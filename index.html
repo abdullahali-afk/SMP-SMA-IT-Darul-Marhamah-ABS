@@ -2,92 +2,102 @@
 layout: default
 title: Beranda
 ---
-{%- assign s = site.data.sekolah -%}{%- assign pr = site.data.program -%}
-<section class="hero pola"><div class="wadah">
-  <p class="arab">السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ</p>
-  <img src="{{ '/assets/logo.png' | relative_url }}" alt="Logo" width="120" height="120" style="margin:0 auto 16px;border-radius:50%;box-shadow:0 6px 24px rgba(0,0,0,.25)">
-  <h1>SMP & SMA Islam Terpadu<br>Darul Marhamah Al-Qur'an Boarding School</h1>
-  <p><i>"{{ s.slogan }}"</i><br>{{ s.deskripsi }}</p>
-  <a href="{{ '/profil.html' | relative_url }}" class="btn btn-emas">Profil Sekolah</a><a href="{{ '/ppdb.html' | relative_url }}" class="btn btn-garis">Info PPDB {{ site.data.ppdb.tahun_ajaran }}</a>
-  <div class="lencana"><span>✔ NPSN SMP {{ s.smp.npsn }}</span><span>✔ NPSN SMA {{ s.sma.npsn }}</span><span>✔ Boarding School Putri</span></div>
+{%- assign s = site.data.sekolah -%}{%- assign br = site.data.beranda -%}{%- assign d = site.data.ppdb -%}
+<section class="slider" aria-label="Banner utama">
+  {% for h in br.hero %}
+  <div class="slide{% if forloop.first %} aktif{% endif %}{% if h.foto == "" or h.foto == nil %} pola{% endif %}"{% if h.foto and h.foto != "" %} style="background-image:linear-gradient(rgba(4,74,47,.72),rgba(4,74,47,.78)),url('{{ h.foto | relative_url }}')"{% endif %}>
+    <div class="wadah">
+      {% if h.judul_arab and h.judul_arab != "" %}<p class="arab">{{ h.judul_arab }}</p>{% endif %}
+      <h1>{{ h.judul }}</h1>
+      <p class="sub">{{ h.sub }}</p>
+      {% if h.tombol and h.tombol != "" %}<a href="{{ h.link | relative_url }}" class="btn btn-emas">{{ h.tombol }} →</a>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% if br.hero.size > 1 %}<div class="titik">{% for h in br.hero %}<button aria-label="Slide {{ forloop.index }}"{% if forloop.first %} class="aktif"{% endif %}></button>{% endfor %}</div>{% endif %}
+</section>
+
+<section class="ubin-tautan"><div class="wadah grid g4">
+  {% for t in br.tautan %}<a class="tautan" href="{{ t.link | relative_url }}"><span class="ikon">{{ t.ikon }}</span><h3>{{ t.judul }}</h3><p>{{ t.isi }}</p><span class="lanjut">Selengkapnya ›</span></a>{% endfor %}
 </div></section>
 
-<section class="bg-putih" id="program"><div class="wadah">
-  {% include judul.html k="Program Unggulan" t="Bekal Dunia dan Akhirat" %}
-  <div class="grid g4">{% for p in pr.unggulan %}<div class="kartu"><div class="ikon">{{ p.ikon }}</div><h3>{{ p.judul }}</h3><p>{{ p.isi }}</p></div>{% endfor %}</div>
-  <div class="grid g3" style="margin-top:24px">{% for k in pr.keunggulan %}<div class="catatan"><b>{{ k.judul }}</b> {{ k.isi }}</div>{% endfor %}</div>
-</div></section>
-
-<section id="selayang"><div class="wadah sambutan">
-  <div class="foto" style="aspect-ratio:4/5">{% include media.html foto=s.foto_sekolah ikon="🏫" alt="Gedung sekolah" %}</div>
+<section id="visi-misi"><div class="wadah vm">
+  <div class="foto vm-foto">{% if br.foto_visi and br.foto_visi != "" %}<img src="{{ br.foto_visi | relative_url }}" alt="Darul Marhamah">{% else %}<img src="{{ '/assets/logo-512.png' | relative_url }}" alt="Logo" style="object-fit:contain;padding:12%;position:static;width:100%;height:auto">{% endif %}</div>
   <div>
-    {% include judul.html k="Selayang Pandang" t="Mengenal Darul Marhamah ABS" kiri=true %}
-    {{ s.sejarah | markdownify }}
-    <p style="margin-top:20px"><a href="{{ '/ppdb.html' | relative_url }}" class="btn btn-hijau">Lihat Info PPDB</a></p>
+    {% include judul.html k="Visi dan Misi" t="Visi & Misi Darul Marhamah" kiri=true %}
+    <blockquote class="visi">{{ s.visi | remove: '"' }}</blockquote>
+    <ol class="misi-nomor">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol>
   </div>
 </div></section>
 
 <section class="bg-putih"><div class="wadah">
-  {% include judul.html k="Kurikulum" t="Rincian Program Pembelajaran" %}
-  <div class="grid g2">{% for p in pr.kurikulum %}<div class="program"><div class="no">{{ p.ikon }}</div><div><h3>{{ p.judul }}</h3><p>{{ p.isi }}</p></div></div>{% endfor %}
-    <div class="program" style="background:var(--emas-muda)"><div class="no" style="background:#fff">💳</div><div><h3>Biaya Ringan & Bisa Dicicil</h3><p>{{ pr.biaya_ringan }}</p><p style="margin-top:10px"><a href="{{ '/ppdb.html#daftar' | relative_url }}" class="btn btn-emas">Daftar Sekarang</a></p></div></div>
+  <div class="judul-baris"><div>{% include judul.html k="Kabar Sekolah" t="Berita Terbaru" kiri=true %}</div><a href="{{ '/berita.html' | relative_url }}" class="lihat">Selengkapnya →</a></div>
+  <div class="grid g3">{% for p in site.posts limit:9 %}{% include kartu-berita.html b=p %}{% endfor %}</div>
+</div></section>
+
+<section class="ppdb-banner pola"><div class="wadah">
+  <div>
+    <span class="label">{{ d.status }}</span>
+    <h2>Info Penerimaan Santriwati Baru {{ d.tahun_ajaran }}</h2>
+    <p>Darul Marhamah Al-Qur'an Boarding School membuka pendaftaran santriwati baru jenjang SMP dan SMA. Kuota terbatas.</p>
+  </div>
+  <div class="ppdb-tombol">
+    <a href="{{ '/ppdb.html#daftar' | relative_url }}" class="btn btn-emas">Daftar SMP →</a>
+    <a href="{{ '/ppdb.html#daftar' | relative_url }}" class="btn btn-garis">Daftar SMA →</a>
   </div>
 </div></section>
 
-<section class="statistik pola"><div class="wadah grid g4">
-  {% for st in s.statistik %}<div><b>{{ st.angka }}</b>{{ st.label }}</div>{% endfor %}
+<section><div class="wadah capaian">
+  <div>{% include judul.html k="Capaian" t=br.capaian.judul kiri=true %}<p>{{ br.capaian.teks }}</p></div>
+  <div class="grid g2 angka">{% for st in s.statistik %}<div class="angka-kartu"><b data-angka="{{ st.angka }}">{{ st.angka }}</b><span>{{ st.label }}</span></div>{% endfor %}</div>
 </div></section>
 
-<section id="fasilitas"><div class="wadah">
-  {% include judul.html k="Fasilitas" t="Sarana Penunjang Belajar" %}
-  <div class="grid g4">{% for f in site.data.fasilitas.fasilitas %}<div class="ubin"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
-</div></section>
-
-<section class="bg-putih"><div class="wadah">
-  {% include judul.html k="Ekstrakurikuler" t="Kembangkan Bakat dan Minat" %}
-  <div class="grid g4">{% for f in site.data.fasilitas.ekstrakurikuler %}<div class="ubin"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
-</div></section>
-
-<section><div class="wadah">
-  {% include judul.html k="Galeri" t="Dokumentasi Kegiatan" %}
-  <div class="galeri">{% for g in site.data.galeri.daftar limit:8 %}<figure data-k="{{ g.kategori }}">{% include media.html foto=g.foto ikon=g.ikon alt=g.judul %}<figcaption>{{ g.judul }}</figcaption></figure>{% endfor %}</div>
-  <p style="text-align:center;margin-top:30px"><a href="{{ '/galeri.html' | relative_url }}" class="btn btn-hijau">Lihat Semua Foto</a></p>
-</div></section>
-
+{% assign testi = site.data.testimoni.daftar %}
+{% if testi.size > 0 %}
 <section class="bg-hijau-muda" id="testimoni"><div class="wadah">
-  {% include judul.html k="Testimoni" t="Kata Orang Tua & Alumni" %}
-  <div class="grid g3">{% for t in site.data.testimoni.daftar %}<div class="testi"><p>{{ t.isi }}</p><div class="siapa"><div class="foto">{% if t.foto and t.foto != "" %}<img src="{{ t.foto | relative_url }}" alt="">{% else %}{{ t.nama | remove: "[" | slice: 0 }}{% endif %}</div><div><b>{{ t.nama }}</b><small>{{ t.keterangan }}</small></div></div></div>{% endfor %}</div>
+  <div class="judul-baris"><div>{% include judul.html k="Testimoni" t="Kata Mereka..." kiri=true %}</div>
+    <div class="panah-geser"><button data-geser="-1" aria-label="Sebelumnya">‹</button><button data-geser="1" aria-label="Berikutnya">›</button></div></div>
+  <div class="karusel">{% for t in testi %}{% include kartu-testi.html t=t %}{% endfor %}</div>
+</div></section>
+{% endif %}
+
+<section class="bg-putih" id="alasan"><div class="wadah vm">
+  <div class="foto vm-foto">{% include media.html foto=br.alasan.foto ikon="🌙" alt="Santriwati Darul Marhamah" %}</div>
+  <div>
+    {% include judul.html k="Alasan Memilih" t="Mengapa Darul Marhamah?" kiri=true %}
+    <div class="alasan">{% for a in br.alasan.daftar %}<div><span class="no">{{ forloop.index }}</span><div><h3>{{ a.judul }}</h3><p>{{ a.isi }}</p></div></div>{% endfor %}</div>
+  </div>
 </div></section>
 
-<section class="bg-putih"><div class="wadah">
-  {% include judul.html k="Update Berita" t="Kabar Terbaru dari Sekolah" %}
-  <div class="grid g3">{% for b in site.posts limit:3 %}{% include kartu-berita.html b=b %}{% endfor %}</div>
-  <p style="text-align:center;margin-top:30px"><a href="{{ '/berita.html' | relative_url }}" class="btn btn-hijau">Arsip Berita</a></p>
+<section class="alumni pola"><div class="wadah" style="max-width:860px;text-align:center">
+  <h2>{{ br.alumni.judul }}</h2>
+  <p>{{ br.alumni.teks }}</p>
+  <a href="{{ br.alumni.link | relative_url }}" class="btn btn-emas">Kisah Selengkapnya →</a>
 </div></section>
 
 {%- assign vids = site.data.video.daftar -%}
 {% if vids.size > 0 %}
 <section id="video"><div class="wadah">
-  {% include judul.html k="Dokumentasi Video" t="Video Kegiatan Sekolah" %}
-  <div style="max-width:860px;margin:0 auto">{% assign v0 = vids.first %}{% include youtube.html url=v0.url judul=v0.judul %}</div>
-  {% if vids.size > 1 %}<div class="grid g3" style="margin-top:24px">{% for v in vids offset:1 limit:3 %}{% include youtube.html url=v.url judul=v.judul %}{% endfor %}</div>{% endif %}
-  <p style="text-align:center;margin-top:24px"><a href="{{ '/galeri.html#video' | relative_url }}" class="btn btn-hijau">Semua Video</a>{% if s.sosmed.youtube != "" %} <a href="{{ s.sosmed.youtube }}" class="btn btn-emas" target="_blank" rel="noopener">Channel YouTube</a>{% endif %}</p>
+  <div class="judul-baris"><div>{% include judul.html k="Dokumentasi" t="Darul Marhamah dalam Video" kiri=true %}</div><a href="{{ '/galeri.html#video' | relative_url }}" class="lihat">Semua Video →</a></div>
+  <div class="grid video-grid"{% if vids.size == 1 %} style="max-width:860px;margin:0 auto;grid-template-columns:1fr"{% endif %}>{% for v in vids limit:3 %}{% include youtube.html url=v.url judul=v.judul %}{% endfor %}</div>
 </div></section>
 {% endif %}
 
-<section class="bg-putih"><div class="wadah grid g2" style="align-items:start">
-  <div>
-    {% include judul.html k="Visi" t="Visi Sekolah" kiri=true %}
-    <p style="font-size:1.1rem;font-style:italic;margin-bottom:24px">"{{ s.visi | remove: '"' }}"</p>
-    <div class="kartu"><h3>📍 Alamat</h3><p><b>SMA:</b> {{ s.sma.alamat }}<br><b>SMP:</b> {{ s.smp.alamat }}</p>
-    <h3 style="margin-top:14px">🕐 Jam Kantor</h3><p>{{ s.jam_kantor }}</p>
-    <h3 style="margin-top:14px">📞 Telepon / WhatsApp</h3><p><a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a></p></div>
-  </div>
-  <iframe class="peta" style="height:100%;min-height:380px" src="https://www.google.com/maps?q={{ s.sma.peta | uri_escape }}&output=embed" loading="lazy" title="Peta lokasi sekolah"></iframe>
+{% if br.mitra.size > 0 %}
+<section class="bg-putih"><div class="wadah">
+  {% include judul.html k="Kerja Sama" t="Mitra Kami" %}
+  <div class="mitra">{% for m in br.mitra %}<div title="{{ m.nama | escape }}">{% if m.logo and m.logo != "" %}<img src="{{ m.logo | relative_url }}" alt="{{ m.nama | escape }}" loading="lazy">{% else %}{{ m.nama }}{% endif %}</div>{% endfor %}</div>
 </div></section>
+{% endif %}
 
-<section class="cta pola" id="brosur"><div class="wadah">
-  <h2>Penerimaan Santriwati Baru SMP & SMA {{ site.data.ppdb.tahun_ajaran }}</h2>
-  <p>{{ site.data.ppdb.status }}. Kuota terbatas, daftarkan putri Anda sekarang juga.</p>
-  <a href="{{ '/ppdb.html' | relative_url }}" class="btn btn-emas">Info PPDB</a>{% if site.data.ppdb.brosur != "" %}<a href="{{ site.data.ppdb.brosur | relative_url }}" class="btn btn-garis">Unduh Brosur</a>{% endif %}
+<section class="bg-putih layanan-blok"><div class="wadah grid g3">
+  <div class="kartu"><h3>Layanan</h3><ul class="daftar-link">{% for l in br.layanan %}<li><a href="{{ l.link | relative_url }}">{{ l.nama }}</a></li>{% endfor %}</ul></div>
+  <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}">{{ c.nomor }}</a></li>{% endfor %}</ul></div>
+  <div class="kartu"><h3>Kritik & Saran</h3>
+    <form data-wa="{{ s.whatsapp }}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
+      <input name="Nama" placeholder="Nama" required>
+      <input name="No. WhatsApp" placeholder="No. Telepon / WhatsApp" type="tel">
+      <textarea name="Kritik & Saran" rows="3" placeholder="Kritik & saran" required></textarea>
+      <button class="btn btn-hijau" type="submit">Kirim</button>
+    </form></div>
 </div></section>

@@ -1,0 +1,12 @@
+---
+layout: default
+title: Download
+description: Unduh kalender akademik, brosur PPDB, dan dokumen Darul Marhamah Al-Qur'an Boarding School.
+---
+{% include hero.html judul="Download" sub="Dokumen dan berkas yang dapat diunduh" %}
+<section><div class="wadah" style="max-width:900px">
+  <div class="tabel-wrap"><table class="tabel">
+    <tr><th>Dokumen</th><th style="width:22%">Kategori</th><th style="width:18%"></th></tr>
+    {% for f in site.data.download.daftar %}<tr><td>📄 {{ f.judul }}</td><td>{{ f.kategori }}</td><td>{% if f.file and f.file != "" %}<a class="btn btn-hijau btn-kecil" href="{{ f.file | relative_url }}" target="_blank" download>Unduh</a>{% else %}<small style="color:var(--abu)">Segera tersedia</small>{% endif %}</td></tr>{% endfor %}
+  </table></div>
+</div></section>

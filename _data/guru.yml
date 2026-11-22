@@ -1,13 +1,13 @@
 daftar:
-  - { nama: "[Nama Kepala SMP]", jabatan: "Kepala SMP", foto: "" }
-  - { nama: "[Nama Kepala SMA]", jabatan: "Kepala SMA", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Wakasek Kurikulum", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Wakasek Kesiswaan", foto: "" }
-  - { nama: "[Nama Ustadzah]", jabatan: "Koordinator Tahfidz", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Arab", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Guru Matematika", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Inggris", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Guru IPA", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Guru Fiqih & Aqidah", foto: "" }
-  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Indonesia", foto: "" }
-  - { nama: "[Nama Ustadzah]", jabatan: "Musyrifah Asrama", foto: "" }
+  - { nama: "[Nama Kepala SMP]", jabatan: "Kepala SMP", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Kepala SMA]", jabatan: "Kepala SMA", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Wakasek Kurikulum", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Wakasek Kesiswaan", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Ustadzah]", jabatan: "Koordinator Tahfidz", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Arab", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Matematika", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Inggris", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru IPA", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Fiqih & Aqidah", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Guru]", jabatan: "Guru Bahasa Indonesia", kategori: "Guru", foto: "" }
+  - { nama: "[Nama Ustadzah]", jabatan: "Musyrifah Asrama", kategori: "Tenaga Kependidikan", foto: "" }

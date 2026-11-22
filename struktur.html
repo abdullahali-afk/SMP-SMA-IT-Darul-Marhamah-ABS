@@ -1,0 +1,10 @@
+---
+layout: default
+title: Struktur Organisasi
+description: Struktur organisasi SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School.
+---
+{% include hero.html judul="Struktur Organisasi" sub=site.data.sekolah.yayasan induk="Tentang Kami" %}
+{% assign st = site.data.struktur.daftar %}
+<section><div class="wadah struktur">
+  {% for o in st %}{% if forloop.first %}<div class="baris-puncak">{% include kartu-orang.html o=o %}</div><div class="grid g4">{% else %}{% include kartu-orang.html o=o %}{% endif %}{% endfor %}</div>
+</div></section>

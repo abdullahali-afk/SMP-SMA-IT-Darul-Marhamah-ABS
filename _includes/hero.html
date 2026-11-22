@@ -1,1 +1,5 @@
-<section class="page-hero pola"><div class="wadah"><h1>{{ include.judul }}</h1><p>{{ include.sub }}</p></div></section>
+<section class="page-hero pola"><div class="wadah">
+  <h1>{{ include.judul }}</h1>
+  {% if include.sub %}<p>{{ include.sub }}</p>{% endif %}
+  <nav class="remah"><a href="{{ '/' | relative_url }}">Beranda</a> <span>›</span> {% if include.induk %}{{ include.induk }} <span>›</span> {% endif %}<b>{{ include.judul }}</b></nav>
+</div></section>

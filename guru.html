@@ -1,9 +1,18 @@
 ---
 layout: default
-title: Guru & Staf
+title: Guru & Tenaga Kependidikan
 description: Daftar guru dan tenaga kependidikan SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School.
 ---
-{% include hero.html judul="Guru & Tenaga Kependidikan" sub="Para pendidik yang membimbing dengan ilmu dan keteladanan" %}
-<section><div class="wadah">
-  <div class="grid g4">{% for g in site.data.guru.daftar %}<div class="kartu guru"><div class="foto bulat">{% if g.foto and g.foto != "" %}<img src="{{ g.foto | relative_url }}" alt="{{ g.nama | escape }}">{% else %}{% assign kata = g.jabatan | split: " " %}{{ kata[0] | slice: 0 }}{{ kata[1] | slice: 0 }}{% endif %}</div><h3>{{ g.nama }}</h3><p>{{ g.jabatan }}</p></div>{% endfor %}</div>
+{% include hero.html judul="Guru & Tenaga Kependidikan" sub="Para pendidik yang membimbing dengan ilmu dan keteladanan" induk="Tentang Kami" %}
+{% assign guru = site.data.guru.daftar | where_exp: "g", "g.kategori != 'Tenaga Kependidikan'" %}
+{% assign tendik = site.data.guru.daftar | where: "kategori", "Tenaga Kependidikan" %}
+<section id="guru"><div class="wadah">
+  {% include judul.html k="Pendidik" t="Guru" %}
+  <div class="grid g4">{% for g in guru %}{% include kartu-orang.html o=g %}{% endfor %}</div>
 </div></section>
+{% if tendik.size > 0 %}
+<section class="bg-putih" id="tendik"><div class="wadah">
+  {% include judul.html k="Staf" t="Tenaga Kependidikan" %}
+  <div class="grid g4">{% for g in tendik %}{% include kartu-orang.html o=g %}{% endfor %}</div>
+</div></section>
+{% endif %}

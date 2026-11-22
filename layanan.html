@@ -1,0 +1,25 @@
+---
+layout: default
+title: Layanan
+description: Layanan, call center, rekening, serta kritik dan saran Darul Marhamah Al-Qur'an Boarding School.
+---
+{%- assign s = site.data.sekolah -%}{%- assign br = site.data.beranda -%}
+{% include hero.html judul="Layanan" sub="Layanan sekolah untuk orang tua, santriwati, dan masyarakat" %}
+<section><div class="wadah grid g2">
+  <div class="kartu"><h3>Layanan Sekolah</h3><ul class="daftar-link">{% for l in br.layanan %}<li><a href="{{ l.link | relative_url }}">{{ l.nama }}</a></li>{% endfor %}</ul></div>
+  <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}">{{ c.nomor }}</a></li>{% endfor %}</ul></div>
+</div></section>
+<section class="bg-putih" id="rekening"><div class="wadah" style="max-width:760px">
+  {% include judul.html k="Pembayaran" t="Rekening Sekolah" %}
+  <div class="catatan" style="text-align:center;font-size:1.05rem">🏦 {{ site.data.ppdb.rekening }}</div>
+  <p style="text-align:center;margin-top:12px;color:var(--abu);font-size:.9rem">Setelah transfer, kirim bukti pembayaran ke WhatsApp <a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a>.</p>
+</div></section>
+<section id="saran"><div class="wadah" style="max-width:720px">
+  {% include judul.html k="Masukan" t="Kritik & Saran" %}
+  <div class="kartu"><form data-wa="{{ s.whatsapp }}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
+    <div><label>Nama</label><input name="Nama" required></div>
+    <div><label>No. Telepon / WhatsApp</label><input name="No. WhatsApp" type="tel"></div>
+    <div><label>Kritik & saran</label><textarea name="Kritik & Saran" rows="5" required></textarea></div>
+    <button class="btn btn-hijau" type="submit">Kirim</button>
+  </form></div>
+</div></section>

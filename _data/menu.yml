@@ -1,0 +1,43 @@
+# Menu utama website. Urutan di sini = urutan di website.
+# link: alamat halaman, contoh /profil.html atau /profil.html#visi-misi atau link luar https://...
+daftar:
+  - judul: "Beranda"
+    link: "/"
+  - judul: "Profil"
+    link: "/profil.html"
+    sub:
+      - { judul: "Selayang Pandang", link: "/profil.html#selayang" }
+      - { judul: "Visi & Misi", link: "/profil.html#visi-misi" }
+      - { judul: "Program Unggulan", link: "/sekolah.html#program" }
+      - { judul: "Fasilitas", link: "/sekolah.html#fasilitas" }
+      - { judul: "Struktur Organisasi", link: "/struktur.html" }
+      - { judul: "Guru & Staf", link: "/guru.html" }
+      - { judul: "Testimoni", link: "/testimoni.html" }
+  - judul: "Sekolah"
+    link: "/sekolah.html"
+    sub:
+      - { judul: "SMP IT Darul Marhamah ABS", link: "/sekolah.html#smp" }
+      - { judul: "SMA IT Darul Marhamah ABS", link: "/sekolah.html#sma" }
+      - { judul: "Ekstrakurikuler", link: "/sekolah.html#ekskul" }
+  - judul: "Berita"
+    link: "/berita.html"
+  - judul: "Galeri"
+    link: "/galeri.html"
+    sub:
+      - { judul: "Foto", link: "/galeri.html" }
+      - { judul: "Video", link: "/galeri.html#video" }
+      - { judul: "Download", link: "/download.html" }
+  - judul: "Kontak"
+    link: "/kontak.html"
+    sub:
+      - { judul: "Kontak & Lokasi", link: "/kontak.html" }
+      - { judul: "Layanan & Call Center", link: "/layanan.html" }
+      - { judul: "Rekening", link: "/layanan.html#rekening" }
+      - { judul: "Kritik & Saran", link: "/layanan.html#saran" }
+  - judul: "Info PPDB"
+    link: "/ppdb.html"
+    tombol: true
+    sub:
+      - { judul: "Daftar Sekarang", link: "/ppdb.html#daftar" }
+      - { judul: "Panduan Pendaftaran", link: "/ppdb.html#panduan" }
+      - { judul: "Rincian Biaya", link: "/ppdb.html#biaya" }

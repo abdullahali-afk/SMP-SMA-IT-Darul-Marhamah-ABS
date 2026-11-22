@@ -1,0 +1,2 @@
+{%- assign t = include.t -%}
+<div class="testi"><div class="siapa"><div class="foto">{% if t.foto and t.foto != "" %}<img src="{{ t.foto | relative_url }}" alt="">{% else %}{{ t.nama | remove: "[" | slice: 0 }}{% endif %}</div><div><b>{{ t.nama }}</b><small>{{ t.keterangan }}</small></div></div><p>{{ t.isi }}</p></div>

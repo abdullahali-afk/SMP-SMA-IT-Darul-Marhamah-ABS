@@ -1,14 +1,25 @@
 ---
 layout: default
 ---
-<section class="page-hero pola"><div class="wadah" style="max-width:860px">
+<section class="page-hero pola"><div class="wadah">
   <span class="label">{{ page.kategori }}</span>
   <h1>{{ page.title }}</h1>
-  <p>{% include tanggal.html d=page.date %}</p>
+  <p>📅 {% include tanggal.html d=page.date %}</p>
+  <nav class="remah"><a href="{{ '/' | relative_url }}">Beranda</a> <span>›</span> <a href="{{ '/berita.html' | relative_url }}">Berita</a></nav>
 </div></section>
-<section class="bg-putih"><div class="wadah artikel">
-  {% if page.gambar and page.gambar != "" %}<img src="{{ page.gambar | relative_url }}" alt="{{ page.title | escape }}" class="sampul">{% endif %}
-  {%- assign perbaiki = 'src="' | append: site.baseurl | append: '/assets/' -%}
-  {{ content | replace: 'src="/assets/', perbaiki }}
-  <p style="margin-top:40px"><a href="{{ '/berita.html' | relative_url }}" class="btn btn-hijau">← Kembali ke Arsip Berita</a></p>
+<section class="bg-putih"><div class="wadah dengan-sisi">
+  <article class="artikel">
+    {% if page.gambar and page.gambar != "" %}<img src="{{ page.gambar | relative_url }}" alt="{{ page.title | escape }}" class="sampul">{% endif %}
+    {%- assign perbaiki = 'src="' | append: site.baseurl | append: '/assets/' -%}
+    {{ content | replace: 'src="/assets/', perbaiki }}
+    <div class="bagikan">Bagikan:
+      <a href="https://wa.me/?text={{ page.title | append: ' ' | append: page.url | absolute_url | uri_escape }}" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | absolute_url | uri_escape }}" target="_blank" rel="noopener">Facebook</a></div>
+  </article>
+  <aside class="sisi">
+    <div class="widget"><h3>Cari</h3><form action="{{ '/cari.html' | relative_url }}" class="kotak-cari kecil"><input name="q" type="search" placeholder="Kata kunci..."><button class="btn btn-hijau">Cari</button></form></div>
+    <div class="widget"><h3>Berita Terbaru</h3>
+      {% for p in site.posts limit:5 %}{% if p.url != page.url %}<a class="mini" href="{{ p.url | relative_url }}"><span class="mini-gbr">{% if p.gambar and p.gambar != "" %}<img src="{{ p.gambar | relative_url }}" alt="">{% else %}📰{% endif %}</span><span><b>{{ p.title }}</b><small>{% include tanggal.html d=p.date %}</small></span></a>{% endif %}{% endfor %}</div>
+    <div class="widget widget-ppdb pola"><h3>PPDB {{ site.data.ppdb.tahun_ajaran }}</h3><p>{{ site.data.ppdb.status }}</p><a href="{{ '/ppdb.html' | relative_url }}" class="btn btn-emas">Daftar Sekarang</a></div>
+  </aside>
 </div></section>
