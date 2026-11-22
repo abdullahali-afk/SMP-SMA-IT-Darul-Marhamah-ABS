@@ -1,37 +1,27 @@
 {
   "judul": "Visi & Misi Program Pendidikan",
-  "pengantar": "Darul Marhamah menyelenggarakan dua program pendidikan. Setiap program memiliki visi dan misi sendiri, dan visi misi tersebut berlaku sama untuk jenjang SMP maupun SMA.",
   "daftar": [
     {
-      "nama": "Program Takhassus",
-      "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Takhassus",
       "ikon": "📚",
+      "misi": [
+        "Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani",
+        "Melahirkan Muslimah Penghafal Al-Qur'an yang Mutqin",
+        "Melahirkan Muslimah Da'iyah Pejuang Al-Qur'an",
+        "Melahirkan Muslimah yang Peka dengan Lingkungan Sosialnya",
+        "Melahirkan Muslimah yang Kreatif, Inovatif dan Pantang Menyerah",
+        "Melahirkan Calon Ibu Pendidik Generasi Al-Qur'an"
+      ],
+      "nama": "Program Takhassus",
+      "visi": "\"Menjadi sekolah model Al-Qur’an\"",
       "jenjang": [
         "SMP",
         "SMA"
       ],
       "ringkasan": "Program pendalaman ilmu syar'i dan bahasa Arab bagi santriwati yang disiapkan untuk melanjutkan studi Islam ke jenjang yang lebih tinggi, tetap disertai pembinaan hafalan Al-Qur'an.",
-      "visi": "Menjadi program unggulan yang melahirkan muslimah berilmu syar'i, fasih berbahasa Arab, berakhlak Qur'ani, dan siap melanjutkan studi Islam ke jenjang yang lebih tinggi.",
-      "misi": [
-        "Menyelenggarakan pembelajaran dirasah islamiyah (akidah, fikih, hadis, tafsir, dan sirah) yang berlandaskan Al-Qur'an dan As-Sunnah.",
-        "Membekali santriwati dengan kemampuan bahasa Arab aktif, lisan dan tulisan, sebagai kunci memahami sumber ajaran Islam.",
-        "Membiasakan santriwati mengkaji kitab-kitab dasar karya para ulama secara bertahap dan terbimbing.",
-        "Membina bacaan dan hafalan Al-Qur'an santriwati sesuai target program.",
-        "Memadukan kurikulum nasional dan kurikulum kepesantrenan secara seimbang.",
-        "Menanamkan adab, akhlak muslimah, dan semangat dakwah dalam kehidupan sehari-hari di asrama.",
-        "Menyiapkan lulusan untuk melanjutkan studi ke perguruan tinggi Islam di dalam dan luar negeri."
-      ]
+      "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Takhassus"
     },
     {
-      "nama": "Program Tahfizh",
-      "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Tahfizh",
       "ikon": "📖",
-      "jenjang": [
-        "SMP",
-        "SMA"
-      ],
-      "ringkasan": "Program pembinaan hafalan Al-Qur'an yang intensif dan terukur, dipadukan dengan pendidikan umum, bagi santriwati yang bercita-cita menjadi hafizhah.",
-      "visi": "Menjadi program tahfizh unggulan yang melahirkan muslimah penghafal Al-Qur'an 30 juz yang mutqin, berakhlak Qur'ani, dan berprestasi akademik.",
       "misi": [
         "Menyelenggarakan pembinaan hafalan Al-Qur'an harian yang terprogram melalui setoran, murajaah, dan ujian hafalan berkala.",
         "Memperbaiki bacaan santriwati melalui tahsin dan pembelajaran ilmu tajwid.",
@@ -39,7 +29,16 @@
         "Menumbuhkan kecintaan pada Al-Qur'an melalui pemahaman makna dan tadabbur ayat.",
         "Memadukan program tahfizh dengan kurikulum nasional agar santriwati tetap berprestasi akademik.",
         "Menyiapkan lulusan yang mampu mengajarkan Al-Qur'an di keluarga dan masyarakat."
-      ]
+      ],
+      "nama": "Program Tahfizh",
+      "visi": "Menjadi program tahfizh unggulan yang melahirkan muslimah penghafal Al-Qur'an 30 juz yang mutqin, berakhlak Qur'ani, dan berprestasi akademik.",
+      "jenjang": [
+        "SMP",
+        "SMA"
+      ],
+      "ringkasan": "Program pembinaan hafalan Al-Qur'an yang intensif dan terukur, dipadukan dengan pendidikan umum, bagi santriwati yang bercita-cita menjadi hafizhah.",
+      "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Tahfizh"
     }
-  ]
+  ],
+  "pengantar": "Darul Marhamah menyelenggarakan dua program pendidikan. Setiap program memiliki visi dan misi sendiri, dan visi misi tersebut berlaku sama untuk jenjang SMP maupun SMA."
 }
