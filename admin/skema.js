@@ -289,6 +289,27 @@ window.SKEMA = [
     "type": "string"
    },
    {
+    "name": "kontak_wa",
+    "label": "Kontak person WhatsApp (tampil di website)",
+    "type": "object",
+    "list": true,
+    "description": "Isi nama dan nomor setiap kontak person, misalnya \"Admin SMP\" 0852-1186-9470. Jika lebih dari satu, pengunjung bisa memilih kontak di tombol WhatsApp dan formulir. Jika kosong, nomor WhatsApp utama di atas yang dipakai.",
+    "fields": [
+     {
+      "name": "nama",
+      "label": "Nama / bagian",
+      "type": "string",
+      "description": "Contoh: Admin SMP, Admin SMA, Ustadzah Fulanah"
+     },
+     {
+      "name": "nomor",
+      "label": "Nomor WhatsApp",
+      "type": "string",
+      "description": "Contoh: 0852-1186-9470"
+     }
+    ]
+   },
+   {
     "name": "email",
     "label": "Email",
     "type": "string"

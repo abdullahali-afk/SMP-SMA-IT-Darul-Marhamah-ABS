@@ -1,0 +1,31 @@
+{%- comment -%}
+Kontak person WhatsApp sekolah (Panel Admin → Data Sekolah & Kontak → Kontak person WhatsApp).
+Jika daftar kosong, dipakai nomor WhatsApp utama. Param gaya: topbar | daftar | kartu | teks | opsi | utama | mengambang
+{%- endcomment -%}
+{%- assign kw_s = site.data.sekolah -%}
+{%- assign kw_n = 0 -%}{%- assign kw_pertama = "" -%}
+{%- for kw in kw_s.kontak_wa -%}{%- if kw.nomor and kw.nomor != "" -%}{%- assign kw_n = kw_n | plus: 1 -%}{%- if kw_pertama == "" -%}{%- capture kw_pertama -%}{% include wa-nomor.html n=kw.nomor %}{%- endcapture -%}{%- assign kw_pertama = kw_pertama | strip -%}{%- endif -%}{%- endif -%}{%- endfor -%}
+{%- if kw_n > 1 -%}{%- assign kw_banyak = true -%}{%- else -%}{%- assign kw_banyak = false -%}{%- endif -%}
+{%- assign kw_gaya = include.gaya -%}
+{%- if kw_gaya == "utama" -%}{%- if kw_n > 0 -%}{{ kw_pertama }}{%- else -%}{{ kw_s.whatsapp }}{%- endif -%}
+{%- elsif kw_gaya == "opsi" and kw_banyak == false -%}
+{%- else -%}
+  {%- if kw_gaya == "opsi" -%}<div><label>Kirim ke WhatsApp</label><select data-tujuan>{%- endif -%}
+  {%- if kw_gaya == "mengambang" -%}{%- if kw_banyak -%}<div class="wa-pilih"><button class="wa" type="button" aria-expanded="false" aria-label="Chat WhatsApp" title="Chat WhatsApp">💬</button><div class="wa-daftar" hidden><p>Hubungi kami lewat WhatsApp</p>{%- else -%}<a class="wa" href="https://wa.me/{% if kw_n > 0 %}{{ kw_pertama }}{% else %}{{ kw_s.whatsapp }}{% endif %}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: kw_s.nama_singkat | uri_escape }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp" title="Chat WhatsApp">💬</a>{%- endif -%}{%- endif -%}
+  {%- if kw_gaya != "mengambang" or kw_banyak -%}
+    {%- if kw_n > 0 -%}
+      {%- assign kw_i = 0 -%}
+      {%- for kw in kw_s.kontak_wa -%}{%- if kw.nomor and kw.nomor != "" -%}
+        {%- capture kw_wa -%}{% include wa-nomor.html n=kw.nomor %}{%- endcapture -%}{%- assign kw_wa = kw_wa | strip -%}
+        {%- if kw_i == 0 -%}{%- assign kw_p = true -%}{%- else -%}{%- assign kw_p = false -%}{%- endif -%}
+        {%- assign kw_nama = kw.nama | default: "Admin Sekolah" -%}
+        {%- include kontak-wa-item.html gaya=kw_gaya nama=kw_nama label=kw.nomor wa=kw_wa banyak=kw_banyak pertama=kw_p -%}
+        {%- assign kw_i = kw_i | plus: 1 -%}
+      {%- endif -%}{%- endfor -%}
+    {%- else -%}
+      {%- include kontak-wa-item.html gaya=kw_gaya nama="Admin Sekolah" label=kw_s.telepon wa=kw_s.whatsapp banyak=false pertama=true -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- if kw_gaya == "mengambang" and kw_banyak -%}</div></div>{%- endif -%}
+  {%- if kw_gaya == "opsi" -%}</select></div>{%- endif -%}
+{%- endif -%}

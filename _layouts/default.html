@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="topbar"><div class="wadah">
-  <span class="tb-kontak"><a href="mailto:{{ s.email }}">✉️ {{ s.email }}</a><a href="https://wa.me/{{ s.whatsapp }}">📞 {{ s.telepon }}</a></span>
+  <span class="tb-kontak"><a href="mailto:{{ s.email }}">✉️ {{ s.email }}</a>{% include kontak-wa.html gaya="topbar" %}</span>
   <span class="tb-sosmed">{% include sosmed.html %}</span>
 </div></div>
 <header class="kepala-situs"><div class="wadah nav">
@@ -44,9 +44,9 @@
   <div><h4>Link Cepat</h4><ul>
     <li><a href="{{ '/profil.html' | relative_url }}">Tentang Darul Marhamah</a></li><li><a href="{{ '/sekolah.html' | relative_url }}">Program Pendidikan</a></li><li><a href="{{ '/galeri.html' | relative_url }}">Kehidupan Asrama</a></li><li><a href="{{ '/berita.html' | relative_url }}">Berita & Prestasi</a></li><li><a href="{{ '/download.html' | relative_url }}">Download</a></li></ul></div>
   <div><h4>Jenjang Pendidikan</h4><ul><li><a href="{{ '/sekolah.html#smp' | relative_url }}">SMP Islam Terpadu</a></li><li><a href="{{ '/sekolah.html#sma' | relative_url }}">SMA Islam Terpadu</a></li><li><a href="{{ '/sekolah.html#program' | relative_url }}">Program Tahfidz</a></li><li><a href="{{ '/ppdb.html' | relative_url }}">Penerimaan Santriwati Baru</a></li></ul></div>
-  <div><h4>Temukan Kami</h4><ul><li>📍 <b>SMA:</b> {{ s.sma.alamat }}</li><li>📍 <b>SMP:</b> {{ s.smp.alamat }}</li><li>📞 <a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a></li><li>✉️ <a href="mailto:{{ s.email }}">{{ s.email }}</a></li><li>🕐 {{ s.jam_kantor }}</li></ul></div>
+  <div><h4>Temukan Kami</h4><ul><li>📍 <b>SMA:</b> {{ s.sma.alamat }}</li><li>📍 <b>SMP:</b> {{ s.smp.alamat }}</li>{% include kontak-wa.html gaya="daftar" %}<li>✉️ <a href="mailto:{{ s.email }}">{{ s.email }}</a></li><li>🕐 {{ s.jam_kantor }}</li></ul></div>
 </div><div class="hak">© {{ site.time | date: "%Y" }} {{ s.nama_lengkap }}</div></footer>
-<a class="wa" href="https://wa.me/{{ s.whatsapp }}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: s.nama_singkat | uri_escape }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp" title="Chat WhatsApp">💬</a>
+{% include kontak-wa.html gaya="mengambang" %}
 <div class="lightbox"><img alt=""></div>
 <script src="{{ '/assets/script.js' | relative_url }}"></script>
 </body>

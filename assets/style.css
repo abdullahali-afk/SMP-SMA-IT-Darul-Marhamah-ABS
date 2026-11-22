@@ -331,6 +331,7 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 @media (max-width:600px){
   .topbar .wadah{justify-content:space-between;flex-wrap:nowrap}
   .tb-kontak a:first-child{display:none}
+  .tb-kontak a:nth-child(n+3){display:none}
   .ubin-tautan .g4{grid-template-columns:1fr 1fr;gap:12px}
   .tautan{padding:16px 14px}
   .tautan p{display:none}
@@ -362,3 +363,16 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 .kp-catatan{margin-top:14px;font-size:.84rem;color:var(--abu);font-style:italic}
 .vm-program{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:18px}
 .vm-program span{font-size:.88rem;color:var(--abu);font-weight:600}
+
+/* Kontak person WhatsApp */
+.wa-pilih{position:fixed;right:18px;bottom:18px;z-index:60}
+.wa-pilih .wa{position:static;border:0;cursor:pointer}
+.wa-daftar{position:absolute;right:0;bottom:68px;width:min(280px,calc(100vw - 36px));background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);overflow:hidden}
+.wa-daftar[hidden]{display:none}
+.wa-daftar p{background:#25d366;color:#fff;padding:10px 16px;font-weight:600;font-size:.9rem;margin:0}
+.wa-daftar a{display:flex;flex-direction:column;padding:11px 16px;border-bottom:1px solid #eef1ef;color:var(--teks);text-decoration:none;font-size:.92rem}
+.wa-daftar a:last-child{border-bottom:0}
+.wa-daftar a:hover{background:var(--hijau-muda)}
+.wa-daftar small{color:var(--abu);font-size:.82rem}
+.kontak-wa{display:flex;flex-direction:column;margin-bottom:8px}
+.kontak-wa span{font-size:.85rem;color:var(--abu)}

@@ -96,10 +96,11 @@ title: Beranda
   <div class="kartu"><h3>Layanan</h3><ul class="daftar-link">{% for l in br.layanan %}<li><a href="{{ l.link | relative_url }}">{{ l.nama }}</a></li>{% endfor %}</ul></div>
   <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}">{{ c.nomor }}</a></li>{% endfor %}</ul></div>
   <div class="kartu"><h3>Kritik & Saran</h3>
-    <form data-wa="{{ s.whatsapp }}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
+    <form data-wa="{% include kontak-wa.html gaya="utama" %}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
       <input name="Nama" placeholder="Nama" required>
       <input name="No. WhatsApp" placeholder="No. Telepon / WhatsApp" type="tel">
       <textarea name="Kritik & Saran" rows="3" placeholder="Kritik & saran" required></textarea>
+      {% include kontak-wa.html gaya="opsi" %}
       <button class="btn btn-hijau" type="submit">Kirim</button>
     </form></div>
 </div></section>

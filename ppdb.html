@@ -39,7 +39,7 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
 <section id="daftar"><div class="wadah" style="max-width:720px">
   {% include judul.html k="Formulir" t="Daftar Sekarang" %}
   <div class="kartu">
-  <form data-wa="{{ s.whatsapp }}" data-judul="*PENDAFTARAN SANTRIWATI BARU {{ s.nama_singkat }}*">
+  <form data-wa="{% include kontak-wa.html gaya="utama" %}" data-judul="*PENDAFTARAN SANTRIWATI BARU {{ s.nama_singkat }}*">
     <div><label>Jenjang yang dituju</label><select name="Jenjang"><option>SMP IT Darul Marhamah ABS</option><option>SMA IT Darul Marhamah ABS</option></select></div>
     <div><label>Nama lengkap calon santriwati</label><input name="Nama" required></div>
     <div class="grid g2" style="gap:14px"><div><label>Tempat lahir</label><input name="Tempat lahir" required></div>
@@ -49,7 +49,8 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
     <div><label>No. WhatsApp orang tua</label><input type="tel" name="No. WA" required></div></div>
     <div><label>Jumlah hafalan Al-Qur'an</label><input name="Hafalan" placeholder="contoh: 3 juz"></div>
     <div><label>Alamat</label><textarea name="Alamat" rows="3"></textarea></div>
+    {% include kontak-wa.html gaya="opsi" %}
     <button class="btn btn-emas" type="submit">Kirim Pendaftaran via WhatsApp</button>
-    <small style="color:var(--abu)">Data akan dikirim ke WhatsApp admin PPDB ({{ s.telepon }}). Admin akan menghubungi Anda untuk langkah berikutnya.</small>
+    <small style="color:var(--abu)">Data akan dikirim ke WhatsApp admin: {% include kontak-wa.html gaya="teks" %}. Admin akan menghubungi Anda untuk langkah berikutnya.</small>
   </form></div>
 </div></section>

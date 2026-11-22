@@ -16,7 +16,8 @@ lb.addEventListener('click',()=>lb.classList.remove('buka'));}
 document.querySelectorAll('form[data-wa]').forEach(f=>f.addEventListener('submit',e=>{
   e.preventDefault();const d=new FormData(f);let t=f.dataset.judul+'\n';
   for(const [k,v] of d.entries())t+=`${k}: ${v}\n`;
-  window.open('https://wa.me/'+f.dataset.wa+'?text='+encodeURIComponent(t),'_blank');
+  const tj=f.querySelector('[data-tujuan]');
+  window.open('https://wa.me/'+(tj&&tj.value?tj.value:f.dataset.wa)+'?text='+encodeURIComponent(t),'_blank');
 }));
 // Filter galeri dari alamat (?k=kegiatan)
 (function(){const k=new URLSearchParams(location.search).get('k');if(!k)return;const b=document.querySelector('.filter button[data-k="'+k+'"]');if(b)b.click();})();
@@ -30,3 +31,7 @@ document.querySelectorAll('[data-geser]').forEach(b=>b.addEventListener('click',
 (function(){const el=[...document.querySelectorAll('[data-angka]')];if(!('IntersectionObserver' in window))return;
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);const raw=e.target.dataset.angka,m=raw.match(/\d+/);if(!m)return;const n=parseInt(m[0]),pre=raw.slice(0,m.index),post=raw.slice(m.index+m[0].length);let s=null;
 const step=ts=>{s=s||ts;const p=Math.min((ts-s)/1500,1);e.target.textContent=pre+Math.round(n*p)+post;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}),{threshold:.4});el.forEach(x=>io.observe(x));})();
+// Tombol WhatsApp mengambang dengan beberapa kontak person
+document.querySelectorAll('.wa-pilih').forEach(w=>{const b=w.querySelector('button'),d=w.querySelector('.wa-daftar');
+b.addEventListener('click',e=>{e.stopPropagation();d.hidden=!d.hidden;b.setAttribute('aria-expanded',String(!d.hidden));});
+document.addEventListener('click',e=>{if(!w.contains(e.target)){d.hidden=true;b.setAttribute('aria-expanded','false');}});});

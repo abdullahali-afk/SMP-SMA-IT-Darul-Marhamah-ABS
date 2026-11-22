@@ -9,16 +9,17 @@ description: Alamat, nomor WhatsApp, dan peta lokasi SMP & SMA IT Darul Marhamah
   <div class="grid" style="gap:16px;align-content:start">
     <div class="kartu"><h3>📍 Alamat SMA</h3><p>{{ s.sma.alamat }}</p></div>
     <div class="kartu"><h3>📍 Alamat SMP</h3><p>{{ s.smp.alamat }}</p></div>
-    <div class="kartu"><h3>📞 Telepon / WhatsApp</h3><p><a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a></p></div>
+    <div class="kartu"><h3>📞 Kontak Person WhatsApp</h3>{% include kontak-wa.html gaya="kartu" %}</div>
     <div class="kartu"><h3>✉️ Email</h3><p>{{ s.email }}</p></div>
     <div class="kartu"><h3>🕐 Jam Kantor</h3><p>{{ s.jam_kantor }}</p></div>
   </div>
   <div class="kartu" style="align-self:start">
     <h3>Kirim Pesan</h3>
-    <form data-wa="{{ s.whatsapp }}" data-judul="*Pesan dari Website {{ s.nama_singkat }}*">
+    <form data-wa="{% include kontak-wa.html gaya="utama" %}" data-judul="*Pesan dari Website {{ s.nama_singkat }}*">
       <div><label>Nama</label><input name="Nama" required></div>
       <div><label>No. WhatsApp</label><input type="tel" name="No. WA"></div>
       <div><label>Pesan</label><textarea name="Pesan" rows="5" required></textarea></div>
+      {% include kontak-wa.html gaya="opsi" %}
       <button class="btn btn-hijau" type="submit">Kirim via WhatsApp</button>
     </form>
   </div>

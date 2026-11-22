@@ -1,0 +1,3 @@
+{%- comment -%}Ubah nomor seperti 0852-1186-9470 menjadi 6285211869470 untuk tautan wa.me{%- endcomment -%}
+{%- assign kw_x = include.n | append: "" | remove: "-" | remove: " " | remove: "+" | remove: "." | remove: "(" | remove: ")" -%}
+{%- assign kw_a = kw_x | slice: 0 -%}{%- if kw_a == "0" -%}{%- assign kw_x = kw_x | replace_first: "0", "62" -%}{%- endif -%}{{ kw_x }}

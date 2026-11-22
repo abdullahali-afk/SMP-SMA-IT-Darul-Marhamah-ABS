@@ -12,14 +12,15 @@ description: Layanan, call center, rekening, serta kritik dan saran Darul Marham
 <section class="bg-putih" id="rekening"><div class="wadah" style="max-width:760px">
   {% include judul.html k="Pembayaran" t="Rekening Sekolah" %}
   <div class="catatan" style="text-align:center;font-size:1.05rem">🏦 {{ site.data.ppdb.rekening }}</div>
-  <p style="text-align:center;margin-top:12px;color:var(--abu);font-size:.9rem">Setelah transfer, kirim bukti pembayaran ke WhatsApp <a href="https://wa.me/{{ s.whatsapp }}">{{ s.telepon }}</a>.</p>
+  <p style="text-align:center;margin-top:12px;color:var(--abu);font-size:.9rem">Setelah transfer, kirim bukti pembayaran ke WhatsApp {% include kontak-wa.html gaya="teks" %}.</p>
 </div></section>
 <section id="saran"><div class="wadah" style="max-width:720px">
   {% include judul.html k="Masukan" t="Kritik & Saran" %}
-  <div class="kartu"><form data-wa="{{ s.whatsapp }}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
+  <div class="kartu"><form data-wa="{% include kontak-wa.html gaya="utama" %}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
     <div><label>Nama</label><input name="Nama" required></div>
     <div><label>No. Telepon / WhatsApp</label><input name="No. WhatsApp" type="tel"></div>
     <div><label>Kritik & saran</label><textarea name="Kritik & Saran" rows="5" required></textarea></div>
+    {% include kontak-wa.html gaya="opsi" %}
     <button class="btn btn-hijau" type="submit">Kirim</button>
   </form></div>
 </div></section>
