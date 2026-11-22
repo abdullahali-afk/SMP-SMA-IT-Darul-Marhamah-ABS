@@ -376,3 +376,11 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 .wa-daftar small{color:var(--abu);font-size:.82rem}
 .kontak-wa{display:flex;flex-direction:column;margin-bottom:8px}
 .kontak-wa span{font-size:.85rem;color:var(--abu)}
+
+/* Ikon WhatsApp */
+.ikon-wa{display:inline-block;vertical-align:-.15em;flex-shrink:0}
+.hijau-wa{color:#25d366}
+.kontak-wa a{display:inline-flex;align-items:center;gap:8px;font-weight:600;text-decoration:none}
+.wa-daftar a{flex-direction:row;align-items:center;gap:12px}
+.wa-daftar a span{display:flex;flex-direction:column}
+.wa .ikon-wa{vertical-align:middle}

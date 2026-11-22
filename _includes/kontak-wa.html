@@ -11,7 +11,7 @@ Jika daftar kosong, dipakai nomor WhatsApp utama. Param gaya: topbar | daftar | 
 {%- elsif kw_gaya == "opsi" and kw_banyak == false -%}
 {%- else -%}
   {%- if kw_gaya == "opsi" -%}<div><label>Kirim ke WhatsApp</label><select data-tujuan>{%- endif -%}
-  {%- if kw_gaya == "mengambang" -%}{%- if kw_banyak -%}<div class="wa-pilih"><button class="wa" type="button" aria-expanded="false" aria-label="Chat WhatsApp" title="Chat WhatsApp">💬</button><div class="wa-daftar" hidden><p>Hubungi kami lewat WhatsApp</p>{%- else -%}<a class="wa" href="https://wa.me/{% if kw_n > 0 %}{{ kw_pertama }}{% else %}{{ kw_s.whatsapp }}{% endif %}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: kw_s.nama_singkat | uri_escape }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp" title="Chat WhatsApp">💬</a>{%- endif -%}{%- endif -%}
+  {%- if kw_gaya == "mengambang" -%}{%- if kw_banyak -%}<div class="wa-pilih"><button class="wa" type="button" aria-expanded="false" aria-label="Chat WhatsApp" title="Chat WhatsApp">{% include ikon-wa.html ukuran=30 %}</button><div class="wa-daftar" hidden><p>Hubungi kami lewat WhatsApp</p>{%- else -%}<a class="wa" href="https://wa.me/{% if kw_n > 0 %}{{ kw_pertama }}{% else %}{{ kw_s.whatsapp }}{% endif %}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: kw_s.nama_singkat | uri_escape }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp" title="Chat WhatsApp">{% include ikon-wa.html ukuran=30 %}</a>{%- endif -%}{%- endif -%}
   {%- if kw_gaya != "mengambang" or kw_banyak -%}
     {%- if kw_n > 0 -%}
       {%- assign kw_i = 0 -%}

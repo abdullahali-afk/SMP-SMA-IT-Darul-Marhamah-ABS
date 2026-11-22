@@ -1,8 +1,8 @@
 {%- case include.gaya -%}
-{%- when "topbar" -%}<a href="https://wa.me/{{ include.wa }}" title="WhatsApp {{ include.nama | escape }}">📞 {{ include.label }}</a>
-{%- when "daftar" -%}<li>📞 {% if include.banyak %}<b>{{ include.nama }}:</b> {% endif %}<a href="https://wa.me/{{ include.wa }}">{{ include.label }}</a></li>
-{%- when "kartu" -%}<p class="kontak-wa"><a href="https://wa.me/{{ include.wa }}">{{ include.label }}</a>{% if include.banyak %}<span>{{ include.nama }}</span>{% endif %}</p>
+{%- when "topbar" -%}<a href="https://wa.me/{{ include.wa }}" title="WhatsApp {{ include.nama | escape }}">{% include ikon-wa.html ukuran=14 %} {{ include.label }}</a>
+{%- when "daftar" -%}<li>{% include ikon-wa.html ukuran=15 %} {% if include.banyak %}<b>{{ include.nama }}:</b> {% endif %}<a href="https://wa.me/{{ include.wa }}">{{ include.label }}</a></li>
+{%- when "kartu" -%}<p class="kontak-wa"><a href="https://wa.me/{{ include.wa }}" target="_blank" rel="noopener">{% include ikon-wa.html ukuran=18 kelas="hijau-wa" %} {{ include.label }}</a>{% if include.banyak %}<span>{{ include.nama }}</span>{% endif %}</p>
 {%- when "teks" -%}{% unless include.pertama %} atau {% endunless %}<a href="https://wa.me/{{ include.wa }}">{{ include.label }}</a>{% if include.banyak %} ({{ include.nama }}){% endif %}
 {%- when "opsi" -%}<option value="{{ include.wa }}">{{ include.nama }} ({{ include.label }})</option>
-{%- when "mengambang" -%}<a href="https://wa.me/{{ include.wa }}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: site.data.sekolah.nama_singkat | uri_escape }}" target="_blank" rel="noopener"><b>{{ include.nama }}</b><small>{{ include.label }}</small></a>
+{%- when "mengambang" -%}<a href="https://wa.me/{{ include.wa }}?text={{ "Assalamu'alaikum, saya ingin bertanya tentang " | append: site.data.sekolah.nama_singkat | uri_escape }}" target="_blank" rel="noopener">{% include ikon-wa.html ukuran=22 kelas="hijau-wa" %}<span><b>{{ include.nama }}</b><small>{{ include.label }}</small></span></a>
 {%- endcase -%}

@@ -94,7 +94,7 @@ title: Beranda
 
 <section class="bg-putih layanan-blok"><div class="wadah grid g3">
   <div class="kartu"><h3>Layanan</h3><ul class="daftar-link">{% for l in br.layanan %}<li><a href="{{ l.link | relative_url }}">{{ l.nama }}</a></li>{% endfor %}</ul></div>
-  <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}">{{ c.nomor }}</a></li>{% endfor %}</ul></div>
+  <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}" target="_blank" rel="noopener">{% include ikon-wa.html ukuran=15 kelas="hijau-wa" %} {{ c.nomor }}</a></li>{% endfor %}</ul></div>
   <div class="kartu"><h3>Kritik & Saran</h3>
     <form data-wa="{% include kontak-wa.html gaya="utama" %}" data-judul="*Kritik & Saran untuk {{ s.nama_singkat }}*">
       <input name="Nama" placeholder="Nama" required>

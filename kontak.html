@@ -9,7 +9,7 @@ description: Alamat, nomor WhatsApp, dan peta lokasi SMP & SMA IT Darul Marhamah
   <div class="grid" style="gap:16px;align-content:start">
     <div class="kartu"><h3>📍 Alamat SMA</h3><p>{{ s.sma.alamat }}</p></div>
     <div class="kartu"><h3>📍 Alamat SMP</h3><p>{{ s.smp.alamat }}</p></div>
-    <div class="kartu"><h3>📞 Kontak Person WhatsApp</h3>{% include kontak-wa.html gaya="kartu" %}</div>
+    <div class="kartu"><h3>{% include ikon-wa.html ukuran=22 kelas="hijau-wa" %} Kontak Person WhatsApp</h3>{% include kontak-wa.html gaya="kartu" %}</div>
     <div class="kartu"><h3>✉️ Email</h3><p>{{ s.email }}</p></div>
     <div class="kartu"><h3>🕐 Jam Kantor</h3><p>{{ s.jam_kantor }}</p></div>
   </div>

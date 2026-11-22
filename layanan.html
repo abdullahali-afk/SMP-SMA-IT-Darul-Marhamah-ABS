@@ -7,7 +7,7 @@ description: Layanan, call center, rekening, serta kritik dan saran Darul Marham
 {% include hero.html judul="Layanan" sub="Layanan sekolah untuk orang tua, santriwati, dan masyarakat" %}
 <section><div class="wadah grid g2">
   <div class="kartu"><h3>Layanan Sekolah</h3><ul class="daftar-link">{% for l in br.layanan %}<li><a href="{{ l.link | relative_url }}">{{ l.nama }}</a></li>{% endfor %}</ul></div>
-  <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}">{{ c.nomor }}</a></li>{% endfor %}</ul></div>
+  <div class="kartu" id="call-center"><h3>Call Center</h3><ul class="daftar-cc">{% for c in br.call_center %}{% assign nomor = c.nomor | remove: "-" | remove: " " | remove: "+" %}{% if nomor contains "08" %}{% assign nomor = nomor | replace_first: "0", "62" %}{% endif %}<li><span>{{ c.bagian }}</span><a href="https://wa.me/{{ nomor }}" target="_blank" rel="noopener">{% include ikon-wa.html ukuran=15 kelas="hijau-wa" %} {{ c.nomor }}</a></li>{% endfor %}</ul></div>
 </div></section>
 <section class="bg-putih" id="rekening"><div class="wadah" style="max-width:760px">
   {% include judul.html k="Pembayaran" t="Rekening Sekolah" %}
