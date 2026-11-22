@@ -5,6 +5,7 @@
     "peta": "Jl. Perintis Kemerdekaan 3 BTN Asal Mula Blok E2/B Tamalanrea Indah Kota Makassar",
     "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar",
     "akreditasi": "[A]",
+    "keterangan": "",
     "kepala_sekolah": "Abdullah, S.H., M.H.",
     "target_hafalan": "[30 juz]"
   },
@@ -40,6 +41,12 @@
   "yayasan": "Yayasan Mutiara Alquran Alislamiyah",
   "whatsapp": "6285211869470",
   "deskripsi": "Boarding school putri di Kota Makassar yang membina muslimah penghafal Al-Qur'an, berakhlak mulia, dan unggul dalam ilmu.",
+  "kontak_wa": [
+    {
+      "nama": "Wakil Direktur",
+      "nomor": "085211869470"
+    }
+  ],
   "statistik": [
     {
       "angka": "[300]",
@@ -59,6 +66,7 @@
     }
   ],
   "jam_kantor": "Senin – Sabtu, 07.30 – 15.00 WITA",
+  "foto_sekolah": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/sekolah/1795391205458-screenshot-2026-11-23-074625.jpg",
   "nama_lengkap": "SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School",
   "nama_singkat": "Darul Marhamah ABS",
   "tahun_berdiri": "2023"
