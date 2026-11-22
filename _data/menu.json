@@ -1,0 +1,123 @@
+{
+  "daftar": [
+    {
+      "link": "/",
+      "judul": "Beranda"
+    },
+    {
+      "sub": [
+        {
+          "link": "/profil.html#selayang",
+          "judul": "Selayang Pandang"
+        },
+        {
+          "link": "/profil.html#visi-misi",
+          "judul": "Visi & Misi"
+        },
+        {
+          "link": "/sekolah.html#program",
+          "judul": "Program Unggulan"
+        },
+        {
+          "link": "/sekolah.html#fasilitas",
+          "judul": "Fasilitas"
+        },
+        {
+          "link": "/struktur.html",
+          "judul": "Struktur Organisasi"
+        },
+        {
+          "link": "/guru.html",
+          "judul": "Guru & Staf"
+        },
+        {
+          "link": "/testimoni.html",
+          "judul": "Testimoni"
+        }
+      ],
+      "link": "/profil.html",
+      "judul": "Profil"
+    },
+    {
+      "sub": [
+        {
+          "link": "/sekolah.html#smp",
+          "judul": "SMP IT Darul Marhamah ABS"
+        },
+        {
+          "link": "/sekolah.html#sma",
+          "judul": "SMA IT Darul Marhamah ABS"
+        },
+        {
+          "link": "/sekolah.html#ekskul",
+          "judul": "Ekstrakurikuler"
+        }
+      ],
+      "link": "/sekolah.html",
+      "judul": "Sekolah"
+    },
+    {
+      "link": "/berita.html",
+      "judul": "Berita"
+    },
+    {
+      "sub": [
+        {
+          "link": "/galeri.html",
+          "judul": "Foto"
+        },
+        {
+          "link": "/galeri.html#video",
+          "judul": "Video"
+        },
+        {
+          "link": "/download.html",
+          "judul": "Download"
+        }
+      ],
+      "link": "/galeri.html",
+      "judul": "Galeri"
+    },
+    {
+      "sub": [
+        {
+          "link": "/kontak.html",
+          "judul": "Kontak & Lokasi"
+        },
+        {
+          "link": "/layanan.html",
+          "judul": "Layanan & Call Center"
+        },
+        {
+          "link": "/layanan.html#rekening",
+          "judul": "Rekening"
+        },
+        {
+          "link": "/layanan.html#saran",
+          "judul": "Kritik & Saran"
+        }
+      ],
+      "link": "/kontak.html",
+      "judul": "Kontak"
+    },
+    {
+      "sub": [
+        {
+          "link": "/ppdb.html#daftar",
+          "judul": "Daftar Sekarang"
+        },
+        {
+          "link": "/ppdb.html#panduan",
+          "judul": "Panduan Pendaftaran"
+        },
+        {
+          "link": "/ppdb.html#biaya",
+          "judul": "Rincian Biaya"
+        }
+      ],
+      "link": "/ppdb.html",
+      "judul": "Info PPDB",
+      "tombol": true
+    }
+  ]
+}

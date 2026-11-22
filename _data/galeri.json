@@ -1,0 +1,76 @@
+{
+  "daftar": [
+    {
+      "foto": "",
+      "ikon": "🕌",
+      "judul": "Shalat berjamaah",
+      "kategori": "kegiatan"
+    },
+    {
+      "foto": "",
+      "ikon": "📖",
+      "judul": "Halaqah tahfidz",
+      "kategori": "kegiatan"
+    },
+    {
+      "foto": "",
+      "ikon": "🏆",
+      "judul": "Juara MHQ",
+      "kategori": "prestasi"
+    },
+    {
+      "foto": "",
+      "ikon": "🏫",
+      "judul": "Gedung sekolah",
+      "kategori": "fasilitas"
+    },
+    {
+      "foto": "",
+      "ikon": "⛺",
+      "judul": "Persami Pramuka",
+      "kategori": "kegiatan"
+    },
+    {
+      "foto": "",
+      "ikon": "🔬",
+      "judul": "Laboratorium IPA",
+      "kategori": "fasilitas"
+    },
+    {
+      "foto": "",
+      "ikon": "🥇",
+      "judul": "Olimpiade sains",
+      "kategori": "prestasi"
+    },
+    {
+      "foto": "",
+      "ikon": "📚",
+      "judul": "Perpustakaan",
+      "kategori": "fasilitas"
+    },
+    {
+      "foto": "",
+      "ikon": "🍳",
+      "judul": "Ekskul tata boga",
+      "kategori": "kegiatan"
+    },
+    {
+      "foto": "",
+      "ikon": "🎤",
+      "judul": "Muhadharah",
+      "kategori": "kegiatan"
+    },
+    {
+      "foto": "",
+      "ikon": "🎖️",
+      "judul": "Lomba pidato",
+      "kategori": "prestasi"
+    },
+    {
+      "foto": "",
+      "ikon": "🛏️",
+      "judul": "Asrama putri",
+      "kategori": "fasilitas"
+    }
+  ]
+}

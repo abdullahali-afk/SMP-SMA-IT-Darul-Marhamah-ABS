@@ -1,0 +1,86 @@
+{
+  "fasilitas": [
+    {
+      "foto": "",
+      "ikon": "🕌",
+      "nama": "Masjid"
+    },
+    {
+      "foto": "",
+      "ikon": "🏫",
+      "nama": "Ruang Kelas Nyaman"
+    },
+    {
+      "foto": "",
+      "ikon": "💻",
+      "nama": "Laboratorium Komputer"
+    },
+    {
+      "foto": "",
+      "ikon": "🔬",
+      "nama": "Laboratorium IPA"
+    },
+    {
+      "foto": "",
+      "ikon": "📚",
+      "nama": "Perpustakaan"
+    },
+    {
+      "foto": "",
+      "ikon": "🛏️",
+      "nama": "Asrama Putri"
+    },
+    {
+      "foto": "",
+      "ikon": "🍽️",
+      "nama": "Ruang Makan & Kantin"
+    },
+    {
+      "foto": "",
+      "ikon": "🩺",
+      "nama": "UKS / Klinik"
+    }
+  ],
+  "ekstrakurikuler": [
+    {
+      "foto": "",
+      "ikon": "🏹",
+      "nama": "Panahan"
+    },
+    {
+      "foto": "",
+      "ikon": "🥋",
+      "nama": "Bela Diri"
+    },
+    {
+      "foto": "",
+      "ikon": "🍳",
+      "nama": "Tata Boga"
+    },
+    {
+      "foto": "",
+      "ikon": "🧵",
+      "nama": "Menjahit & Kriya"
+    },
+    {
+      "foto": "",
+      "ikon": "⛺",
+      "nama": "Pramuka"
+    },
+    {
+      "foto": "",
+      "ikon": "🎤",
+      "nama": "Muhadharah"
+    },
+    {
+      "foto": "",
+      "ikon": "✍️",
+      "nama": "Jurnalistik"
+    },
+    {
+      "foto": "",
+      "ikon": "🔬",
+      "nama": "KIR / Sains"
+    }
+  ]
+}

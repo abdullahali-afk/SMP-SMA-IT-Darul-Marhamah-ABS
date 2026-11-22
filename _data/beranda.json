@@ -1,0 +1,126 @@
+{
+  "hero": [
+    {
+      "sub": "SMP & SMA Islam Terpadu khusus putri di Kota Makassar. Karena Wanita adalah Rahim Peradaban.",
+      "foto": "",
+      "link": "/ppdb.html",
+      "judul": "Selamat Datang di Darul Marhamah Al-Qur'an Boarding School",
+      "tombol": "MENJADI BAGIAN",
+      "judul_arab": "أَهْلًا وَسَهْلًا بِكُمْ فِي دَارِ الْمَرْحَمَة"
+    },
+    {
+      "sub": "Program tahfidz terbimbing, bahasa Arab aktif, dan pembinaan adab di lingkungan asrama yang aman.",
+      "foto": "",
+      "link": "/ppdb.html",
+      "judul": "Mencetak Muslimah Penghafal Al-Qur'an",
+      "tombol": "INFO PPDB",
+      "judul_arab": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
+    }
+  ],
+  "mitra": [],
+  "alasan": {
+    "foto": "",
+    "daftar": [
+      {
+        "isi": "Target hafalan terukur dengan setoran harian dan ujian tasmi' berkala.",
+        "judul": "Fokus Al-Qur'an"
+      },
+      {
+        "isi": "Bahasa Arab menjadi bekal memahami Al-Qur'an, hadits, dan kitab para ulama.",
+        "judul": "Bahasa Arab Aktif"
+      },
+      {
+        "isi": "Adab islami dibiasakan setiap hari bersama ustadzah dan musyrifah.",
+        "judul": "Pembinaan Karakter"
+      },
+      {
+        "isi": "Lingkungan khusus putri yang terjaga, nyaman, dan diawasi 24 jam.",
+        "judul": "Asrama Putri yang Aman"
+      },
+      {
+        "isi": "Kurikulum nasional tetap utuh sehingga lulusan siap ke jenjang berikutnya.",
+        "judul": "Kurikulum Lengkap"
+      }
+    ]
+  },
+  "alumni": {
+    "link": "/testimoni.html",
+    "teks": "Alumni Darul Marhamah diharapkan menjadi muslimah yang berperan di keluarga dan masyarakat: sebagai pendidik, penghafal Al-Qur'an, dan da'iyah. [Tambahkan kisah alumni.]",
+    "judul": "Kontribusi dan Kiprah Alumni"
+  },
+  "tautan": [
+    {
+      "isi": "Mengenal sejarah, visi misi, dan lembaga yang menaungi sekolah.",
+      "ikon": "🏫",
+      "link": "/profil.html",
+      "judul": "Tentang Darul Marhamah"
+    },
+    {
+      "isi": "Keseharian santriwati: ibadah berjamaah, halaqah tahfidz, dan kegiatan asrama.",
+      "ikon": "🌙",
+      "link": "/galeri.html",
+      "judul": "Kehidupan Asrama"
+    },
+    {
+      "isi": "Alasan orang tua mempercayakan pendidikan putrinya kepada kami.",
+      "ikon": "⭐",
+      "link": "/#alasan",
+      "judul": "Mengapa Memilih Kami"
+    },
+    {
+      "isi": "Peluang kerja sama dengan orang tua, alumni, lembaga, dan masyarakat.",
+      "ikon": "🤝",
+      "link": "/layanan.html",
+      "judul": "Ruang Kolaborasi"
+    }
+  ],
+  "capaian": {
+    "teks": "Sejak berdiri pada tahun 2023, Darul Marhamah Al-Qur'an Boarding School terus berkembang dalam membina muslimah penghafal Al-Qur'an di Kota Makassar. [Sesuaikan teks capaian sekolah.]",
+    "judul": "Capaian Kami"
+  },
+  "layanan": [
+    {
+      "link": "/kontak.html",
+      "nama": "Layanan Akademik"
+    },
+    {
+      "link": "/kontak.html",
+      "nama": "Layanan Asrama"
+    },
+    {
+      "link": "/kontak.html",
+      "nama": "Administrasi / Tata Usaha"
+    },
+    {
+      "link": "/layanan.html#rekening",
+      "nama": "Keuangan & Rekening"
+    },
+    {
+      "link": "/kontak.html",
+      "nama": "Media dan Humas"
+    }
+  ],
+  "foto_visi": "",
+  "call_center": [
+    {
+      "nomor": "0852-1186-9470",
+      "bagian": "Akademik"
+    },
+    {
+      "nomor": "0852-1186-9470",
+      "bagian": "Keuangan"
+    },
+    {
+      "nomor": "0852-1186-9470",
+      "bagian": "Keasramaan"
+    },
+    {
+      "nomor": "0852-1186-9470",
+      "bagian": "Kesantriwatian"
+    },
+    {
+      "nomor": "0852-1186-9470",
+      "bagian": "PPDB"
+    }
+  ]
+}

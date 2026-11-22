@@ -1,0 +1,44 @@
+{
+  "daftar": [
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Ketua Yayasan"
+    },
+    {
+      "foto": "",
+      "nama": "Abdullah, S.H., M.H.",
+      "jabatan": "Kepala SMA"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Kepala SMP"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Wakil Kepala Bidang Kurikulum"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Wakil Kepala Bidang Kesantriwatian"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Koordinator Tahfidz"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Kepala Asrama"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama]",
+      "jabatan": "Tata Usaha"
+    }
+  ]
+}

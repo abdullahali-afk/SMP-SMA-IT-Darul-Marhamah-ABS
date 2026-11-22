@@ -1,0 +1,80 @@
+{
+  "alur": [
+    {
+      "isi": "Isi formulir di halaman ini atau datang langsung ke sekolah.",
+      "judul": "Isi Formulir"
+    },
+    {
+      "isi": "Transfer biaya pendaftaran ke rekening sekolah (lihat di bawah).",
+      "judul": "Bayar Pendaftaran"
+    },
+    {
+      "isi": "Tes akademik, baca Al-Qur'an, hafalan, dan wawancara calon santriwati & orang tua.",
+      "judul": "Tes Seleksi"
+    },
+    {
+      "isi": "Hasil seleksi diumumkan melalui WhatsApp.",
+      "judul": "Pengumuman"
+    },
+    {
+      "isi": "Melengkapi administrasi dan berkas untuk menjadi santriwati resmi.",
+      "judul": "Daftar Ulang"
+    }
+  ],
+  "biaya": [
+    {
+      "sma": "Rp [000.000]",
+      "smp": "Rp [000.000]",
+      "komponen": "Pendaftaran"
+    },
+    {
+      "sma": "Rp [0.000.000]",
+      "smp": "Rp [0.000.000]",
+      "komponen": "Uang pangkal (bisa dicicil)"
+    },
+    {
+      "sma": "Rp [000.000]",
+      "smp": "Rp [000.000]",
+      "komponen": "Asrama & makan per bulan"
+    },
+    {
+      "sma": "Rp [0.000.000]",
+      "smp": "Rp [0.000.000]",
+      "komponen": "Seragam & perlengkapan"
+    },
+    {
+      "sma": "Rp [000.000]",
+      "smp": "Rp [000.000]",
+      "komponen": "SPP per bulan"
+    }
+  ],
+  "brosur": "",
+  "status": "Pendaftaran dibuka",
+  "syarat": [
+    "Calon santriwati (perempuan)",
+    "SMP: lulusan SD/MI sederajat",
+    "SMA: lulusan SMP/MTs sederajat",
+    "Bersedia tinggal di asrama",
+    "Fotokopi ijazah/SKL dan rapor terakhir",
+    "Fotokopi Akta Kelahiran & Kartu Keluarga",
+    "Pas foto 3×4 (4 lembar)",
+    "Mampu membaca Al-Qur'an"
+  ],
+  "rekening": "[Nama Bank – No. Rekening a.n. ...]",
+  "gelombang": [
+    {
+      "nama": "Gelombang 1",
+      "waktu": "[1 November – 31 Desember 2026]"
+    },
+    {
+      "nama": "Gelombang 2",
+      "waktu": "[1 Januari – 28 Februari 2027]"
+    },
+    {
+      "nama": "Gelombang 3",
+      "waktu": "[1 Maret – 30 April 2027]"
+    }
+  ],
+  "tahun_ajaran": "2027/2028",
+  "catatan_biaya": "*Tersedia beasiswa untuk santriwati berprestasi dan penghafal Al-Qur'an. [Sesuaikan]"
+}

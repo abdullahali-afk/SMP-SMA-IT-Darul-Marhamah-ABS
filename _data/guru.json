@@ -1,0 +1,76 @@
+{
+  "daftar": [
+    {
+      "foto": "",
+      "nama": "[Nama Kepala SMP]",
+      "jabatan": "Kepala SMP",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Kepala SMA]",
+      "jabatan": "Kepala SMA",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Wakasek Kurikulum",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Wakasek Kesiswaan",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Ustadzah]",
+      "jabatan": "Koordinator Tahfidz",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Guru Bahasa Arab",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Guru Matematika",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Guru Bahasa Inggris",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Guru IPA",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Guru Fiqih & Aqidah",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Guru]",
+      "jabatan": "Guru Bahasa Indonesia",
+      "kategori": "Guru"
+    },
+    {
+      "foto": "",
+      "nama": "[Nama Ustadzah]",
+      "jabatan": "Musyrifah Asrama",
+      "kategori": "Tenaga Kependidikan"
+    }
+  ]
+}
