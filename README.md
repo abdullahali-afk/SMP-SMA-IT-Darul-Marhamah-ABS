@@ -6,33 +6,34 @@ Website ini gratis di GitHub Pages dan dibangun otomatis (Jekyll) setiap kali ad
 
 ## Panel admin (tanpa coding)
 
-1. Buka **https://app.pagescms.org** lalu klik **Sign in with GitHub**.
-2. Login dengan akun GitHub pemilik repo (**abdullahali-afk**). Jika diminta, izinkan (Authorize/Install) aplikasi Pages CMS untuk repo `SMP-SMA-IT-Darul-Marhamah-ABS`.
-3. Pilih repo **SMP-SMA-IT-Darul-Marhamah-ABS**, branch **main**.
-4. Menu di kiri:
-   - **Berita**: tambah, ubah, hapus berita (judul, tanggal, kategori, foto, isi).
-   - **Data Sekolah & Kontak**: nama, slogan, WhatsApp, alamat, NPSN, visi misi, sejarah, statistik, video YouTube, media sosial.
-   - **Info PPDB**: tahun ajaran, jadwal, syarat, biaya, rekening, brosur.
-   - **Guru & Staf**, **Galeri Foto**, **Testimoni**, **Fasilitas & Ekstrakurikuler**, **Program Unggulan**.
-   - **Media**: semua foto yang diunggah (tersimpan di `assets/img`).
-5. Klik **Save**. Website diperbarui otomatis dalam 1–2 menit.
+Alamat panel: **https://abdullahali-afk.github.io/SMP-SMA-IT-Darul-Marhamah-ABS/admin/**
 
-### Menambah admin lain
-Admin = akun GitHub yang punya akses ke repo ini. Untuk menambah admin (misal staf TU):
-GitHub → repo ini → **Settings → Collaborators → Add people**, masukkan username GitHub mereka.
-Setelah mereka menerima undangan, mereka bisa login di app.pagescms.org dengan akunnya sendiri.
-Hapus dari daftar Collaborators untuk mencabut akses.
+Panel memakai database Supabase (gratis). Setiap akun punya **peran** (Admin, Guru, Pegawai, atau peran buatan sendiri), dan setiap peran hanya bisa membuka bagian yang dicentang admin.
+
+### Menyiapkan pertama kali (sekali saja)
+1. Buka Supabase → project ini → **SQL Editor** → **New query**. Tempel seluruh isi file `supabase/setup.sql`, lalu klik **Run**.
+2. **Authentication → Sign In / Providers → Email**: matikan **Confirm email**, lalu Save. (Email bawaan Supabase hanya terkirim ke anggota tim Supabase, jadi konfirmasi email untuk guru tidak akan sampai.)
+3. **Authentication → URL Configuration**: isi **Site URL** dan **Redirect URLs** dengan alamat panel di atas.
+4. Buka alamat panel, klik **Daftar**. **Akun pertama yang mendaftar otomatis menjadi Admin**, jadi segera daftar setelah langkah 1.
+
+### Sehari-hari
+- **Pengguna**: buat akun guru/pegawai langsung (nama, email, password awal, peran), setujui akun yang mendaftar sendiri, ganti password, nonaktifkan, atau hapus akun.
+- **Peran & Hak Akses**: centang/hapus centang bagian yang boleh dikelola setiap peran (buka/tutup akses), tambah atau hapus peran.
+- **Menu Website**: tambah, hapus, urutkan menu dan submenu.
+- **Berita**, **Beranda**, **Data Sekolah**, **PPDB**, **Guru & Staf**, **Struktur**, **Galeri**, **Video**, **Testimoni**, **Fasilitas**, **Program**, **Download**.
+- **Pengaturan Akun**: ganti nama tampilan dan password sendiri.
+
+Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/sinkron.yml`) sekitar tiap 10 menit, jadi tampil di website dalam ±10–20 menit. Untuk menyalin segera: tab **Actions → Sinkron panel admin → Run workflow**. Jadwal ini juga menjaga project Supabase gratis tetap aktif.
 
 ## Struktur file
 | File / folder | Isi |
 |---|---|
-| `_data/sekolah.yml` | Data sekolah & kontak |
-| `_data/ppdb.yml` | Info PPDB |
-| `_data/guru.yml`, `galeri.yml`, `testimoni.yml`, `fasilitas.yml`, `program.yml` | Isi halaman |
-| `_posts/` | Berita (satu file per berita) |
-| `assets/img/` | Foto yang diunggah |
-| `_layouts/`, `_includes/`, `*.html`, `assets/style.css` | Tampilan (tidak perlu diubah) |
-| `.pages.yml` | Pengaturan panel admin |
+| `admin/` | Panel admin (`konfigurasi.json` berisi Project URL & publishable key Supabase) |
+| `supabase/setup.sql` | Tabel, peran, hak akses, dan isi awal database |
+| `scripts/sinkron.mjs` | Menyalin isi database ke `_data/` dan `_posts/` |
+| `_data/*.json` / `*.yml` | Isi halaman (dibuat otomatis dari panel, jangan diubah manual) |
+| `_posts/` | Berita (dibuat otomatis dari panel) |
+| `_layouts/`, `_includes/`, `*.html`, `assets/style.css` | Tampilan |
 
 ## Memasang domain sendiri (.com / .sch.id) nanti
 1. Beli domain (misalnya di Niagahoster, Rumahweb, Cloudflare). Domain `.sch.id` bisa didaftarkan untuk sekolah resmi.
@@ -41,3 +42,4 @@ Hapus dari daftar Collaborators untuk mencabut akses.
    - `CNAME` `www` → `abdullahali-afk.github.io`
 3. Di GitHub: **Settings → Pages → Custom domain**, isi nama domain, lalu centang **Enforce HTTPS**.
 4. Di `_config.yml`, ubah `baseurl` menjadi `""` dan `url` menjadi alamat domain baru.
+5. Di Supabase → Authentication → URL Configuration, ganti alamat panel admin dengan domain baru.

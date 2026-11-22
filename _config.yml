@@ -7,7 +7,7 @@ baseurl: "/SMP-SMA-IT-Darul-Marhamah-ABS"
 timezone: Asia/Makassar
 permalink: /berita/:year/:month/:title.html
 markdown: kramdown
-exclude: [README.md, Gemfile, Gemfile.lock, vendor]
+exclude: [README.md, Gemfile, Gemfile.lock, vendor, supabase, scripts]
 defaults:
   - scope: { path: "", type: posts }
     values: { layout: post }
