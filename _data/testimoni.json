@@ -4,6 +4,7 @@
       "isi": "Alhamdulillah, sejak sekolah di sini putri kami semakin rajin shalat dan hafalannya terus bertambah. Ustadzahnya sabar dan perhatian. [Contoh testimoni, ganti dengan yang asli]",
       "foto": "",
       "nama": "[Nama Orang Tua]",
+      "video": "",
       "kategori": "Orang Tua",
       "keterangan": "Wali santriwati kelas VIII"
     },
@@ -11,15 +12,21 @@
       "isi": "Kami senang karena pelajaran umum dan agama sama-sama diperhatikan. Putri kami jadi lebih mandiri dan sopan. [Contoh testimoni]",
       "foto": "",
       "nama": "[Nama Orang Tua]",
+      "video": "",
       "kategori": "Orang Tua",
       "keterangan": "Wali santriwati kelas XI"
     },
     {
-      "isi": "Bekal hafalan dan bahasa Arab dari sekolah sangat membantu saya ketika melanjutkan kuliah. [Contoh testimoni]",
+      "isi": "Bekal hafalan dan bahasa Arab dari sekolah sangat membantu saya ketika melanjutkan kuliah.",
       "foto": "",
-      "nama": "[Nama Alumni]",
+      "nama": "Khaulah Ansyar",
+      "video": "https://www.instagram.com/reel/DQvjyquj1T3/",
       "kategori": "Alumni",
-      "keterangan": "Alumni angkatan [I]"
+      "keterangan": "Alumni angkatan 11",
+      "video_embed": "https://www.instagram.com/reel/DQvjyquj1T3/embed/",
+      "video_link": "https://www.instagram.com/reel/DQvjyquj1T3/",
+      "video_jenis": "instagram",
+      "video_tegak": true
     }
   ]
 }
