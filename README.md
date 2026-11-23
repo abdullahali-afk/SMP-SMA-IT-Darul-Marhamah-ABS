@@ -23,7 +23,17 @@ Panel memakai database Supabase (gratis). Setiap akun punya **peran** (Admin, Gu
 - **Berita**, **Beranda**, **Data Sekolah**, **PPDB**, **Guru & Staf**, **Struktur**, **Galeri**, **Video**, **Testimoni**, **Fasilitas**, **Program**, **Download**.
 - **Pengaturan Akun**: ganti nama tampilan dan password sendiri.
 
-Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/sinkron.yml`) sekitar tiap 10 menit, jadi tampil di website dalam ±10–20 menit. Untuk menyalin segera: tab **Actions → Sinkron panel admin → Run workflow**. Jadwal ini juga menjaga project Supabase gratis tetap aktif.
+Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/sinkron.yml`). Jadwal otomatisnya oleh GitHub sering hanya berjalan sekitar sekali sejam, jadi pasang **Penerbitan otomatis** di bawah agar website diperbarui ±2–3 menit setelah tombol Simpan diklik. Untuk menyalin segera secara manual: tab **Actions → Sinkron panel admin → Run workflow**.
+
+### Penerbitan otomatis (sekali pasang)
+1. Buat token GitHub: https://github.com/settings/personal-access-tokens/new
+   - Token name: `Panel admin website`; Expiration: pilih yang paling lama.
+   - Repository access: **Only select repositories** → `SMP-SMA-IT-Darul-Marhamah-ABS`.
+   - Permissions → Repository permissions → **Actions: Read and write**.
+   - Klik **Generate token**, lalu salin tokennya (diawali `github_pat_`).
+2. Buka file `supabase/terbit-otomatis.sql`, ganti `TEMPEL_TOKEN_GITHUB_DI_SINI` dengan token tersebut.
+3. Supabase → **SQL Editor → New query** → tempel seluruh isinya → **Run**.
+4. Jika token kedaluwarsa, buat token baru dan ulangi langkah 2–3. Jangan kirim token ke siapa pun.
 
 ## Struktur file
 | File / folder | Isi |

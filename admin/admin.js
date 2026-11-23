@@ -218,7 +218,7 @@ function halamanDasbor() {
     h('a', { class: 'ubin', href: '#/pengguna' }, h('span', { class: 'ik' }, '👥'), h('div', null, h('b', null, 'Pengguna'), h('small', null, 'Akun & peran'))),
     h('a', { class: 'ubin', href: '#/peran' }, h('span', { class: 'ik' }, '🔐'), h('div', null, h('b', null, 'Peran & Hak Akses'), h('small', null, 'Buka/tutup akses'))));
   kerangka('Assalamu\'alaikum, ' + (profil.nama || ''), 'Pilih bagian yang ingin Anda kelola.',
-    h('div', { class: 'pesan info', style: 'margin-bottom:18px' }, 'Perubahan yang disimpan akan tampil di website sekitar 10–20 menit kemudian.'),
+    h('div', { class: 'pesan info', style: 'margin-bottom:18px' }, 'Perubahan yang disimpan tampil di website dalam beberapa menit. Jika belum terlihat, muat ulang (refresh) halaman website.'),
     h('div', { class: 'kisi' }, ubin));
 }
 
