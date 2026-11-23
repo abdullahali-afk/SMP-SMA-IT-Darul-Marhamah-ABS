@@ -31,9 +31,10 @@ Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/si
    - Repository access: **Only select repositories** → `SMP-SMA-IT-Darul-Marhamah-ABS`.
    - Permissions → Repository permissions → **Actions: Read and write**.
    - Klik **Generate token**, lalu salin tokennya (diawali `github_pat_`).
-2. Buka file `supabase/terbit-otomatis.sql`, ganti `TEMPEL_TOKEN_GITHUB_DI_SINI` dengan token tersebut.
-3. Supabase → **SQL Editor → New query** → tempel seluruh isinya → **Run**.
-4. Jika token kedaluwarsa, buat token baru dan ulangi langkah 2–3. Jangan kirim token ke siapa pun.
+2. Supabase → **SQL Editor → New query** → tempel seluruh isi `supabase/terbit-otomatis.sql` tanpa diubah → **Run** (jika muncul peringatan, klik **Run this query**).
+3. **New query** lagi, ketik satu baris berikut dengan token Anda di antara tanda kutip, lalu **Run**:
+   `select public.atur_token_terbit('github_pat_...');`
+4. Jika token kedaluwarsa, buat token baru dan ulangi langkah 3 saja. Jangan kirim token ke siapa pun.
 
 ## Struktur file
 | File / folder | Isi |

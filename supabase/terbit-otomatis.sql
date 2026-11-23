@@ -1,35 +1,41 @@
 -- =====================================================================
---  Penerbitan otomatis: setiap kali isi/berita disimpan di Panel Admin,
---  Supabase langsung meminta GitHub memperbarui website (±2–3 menit).
+--  PENERBITAN OTOMATIS — LANGKAH 1 dari 2
+--  Tempel SELURUH isi file ini di Supabase → SQL Editor → New query → Run.
+--  Tidak perlu mengubah apa pun di file ini.
 --
---  Cara pakai (sekali saja):
---  1. Buat token GitHub (lihat README bagian "Penerbitan otomatis").
---  2. Ganti tulisan TEMPEL_TOKEN_GITHUB_DI_SINI di bawah dengan token itu.
---  3. Supabase → SQL Editor → New query → tempel seluruh file ini → Run.
---  Token disimpan terenkripsi di Supabase Vault. Jangan kirim token ke siapa pun.
---  Aman dijalankan ulang (misalnya saat mengganti token yang kedaluwarsa).
+--  LANGKAH 2 (query baru, satu baris saja):
+--    select public.atur_token_terbit('TOKEN_GITHUB_ANDA');
+--  Ganti TOKEN_GITHUB_ANDA dengan token GitHub (diawali github_pat_),
+--  tanda kutip ' di kiri dan kanan token harus tetap ada.
 -- =====================================================================
 
 create extension if not exists pg_net with schema extensions;
 
--- 1. Simpan / perbarui token di Vault
-do $$
+-- Menyimpan / mengganti token GitHub di Supabase Vault (terenkripsi)
+create or replace function public.atur_token_terbit(token text) returns text
+language plpgsql security definer set search_path = public as $$
 declare
-  token text := 'TEMPEL_TOKEN_GITHUB_DI_SINI';
   sid uuid;
 begin
-  if token = '' or token like 'TEMPEL_%' then
-    raise exception 'Ganti TEMPEL_TOKEN_GITHUB_DI_SINI dengan token GitHub Anda terlebih dahulu.';
+  token := btrim(coalesce(token, ''));
+  if token = '' or token = 'TOKEN_GITHUB_ANDA' then
+    raise exception 'Token belum diisi. Ganti TOKEN_GITHUB_ANDA dengan token GitHub Anda.';
   end if;
-  select id into sid from vault.secrets where name = 'github_token_sinkron';
+  if token not like 'github_pat_%' and token not like 'ghp_%' then
+    raise exception 'Itu bukan token GitHub. Token GitHub diawali github_pat_';
+  end if;
+  select id into sid from vault.secrets where name = 'github_token_sinkron' limit 1;
   if sid is null then
     perform vault.create_secret(token, 'github_token_sinkron', 'Token GitHub untuk menerbitkan website dari Panel Admin');
   else
     perform vault.update_secret(sid, token);
   end if;
+  return 'Berhasil. Token tersimpan dan penerbitan otomatis aktif.';
 end $$;
 
--- 2. Fungsi yang meminta GitHub menjalankan "Sinkron panel admin"
+revoke execute on function public.atur_token_terbit(text) from public, anon, authenticated;
+
+-- Meminta GitHub menjalankan "Sinkron panel admin"
 create or replace function public.picu_sinkron() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare
@@ -53,7 +59,7 @@ end $$;
 
 revoke execute on function public.picu_sinkron() from public, anon, authenticated;
 
--- 3. Jalankan setiap ada perubahan isi website atau berita
+-- Jalankan setiap ada perubahan isi website atau berita
 drop trigger if exists terbit_konten on public.konten;
 create trigger terbit_konten after insert or update or delete on public.konten
   for each statement execute function public.picu_sinkron();
@@ -61,7 +67,3 @@ create trigger terbit_konten after insert or update or delete on public.konten
 drop trigger if exists terbit_berita on public.berita;
 create trigger terbit_berita after insert or update or delete on public.berita
   for each statement execute function public.picu_sinkron();
-
--- 4. Cek: setelah Run, simpan sesuatu di Panel Admin, lalu jalankan
---    select status_code, content from net._http_response order by created desc limit 3;
---    Kode 204 berarti berhasil. 401/403/404 berarti token salah atau izinnya kurang.
