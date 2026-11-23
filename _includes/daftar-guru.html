@@ -1,0 +1,27 @@
+{%- comment -%}
+Daftar guru & tenaga kependidikan untuk satu jenjang (include.jenjang = SMP atau SMA).
+Jenjang tiap orang diatur di Panel Admin → Guru & Staf → Jenjang. Jika kosong: dilihat dari
+jabatan (mengandung "SMP"/"SMA"), selain itu tampil di kedua jenjang.
+{%- endcomment -%}
+{%- assign dg_j = include.jenjang -%}
+{%- assign dg_id = dg_j | downcase -%}
+{%- capture dg_guru -%}{%- for g in site.data.guru.daftar -%}{%- unless g.kategori == "Tenaga Kependidikan" -%}
+  {%- assign dg_x = g.jenjang | default: "" -%}
+  {%- if dg_x == "" -%}{%- if g.jabatan contains "SMP" -%}{%- assign dg_x = "SMP" -%}{%- elsif g.jabatan contains "SMA" -%}{%- assign dg_x = "SMA" -%}{%- else -%}{%- assign dg_x = "SMP & SMA" -%}{%- endif -%}{%- endif -%}
+  {%- if dg_x contains dg_j -%}{% include kartu-orang.html o=g %}{%- endif -%}
+{%- endunless -%}{%- endfor -%}{%- endcapture -%}
+{%- capture dg_tendik -%}{%- for g in site.data.guru.daftar -%}{%- if g.kategori == "Tenaga Kependidikan" -%}
+  {%- assign dg_x = g.jenjang | default: "" -%}
+  {%- if dg_x == "" -%}{%- if g.jabatan contains "SMP" -%}{%- assign dg_x = "SMP" -%}{%- elsif g.jabatan contains "SMA" -%}{%- assign dg_x = "SMA" -%}{%- else -%}{%- assign dg_x = "SMP & SMA" -%}{%- endif -%}{%- endif -%}
+  {%- if dg_x contains dg_j -%}{% include kartu-orang.html o=g %}{%- endif -%}
+{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- assign dg_guru = dg_guru | strip -%}{%- assign dg_tendik = dg_tendik | strip -%}
+<section id="guru-{{ dg_id }}"{% if include.putih %} class="bg-putih"{% endif %}><div class="wadah">
+  {%- assign dg_judul = "Guru " | append: dg_j -%}
+  {% include judul.html k="Pendidik" t=dg_judul %}
+  {% if dg_guru != "" %}<div class="grid g4">{{ dg_guru }}</div>{% else %}<p class="kosong-guru">Data guru {{ dg_j }} belum diisi.</p>{% endif %}
+  {% if dg_tendik != "" %}
+  <h3 class="sub-guru" id="tendik-{{ dg_id }}">Tenaga Kependidikan {{ dg_j }}</h3>
+  <div class="grid g4">{{ dg_tendik }}</div>
+  {% endif %}
+</div></section>

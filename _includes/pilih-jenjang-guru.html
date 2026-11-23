@@ -1,0 +1,4 @@
+<nav class="pilih-program pilih-guru" aria-label="Pilih jenjang">
+  <a href="{{ '/guru-smp.html' | relative_url }}"{% if include.aktif == "SMP" %} class="aktif" aria-current="page"{% endif %}>👩‍🏫 Guru SMP</a>
+  <a href="{{ '/guru-sma.html' | relative_url }}"{% if include.aktif == "SMA" %} class="aktif" aria-current="page"{% endif %}>👩‍🏫 Guru SMA</a>
+</nav>

@@ -685,6 +685,17 @@ window.SKEMA = [
       ]
      },
      {
+      "name": "jenjang",
+      "label": "Jenjang (tampil di menu Guru SMP / Guru SMA)",
+      "type": "select",
+      "options": [
+       "SMP",
+       "SMA",
+       "SMP & SMA"
+      ],
+      "description": "Pilih SMP, SMA, atau SMP & SMA jika mengajar di keduanya. Jika dikosongkan, dilihat dari jabatan (misalnya \"Kepala SMP\"); selain itu tampil di keduanya."
+     },
+     {
       "name": "foto",
       "label": "Foto",
       "type": "image"

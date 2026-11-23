@@ -384,3 +384,9 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 .wa-daftar a{flex-direction:row;align-items:center;gap:12px}
 .wa-daftar a span{display:flex;flex-direction:column}
 .wa .ikon-wa{vertical-align:middle}
+
+/* Guru per jenjang */
+.pilih-guru{margin-bottom:0}
+.pilih-program a.aktif{background:var(--hijau);color:#fff}
+.sub-guru{text-align:center;color:var(--hijau-tua);font-size:1.25rem;margin:46px 0 24px}
+.kosong-guru{text-align:center;color:var(--abu)}

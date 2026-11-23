@@ -4,15 +4,6 @@ title: Guru & Tenaga Kependidikan
 description: Daftar guru dan tenaga kependidikan SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School.
 ---
 {% include hero.html judul="Guru & Tenaga Kependidikan" sub="Para pendidik yang membimbing dengan ilmu dan keteladanan" induk="Tentang Kami" %}
-{% assign guru = site.data.guru.daftar | where_exp: "g", "g.kategori != 'Tenaga Kependidikan'" %}
-{% assign tendik = site.data.guru.daftar | where: "kategori", "Tenaga Kependidikan" %}
-<section id="guru"><div class="wadah">
-  {% include judul.html k="Pendidik" t="Guru" %}
-  <div class="grid g4">{% for g in guru %}{% include kartu-orang.html o=g %}{% endfor %}</div>
-</div></section>
-{% if tendik.size > 0 %}
-<section class="bg-putih" id="tendik"><div class="wadah">
-  {% include judul.html k="Staf" t="Tenaga Kependidikan" %}
-  <div class="grid g4">{% for g in tendik %}{% include kartu-orang.html o=g %}{% endfor %}</div>
-</div></section>
-{% endif %}
+<div class="wadah" style="padding-top:34px">{% include pilih-jenjang-guru.html %}</div>
+{% include daftar-guru.html jenjang="SMP" %}
+{% include daftar-guru.html jenjang="SMA" putih=true %}
