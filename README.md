@@ -23,7 +23,7 @@ Panel memakai database Supabase (gratis). Setiap akun punya **peran** (Admin, Gu
 - **Berita**, **Beranda**, **Data Sekolah**, **PPDB**, **Guru & Staf**, **Struktur**, **Galeri**, **Video**, **Testimoni**, **Fasilitas**, **Program**, **Download**.
 - **Pengaturan Akun**: ganti nama tampilan dan password sendiri.
 
-Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/sinkron.yml`). Jadwal otomatisnya oleh GitHub sering hanya berjalan sekitar sekali sejam, jadi pasang **Penerbitan otomatis** di bawah agar website diperbarui ±2–3 menit setelah tombol Simpan diklik. Untuk menyalin segera secara manual: tab **Actions → Sinkron panel admin → Run workflow**.
+Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/sinkron.yml` + `scripts/pantau.sh`). Pukul 05.00–23.00 WITA workflow ini terus memantau database dan menerbitkan perubahan ±2–3 menit setelah tombol Simpan diklik, tanpa perlu token apa pun. Di luar jam itu berjalan sekitar sekali sejam. **Penerbitan otomatis** di bawah bersifat tambahan (opsional). Untuk menyalin segera secara manual: tab **Actions → Sinkron panel admin → Run workflow**.
 
 ### Penerbitan otomatis (sekali pasang)
 1. Buat token GitHub: https://github.com/settings/personal-access-tokens/new

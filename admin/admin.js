@@ -38,7 +38,13 @@ function pesanGalat(e) {
     'email rate limit exceeded': 'Terlalu banyak email dikirim. Coba lagi sekitar 1 jam lagi, atau minta admin membuatkan password baru.',
     'Signups not allowed for this instance': 'Pendaftaran akun sedang ditutup oleh admin.',
   };
-  return peta[m] || m;
+  if (peta[m]) return peta[m];
+  if (/jwt|exp claim|token.*expired|invalid token/i.test(m)) return 'Sesi login sudah habis. Muat ulang halaman (refresh) lalu masuk lagi.';
+  if (/row-level security|violates.*policy|unauthorized|403/i.test(m)) return 'Akun Anda belum punya izin untuk ini. Minta admin memeriksa akses akun Anda di menu Pengguna.';
+  if (/exceeded the maximum allowed size|payload too large|413/i.test(m)) return 'File terlalu besar untuk diunggah.';
+  if (/mime type|not supported/i.test(m)) return 'Jenis file ini tidak didukung. Gunakan foto JPG atau PNG.';
+  if (/failed to fetch|networkerror|load failed|network request failed/i.test(m)) return 'Koneksi internet terputus. Periksa sinyal lalu coba lagi.';
+  return m;
 }
 function slugify(t) {
   return String(t || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
@@ -191,9 +197,21 @@ function kerangka(judul, sub, ...isi) {
     h('div', { class: 'isi' }, h('h1', null, judul), sub ? h('p', { class: 'sub' }, sub) : null, ...isi))));
 }
 
+/* ---------- Perubahan yang belum disimpan ---------- */
+let kotor = false, hashTerakhir = location.hash;
+function tandaiKotor() { kotor = true; if (tandaiKotor.cb) tandaiKotor.cb(); }
+function bersih() { kotor = false; tandaiKotor.cb = null; }
+window.addEventListener('beforeunload', (e) => { if (kotor) { e.preventDefault(); e.returnValue = ''; } });
+
 /* ---------- Rute ---------- */
 function rute() {
   if (!profil) return;
+  if (kotor && location.hash !== hashTerakhir) {
+    if (!confirm('Ada perubahan (misalnya foto baru) yang BELUM disimpan. Tinggalkan halaman ini tanpa menyimpan?')) {
+      history.replaceState(null, '', hashTerakhir || '#/'); return;
+    }
+  }
+  bersih(); hashTerakhir = location.hash;
   const r = (location.hash || '#/').slice(1).split('/').filter(Boolean);
   window.scrollTo(0, 0);
   if (r[0] === 'akun') return halamanAkun();
@@ -218,7 +236,7 @@ function halamanDasbor() {
     h('a', { class: 'ubin', href: '#/pengguna' }, h('span', { class: 'ik' }, '👥'), h('div', null, h('b', null, 'Pengguna'), h('small', null, 'Akun & peran'))),
     h('a', { class: 'ubin', href: '#/peran' }, h('span', { class: 'ik' }, '🔐'), h('div', null, h('b', null, 'Peran & Hak Akses'), h('small', null, 'Buka/tutup akses'))));
   kerangka('Assalamu\'alaikum, ' + (profil.nama || ''), 'Pilih bagian yang ingin Anda kelola.',
-    h('div', { class: 'pesan info', style: 'margin-bottom:18px' }, 'Perubahan yang disimpan tampil di website dalam beberapa menit. Jika belum terlihat, muat ulang (refresh) halaman website.'),
+    h('div', { class: 'pesan info', style: 'margin-bottom:18px' }, 'Perubahan yang disimpan tampil di website dalam ±3 menit. Jika belum terlihat, muat ulang (refresh) halaman website.'),
     h('div', { class: 'kisi' }, ubin));
 }
 
@@ -241,16 +259,21 @@ async function halamanKonten(kunci) {
   const form = h('div', { class: 'panel' }, ...bagian.fields.map(f => medan(f, data, kunci)));
   const btn = h('button', { class: 'btn btn-emas' }, '💾 Simpan perubahan');
   const ket = h('small', { style: 'color:var(--abu)' }, baris ? 'Terakhir diubah: ' + new Date(baris.diubah).toLocaleString('id-ID') : '');
+  form.addEventListener('input', tandaiKotor);
+  form.addEventListener('change', (e) => { if (e.target.type !== 'file') tandaiKotor(); });
+  tandaiKotor.cb = () => { ket.textContent = '⚠️ Ada perubahan yang belum disimpan. Klik Simpan.'; ket.style.color = '#b45309'; };
   btn.addEventListener('click', async () => {
     sibuk(btn, true, 'Menyimpan…');
+    try { await pastikanSesi(); } catch (e) { sibuk(btn, false, '💾 Simpan perubahan'); return toast('Gagal menyimpan: ' + pesanGalat(e), true); }
     const q = ada
       ? sb.from('konten').update({ data, diubah: new Date().toISOString() }).eq('kunci', kunci).select()
       : sb.from('konten').insert({ kunci, data }).select();
     const { data: hasil, error } = await q;
     sibuk(btn, false, '💾 Simpan perubahan');
     if (error || !hasil || !hasil.length) return toast('Gagal menyimpan: ' + (error ? pesanGalat(error) : 'tidak ada akses'), true);
-    ada = true; if (info) info.remove();
-    ket.textContent = 'Tersimpan ' + new Date().toLocaleTimeString('id-ID') + '. Website diperbarui dalam beberapa menit.';
+    ada = true; kotor = false; if (info) info.remove();
+    ket.style.color = 'var(--abu)';
+    ket.textContent = 'Tersimpan ' + new Date().toLocaleTimeString('id-ID') + '. Tampil di website dalam ±3 menit (muat ulang halaman website).';
     toast('Perubahan tersimpan.');
   });
   kerangka(bagian.ikon + ' ' + bagian.label, 'Ubah isian lalu klik Simpan.', info, form, h('div', { class: 'aksi-simpan' }, btn, ket));
@@ -335,11 +358,26 @@ function daftarMedan(f, obj, kunci) {
   return box;
 }
 
+// Pastikan sesi login masih berlaku (diperbarui otomatis bila hampir habis)
+async function pastikanSesi() {
+  let { data: { session } } = await sb.auth.getSession();
+  if (session && session.expires_at && session.expires_at * 1000 - Date.now() < 120000) {
+    const r = await sb.auth.refreshSession(); session = r.data.session;
+  }
+  if (!session) throw new Error('jwt expired');
+  sesi = session;
+}
+
 async function unggah(file, folder) {
-  const aman = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
-  const jalur = `${folder}/${Date.now()}-${aman}`;
-  const { error } = await sb.storage.from('media').upload(jalur, file, { cacheControl: '31536000', upsert: false });
-  if (error) throw error;
+  await pastikanSesi();
+  const nama = (file.name || 'file').toLowerCase().normalize('NFKD').replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '').slice(-60) || 'file';
+  const jalur = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}-${nama}`;
+  let hasil;
+  for (let coba = 0; coba < 2; coba++) {
+    hasil = await sb.storage.from('media').upload(jalur, file, { cacheControl: '31536000', upsert: false, contentType: file.type || undefined });
+    if (!hasil.error || !/failed to fetch|network|load failed|timeout/i.test(hasil.error.message || '')) break;
+  }
+  if (hasil.error) throw hasil.error;
   return sb.storage.from('media').getPublicUrl(jalur).data.publicUrl;
 }
 
@@ -357,11 +395,15 @@ function medanBerkas(f, ambil, set, kunci) {
   const input = h('input', { type: 'file', accept: gambar ? 'image/*' : '' });
   input.addEventListener('change', async () => {
     const file = input.files[0]; if (!file) return;
-    if (file.size > 8 * 1024 * 1024) return toast('Ukuran file maksimal 8 MB.', true);
+    if (file.size > (gambar ? 40 : 20) * 1024 * 1024) { input.value = ''; return toast(`Ukuran file maksimal ${gambar ? 40 : 20} MB.`, true); }
     label.textContent = 'Mengunggah…';
     try {
-      const u = await unggah(gambar ? await kecilkan(file) : file, kunci || 'umum');
-      set(u); url.value = u; tampil(); toast('Berhasil diunggah. Jangan lupa klik Simpan.');
+      const siap = gambar ? await kecilkan(file) : file;
+      if (gambar && !/^image\/(jpeg|png|webp|gif)$/.test(siap.type)) throw new Error('mime type not supported');
+      if (siap.size > 20 * 1024 * 1024) throw new Error('exceeded the maximum allowed size');
+      const u = await unggah(siap, kunci || 'umum');
+      set(u); url.value = u; tampil(); tandaiKotor();
+      toast('Foto terunggah. Klik "Simpan perubahan" agar tampil di website.');
     } catch (e) { toast('Gagal mengunggah: ' + pesanGalat(e), true); }
     label.textContent = gambar ? '📷 Unggah foto' : '📎 Unggah file'; input.value = '';
   });
@@ -374,16 +416,19 @@ function medanBerkas(f, ambil, set, kunci) {
 function absolut(v) { return /^https?:/i.test(v) ? v : SITUS + String(v).replace(/^\//, ''); }
 
 /* Perkecil foto besar sebelum diunggah (hemat kuota & cepat dibuka) */
+// Foto dengan format lain (mis. HEIC dari iPhone) diubah ke JPG bila browser bisa membukanya.
 function kecilkan(file, maks = 1600) {
   return new Promise((res) => {
-    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return res(file);
+    if (file.type === 'image/gif') return res(file);
     const img = new Image();
     img.onload = () => {
+      URL.revokeObjectURL(img.src);
       const s = Math.min(1, maks / Math.max(img.width, img.height));
-      if (s === 1 && file.size < 900 * 1024) return res(file);
+      if (s === 1 && file.size < 900 * 1024 && /^image\/(jpeg|png|webp)$/.test(file.type)) return res(file);
       const c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      c.toBlob(b => res(b ? new File([b], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file), 'image/jpeg', 0.85);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(b => res(b ? new File([b], (file.name || 'foto').replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file), 'image/jpeg', 0.85);
     };
     img.onerror = () => res(file);
     img.src = URL.createObjectURL(file);
@@ -457,16 +502,19 @@ async function halamanBeritaForm(id) {
     { name: 'isi', label: 'Isi berita', type: 'rich-text' },
     { name: 'terbit', label: 'Terbitkan di website (hilangkan centang untuk menyimpan sebagai draf)', type: 'boolean' }];
   const form = h('div', { class: 'panel' }, ...F.map(f => medan(f, b, 'berita')));
+  form.addEventListener('input', tandaiKotor);
   const btn = h('button', { class: 'btn btn-emas' }, '💾 Simpan berita');
   btn.addEventListener('click', async () => {
     if (!b.judul.trim()) return toast('Judul berita wajib diisi.', true);
     sibuk(btn, true, 'Menyimpan…');
+    try { await pastikanSesi(); } catch (e) { sibuk(btn, false, '💾 Simpan berita'); return toast('Gagal menyimpan: ' + pesanGalat(e), true); }
     const isian = { judul: b.judul.trim(), tanggal: b.tanggal, kategori: b.kategori, gambar: b.gambar, ringkasan: b.ringkasan, isi: b.isi, terbit: b.terbit, diubah: new Date().toISOString() };
     if (baru) isian.slug = slugify(b.judul);
     const { data, error } = baru ? await sb.from('berita').insert(isian).select() : await sb.from('berita').update(isian).eq('id', id).select();
     sibuk(btn, false, '💾 Simpan berita');
     if (error || !data || !data.length) return toast('Gagal menyimpan: ' + (error ? pesanGalat(error) : 'tidak ada akses'), true);
-    toast('Berita tersimpan. Tampil di website dalam beberapa menit.');
+    kotor = false;
+    toast('Berita tersimpan. Tampil di website dalam ±3 menit.');
     location.hash = '#/berita';
   });
   kerangka(baru ? '📰 Tulis berita baru' : '📰 Edit berita', null, form,

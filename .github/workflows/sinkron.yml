@@ -1,10 +1,11 @@
 # Menyalin isi yang diubah di Panel Admin (/admin) ke website.
-# Berjalan otomatis sekitar tiap 10 menit, atau manual: tab Actions → "Sinkron panel admin" → Run workflow.
+# Pukul 05.00–23.00 WITA workflow ini terus memantau (perubahan terbit ±2–3 menit setelah Simpan).
+# Di luar jam itu berjalan tiap jam. Manual: tab Actions → "Sinkron panel admin" → Run workflow.
 name: Sinkron panel admin
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "7 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -19,35 +20,21 @@ concurrency:
 jobs:
   sinkron:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 58
     steps:
       - uses: actions/checkout@v4
 
-      - name: Ambil isi terbaru dari database
-        run: node scripts/sinkron.mjs
-
-      - name: Simpan ke website
+      - name: Pantau & terbitkan isi dari panel admin
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ -z "$(git status --porcelain -- _data _posts)" ]; then
-            echo "Tidak ada perubahan."
-            exit 0
-          fi
-          git config user.name "Panel Admin"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A _data _posts
-          git commit -m "Perbarui isi dari panel admin"
-          git pull --rebase --quiet
-          git push
-          gh api -X POST "repos/${{ github.repository }}/pages/builds" > /dev/null || true
+        run: bash scripts/pantau.sh
 
       # GitHub menonaktifkan jadwal otomatis jika repo sepi 60 hari; ini mencegahnya (sekali sehari).
       - name: Jaga jadwal tetap aktif
-        if: github.event_name == 'schedule'
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$(date -u +%H)" = "00" ] && [ "$(date -u +%M)" -lt 10 ]; then
+          if [ "$(date -u +%H)" = "00" ]; then
             gh api -X PUT "repos/${{ github.repository }}/actions/workflows/sinkron.yml/enable" || true
           fi
