@@ -7,7 +7,9 @@
     "akreditasi": "[A]",
     "keterangan": "",
     "kepala_sekolah": "Abdullah, S.H., M.H.",
-    "target_hafalan": "[30 juz]"
+    "target_hafalan": "[30 juz]",
+    "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=Jl.%20Perintis%20Kemerdekaan%203%20BTN%20Asal%20Mula%20Blok%20E2%2FB%20Tamalanrea%20Indah%20Kota%20Makassar",
+    "peta_link": "https://www.google.com/maps/search/?api=1&query=Jl.%20Perintis%20Kemerdekaan%203%20BTN%20Asal%20Mula%20Blok%20E2%2FB%20Tamalanrea%20Indah%20Kota%20Makassar"
   },
   "smp": {
     "nama": "SMP Islam Terpadu Darul Marhamah Al-Qur'an Boarding School",
@@ -17,7 +19,9 @@
     "akreditasi": "[A]",
     "keterangan": "Untuk lulusan SD/MI (putri). Fokus pada tahsin, dasar hafalan, dan penguatan akhlak.",
     "kepala_sekolah": "Nur Wahdaniyah, S.S., M.Hum.",
-    "target_hafalan": "[15 juz]"
+    "target_hafalan": "[15 juz]",
+    "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=Jl.%20Sukamaju%203%20No%2066%20Tamamaung%20Makassar",
+    "peta_link": "https://www.google.com/maps/search/?api=1&query=Jl.%20Sukamaju%203%20No%2066%20Tamamaung%20Makassar"
   },
   "misi": [
     "Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani",
