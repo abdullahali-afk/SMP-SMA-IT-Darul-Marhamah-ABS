@@ -1,12 +1,17 @@
 {
   "daftar": [
     {
-      "isi": "Alhamdulillah, sejak sekolah di sini putri kami semakin rajin shalat dan hafalannya terus bertambah. Ustadzahnya sabar dan perhatian. [Contoh testimoni, ganti dengan yang asli]",
+      "isi": "Alhamdulillah, sejak sekolah di sini putri kami semakin rajin shalat dan hafalannya terus bertambah. Ustadzahnya sabar dan perhatian. ",
       "foto": "",
-      "nama": "[Nama Orang Tua]",
-      "video": "",
+      "nama": "Ummu Fulanah",
+      "video": "https://www.youtube.com/watch?v=FVZYI6cJBuU",
       "kategori": "Orang Tua",
-      "keterangan": "Wali santriwati kelas VIII"
+      "keterangan": "Wali santriwati kelas VII",
+      "video_embed": "https://www.youtube-nocookie.com/embed/FVZYI6cJBuU?rel=0&playsinline=1",
+      "video_link": "https://www.youtube.com/watch?v=FVZYI6cJBuU",
+      "video_jenis": "youtube",
+      "video_tegak": false,
+      "video_gambar": "https://i.ytimg.com/vi/FVZYI6cJBuU/hqdefault.jpg"
     },
     {
       "isi": "Kami senang karena pelajaran umum dan agama sama-sama diperhatikan. Putri kami jadi lebih mandiri dan sopan. [Contoh testimoni]",
@@ -27,6 +32,14 @@
       "video_link": "https://www.instagram.com/reel/DQvjyquj1T3/",
       "video_jenis": "instagram",
       "video_tegak": true
+    },
+    {
+      "isi": "",
+      "foto": "",
+      "nama": "",
+      "video": "",
+      "kategori": "",
+      "keterangan": ""
     }
   ]
 }
