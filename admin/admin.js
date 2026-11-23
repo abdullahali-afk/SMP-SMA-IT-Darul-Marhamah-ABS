@@ -321,6 +321,7 @@ function masukan(f, ambil, set, kunci) {
     }
     case 'image': case 'file': return medanBerkas(f, ambil, set, kunci);
     case 'peta': return medanPeta(ambil, set);
+    case 'video': return medanVideo(ambil, set);
     default: return h('input', { type: 'text', value: v ?? '', oninput: e => set(e.target.value) });
   }
 }
@@ -434,6 +435,29 @@ function medanPeta(ambil, set) {
     }
     status.style.color = '#047857'; status.textContent = '✓ Lokasi terbaca. Pratinjau:';
     prev.append(h('iframe', { src: r.embed, loading: 'lazy', title: 'Pratinjau peta', style: 'border:0;width:100%;height:240px;border-radius:10px;margin-top:6px' }));
+  };
+  let t;
+  isi.addEventListener('input', () => { set(isi.value.trim()); clearTimeout(t); t = setTimeout(tampil, 600); });
+  tampil();
+  return h('div', null, isi, status, prev);
+}
+// Isian link video: langsung dikenali dan diberi pratinjau pemutar
+function medanVideo(ambil, set) {
+  const isi = h('input', { type: 'url', placeholder: 'Contoh: https://youtu.be/…  atau  https://www.instagram.com/reel/…', value: ambil() || '' });
+  const status = h('div', { class: 'ket' });
+  const prev = h('div');
+  const NAMA = { youtube: 'YouTube', drive: 'Google Drive', instagram: 'Instagram', tiktok: 'TikTok', facebook: 'Facebook', file: 'file video' };
+  const tampil = () => {
+    const v = (ambil() || '').trim();
+    const r = v ? window.bacaVideo(v) : null;
+    prev.replaceChildren(); status.style.color = '';
+    if (!v) { status.textContent = 'Kosong: testimoni tampil tanpa video.'; return; }
+    if (!r) { status.style.color = '#b91c1c'; status.textContent = '✗ Link ini tidak dikenali. Gunakan link video YouTube, Google Drive, Instagram, TikTok, atau Facebook.'; return; }
+    status.style.color = '#047857';
+    if (r.pendek) { status.textContent = '✓ Link video diterima. Pemutar muncul di website ±3 menit setelah Simpan (pratinjau tidak tersedia untuk link pendek).'; return; }
+    status.textContent = '✓ Video ' + NAMA[r.jenis] + ' terbaca.' + (r.jenis === 'drive' ? ' Pastikan file Drive dibagikan ke "Siapa saja yang memiliki link".' : '') + ' Pratinjau:';
+    const gaya = 'border:0;display:block;margin-top:6px;border-radius:10px;background:#000;' + (r.tegak ? 'width:240px;height:426px' : 'width:100%;max-width:480px;aspect-ratio:16/9');
+    prev.append(r.jenis === 'file' ? h('video', { src: r.embed, controls: true, style: gaya }) : h('iframe', { src: r.embed, loading: 'lazy', allowfullscreen: true, title: 'Pratinjau video', style: gaya }));
   };
   let t;
   isi.addEventListener('input', () => { set(isi.value.trim()); clearTimeout(t); t = setTimeout(tampil, 600); });

@@ -1,2 +1,18 @@
 {%- assign t = include.t -%}
-<div class="testi"><div class="siapa"><div class="foto">{% if t.foto and t.foto != "" %}<img src="{{ t.foto | relative_url }}" alt="">{% else %}{{ t.nama | remove: "[" | slice: 0 }}{% endif %}</div><div><b>{{ t.nama }}</b><small>{{ t.keterangan }}</small></div></div><p>{{ t.isi }}</p></div>
+<div class="testi{% if t.video_embed and t.video_embed != "" %} ada-video{% endif %}">
+{%- if t.video_embed and t.video_embed != "" -%}
+  {%- capture kt_judul %}Video testimoni {{ t.nama | remove: "[" | remove: "]" }}{% endcapture -%}
+  <div class="testi-video {{ t.video_jenis }}{% if t.video_tegak %} tegak{% endif %}">
+  {%- if t.video_jenis == "youtube" -%}
+    <button type="button" class="video-fasad" data-embed="{{ t.video_embed | escape }}" aria-label="Putar {{ kt_judul | escape }}"{% if t.video_gambar %} style="background-image:url('{{ t.video_gambar | escape }}')"{% endif %}><span class="putar" aria-hidden="true"></span></button>
+  {%- elsif t.video_jenis == "file" -%}
+    <video src="{{ t.video_embed | escape }}" controls playsinline preload="metadata" title="{{ kt_judul | escape }}"></video>
+  {%- else -%}
+    <iframe src="{{ t.video_embed | escape }}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen scrolling="no" title="{{ kt_judul | escape }}"></iframe>
+  {%- endif -%}
+  </div>
+{%- endif -%}
+<div class="siapa"><div class="foto">{% if t.foto and t.foto != "" %}<img src="{{ t.foto | relative_url }}" alt="">{% else %}{{ t.nama | remove: "[" | slice: 0 }}{% endif %}</div><div><b>{{ t.nama }}</b><small>{{ t.keterangan }}</small></div></div>
+{%- if t.isi and t.isi != "" %}<p>{{ t.isi }}</p>{% endif -%}
+{%- if t.video_link and t.video_link != "" and t.video_embed == nil %}<a class="btn btn-hijau btn-kecil testi-tonton" href="{{ t.video_link | escape }}" target="_blank" rel="noopener">▶ Tonton video testimoni</a>{% endif -%}
+</div>

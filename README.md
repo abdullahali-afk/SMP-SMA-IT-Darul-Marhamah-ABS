@@ -57,3 +57,6 @@ Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/si
 
 ### Peta lokasi sekolah (Google Maps)
 Panel Admin → **Data Sekolah & Kontak** → isian **Lokasi Google Maps** di bagian Data SMA dan Data SMP. Buka Google Maps, cari sekolahnya, klik **Bagikan → Salin link**, lalu tempel. Boleh juga kode **Sematkan peta**, koordinat (`-5.13, 119.49`), atau alamat. Link pendek `maps.app.goo.gl` dibuka otomatis saat penerbitan (`admin/peta.js` + `scripts/sinkron.mjs`). Jika dikosongkan, peta memakai alamat sekolah.
+
+### Video testimoni
+Panel Admin → **Testimoni** → buka satu testimoni → isian **Link video testimoni**. Tempel link YouTube (termasuk Shorts), Google Drive (dibagikan "Siapa saja yang memiliki link"), Instagram, TikTok, atau Facebook. Video YouTube diputar langsung di kartu testimoni saat diklik; platform lain memakai pemutar bawaannya. Parser: `admin/video.js` (dipakai juga oleh `scripts/sinkron.mjs`, yang membuka link pendek vt.tiktok.com / fb.watch).

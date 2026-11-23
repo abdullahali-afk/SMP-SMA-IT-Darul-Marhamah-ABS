@@ -843,6 +843,12 @@ window.SKEMA = [
       "name": "foto",
       "label": "Foto",
       "type": "image"
+     },
+     {
+      "name": "video",
+      "label": "Link video testimoni (opsional)",
+      "type": "video",
+      "description": "Tempel link video dari YouTube (termasuk Shorts), Google Drive, Instagram, TikTok, atau Facebook. Video diputar langsung di website."
      }
     ]
    }

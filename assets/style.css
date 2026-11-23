@@ -392,3 +392,14 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 .pilih-program a.aktif{background:var(--hijau);color:#fff}
 .sub-guru{text-align:center;color:var(--hijau-tua);font-size:1.25rem;margin:46px 0 24px}
 .kosong-guru{text-align:center;color:var(--abu)}
+/* Video testimoni */
+.testi-video{position:relative;margin:0 0 16px;border-radius:12px;overflow:hidden;background:#000;aspect-ratio:16/9;z-index:1}
+.testi-video iframe,.testi-video video,.testi-video .video-fasad{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.testi-video.tegak{aspect-ratio:9/16;width:min(100%,300px);margin-left:auto;margin-right:auto}
+.testi-video.instagram,.testi-video.tiktok{aspect-ratio:auto;height:580px;width:min(100%,326px);margin-left:auto;margin-right:auto;background:#fff}
+.video-fasad{cursor:pointer;padding:0;background:#111 center/cover no-repeat}
+.video-fasad .putar{position:absolute;left:50%;top:50%;width:68px;height:48px;margin:-24px 0 0 -34px;border-radius:14px;background:rgba(220,0,0,.9);transition:transform .2s}
+.video-fasad .putar::after{content:"";position:absolute;left:27px;top:14px;border-style:solid;border-width:10px 0 10px 17px;border-color:transparent transparent transparent #fff}
+.video-fasad:hover .putar,.video-fasad:focus-visible .putar{transform:scale(1.1);background:#e00}
+.testi-tonton{margin-top:12px}
+.testi.ada-video::before{display:none}

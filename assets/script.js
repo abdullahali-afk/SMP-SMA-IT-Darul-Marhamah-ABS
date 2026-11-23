@@ -35,3 +35,6 @@ const step=ts=>{s=s||ts;const p=Math.min((ts-s)/1500,1);e.target.textContent=pre
 document.querySelectorAll('.wa-pilih').forEach(w=>{const b=w.querySelector('button'),d=w.querySelector('.wa-daftar');
 b.addEventListener('click',e=>{e.stopPropagation();d.hidden=!d.hidden;b.setAttribute('aria-expanded',String(!d.hidden));});
 document.addEventListener('click',e=>{if(!w.contains(e.target)){d.hidden=true;b.setAttribute('aria-expanded','false');}});});
+/* Video testimoni: diputar langsung di halaman saat diklik */
+document.querySelectorAll('.video-fasad').forEach(b=>b.addEventListener('click',()=>{const f=document.createElement('iframe');const s=b.dataset.embed;
+f.src=s+(s.includes('?')?'&':'?')+'autoplay=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=b.getAttribute('aria-label')||'Video';b.replaceWith(f);}));

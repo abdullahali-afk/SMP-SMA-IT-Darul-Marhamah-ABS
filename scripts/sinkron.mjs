@@ -68,8 +68,8 @@ const amankanLiquid = (s) => String(s).replace(/\{([{%])/g, '&#123;$1').replace(
 await import(pathToFileURL(path.join(ROOT, 'admin/peta.js')).href);
 const { bacaPeta, petaDariAlamat } = globalThis;
 
-// Link pendek (maps.app.goo.gl) dibuka untuk mendapatkan alamat Google Maps lengkapnya
-async function bukaLinkPendek(url) {
+// Link pendek (maps.app.goo.gl, vt.tiktok.com, fb.watch) dibuka untuk mendapatkan alamat lengkapnya
+async function bukaLinkPendek(url, baca = bacaPeta) {
   let u = url;
   for (let i = 0; i < 6; i++) {
     let r;
@@ -85,7 +85,7 @@ async function bukaLinkPendek(url) {
     u = new URL(lok, u).href;
     const h = new URL(u);
     if (/^consent\./.test(h.hostname) && h.searchParams.get('continue')) u = h.searchParams.get('continue');
-    const hasil = bacaPeta(u);
+    const hasil = baca(u);
     if (hasil && !hasil.pendek) return u;
   }
   return null;
@@ -119,6 +119,36 @@ async function lengkapiPeta(data, lama) {
   }
 }
 
+/* ---------- Video testimoni (isian "video") ---------- */
+await import(pathToFileURL(path.join(ROOT, 'admin/video.js')).href);
+const { bacaVideo } = globalThis;
+const KOLOM_VIDEO = ['video_embed', 'video_link', 'video_jenis', 'video_tegak', 'video_gambar'];
+function tiapObjekVideo(o, f) {
+  if (Array.isArray(o)) o.forEach(x => tiapObjekVideo(x, f));
+  else if (o && typeof o === 'object') { if (typeof o.video === 'string') f(o); Object.values(o).forEach(x => tiapObjekVideo(x, f)); }
+}
+async function lengkapiVideo(data, lama) {
+  const simpan = new Map();
+  if (lama) tiapObjekVideo(lama, o => { const b = bacaVideo(o.video); if (b && b.pendek && o.video_embed) simpan.set(o.video, o); });
+  const tugas = [];
+  tiapObjekVideo(data, o => tugas.push(o));
+  for (const o of tugas) {
+    KOLOM_VIDEO.forEach(k => delete o[k]);
+    let r = bacaVideo(o.video);
+    if (r && r.pendek) {
+      const lamaO = simpan.get(o.video);
+      if (lamaO) { KOLOM_VIDEO.forEach(k => { if (lamaO[k] !== undefined) o[k] = lamaO[k]; }); continue; }
+      const asli = await bukaLinkPendek(r.link, bacaVideo);
+      const r2 = asli && bacaVideo(asli);
+      if (r2 && !r2.pendek) r = { ...r2, link: r.link };
+      else { console.log('  link video belum bisa dibuka, ditampilkan sebagai tombol:', o.video); o.video_link = r.link; continue; }
+    }
+    if (!r) { if (/^https?:\/\//i.test(o.video.trim())) o.video_link = o.video.trim(); continue; }
+    o.video_embed = r.embed; o.video_link = r.link; o.video_jenis = r.jenis; o.video_tegak = !!r.tegak;
+    if (r.gambar) o.video_gambar = r.gambar;
+  }
+}
+
 /* ---------- Tulis file hanya jika isinya berubah ---------- */
 let berubah = 0;
 async function tulis(rel, isi) {
@@ -143,6 +173,7 @@ try {
     let lama = null;
     try { lama = JSON.parse(await readFile(path.join(ROOT, `_data/${kunci}.json`), 'utf8')); } catch {}
     await lengkapiPeta(data, lama);
+    await lengkapiVideo(data, lama);
     await tulis(`_data/${kunci}.json`, JSON.stringify(bersihkanNilai(data), null, 2) + '\n');
     await hapus(`_data/${kunci}.yml`);
     await hapus(`_data/${kunci}.yaml`);
