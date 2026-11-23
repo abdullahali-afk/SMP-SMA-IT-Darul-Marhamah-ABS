@@ -6,7 +6,7 @@
       "nama": "Masjid"
     },
     {
-      "foto": "",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427111858-whatsapp-image-2026-11-23-at-17.32.05.jpg",
       "ikon": "🏫",
       "nama": "Ruang Kelas Nyaman"
     },
@@ -21,12 +21,12 @@
       "nama": "Laboratorium IPA"
     },
     {
-      "foto": "",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427130283-whatsapp-image-2026-11-23-at-17.31.13.jpeg",
       "ikon": "📚",
       "nama": "Perpustakaan"
     },
     {
-      "foto": "",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427143541-whatsapp-image-2026-11-23-at-17.33.48.jpg",
       "ikon": "🛏️",
       "nama": "Asrama Putri"
     },
@@ -36,7 +36,7 @@
       "nama": "Ruang Makan & Kantin"
     },
     {
-      "foto": "",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427155856-whatsapp-image-2026-11-23-at-17.32.30.jpg",
       "ikon": "🩺",
       "nama": "UKS / Klinik"
     }
@@ -49,11 +49,6 @@
     },
     {
       "foto": "",
-      "ikon": "🥋",
-      "nama": "Bela Diri"
-    },
-    {
-      "foto": "",
       "ikon": "🍳",
       "nama": "Tata Boga"
     },
@@ -61,11 +56,6 @@
       "foto": "",
       "ikon": "🧵",
       "nama": "Menjahit & Kriya"
-    },
-    {
-      "foto": "",
-      "ikon": "⛺",
-      "nama": "Pramuka"
     },
     {
       "foto": "",

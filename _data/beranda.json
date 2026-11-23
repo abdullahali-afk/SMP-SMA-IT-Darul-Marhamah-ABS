@@ -100,26 +100,26 @@
       "nama": "Media dan Humas"
     }
   ],
-  "foto_visi": "",
+  "foto_visi": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/beranda/1795425511375-screenshot-2026-11-14-114209.png",
   "call_center": [
     {
-      "nomor": "0852-1186-9470",
+      "nomor": "082386333048",
       "bagian": "Akademik"
     },
     {
-      "nomor": "0852-1186-9470",
-      "bagian": "Keuangan"
+      "nomor": "085343503788",
+      "bagian": "Akunting"
     },
     {
-      "nomor": "0852-1186-9470",
-      "bagian": "Keasramaan"
+      "nomor": "082347726686",
+      "bagian": "Kesantrian"
     },
     {
-      "nomor": "0852-1186-9470",
-      "bagian": "Kesantriwatian"
+      "nomor": "085194587206",
+      "bagian": "Umum"
     },
     {
-      "nomor": "0852-1186-9470",
+      "nomor": "085147243830",
       "bagian": "PPDB"
     }
   ]
