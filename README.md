@@ -54,3 +54,6 @@ Perubahan di panel disalin ke website oleh GitHub Actions (`.github/workflows/si
 3. Di GitHub: **Settings → Pages → Custom domain**, isi nama domain, lalu centang **Enforce HTTPS**.
 4. Di `_config.yml`, ubah `baseurl` menjadi `""` dan `url` menjadi alamat domain baru.
 5. Di Supabase → Authentication → URL Configuration, ganti alamat panel admin dengan domain baru.
+
+### Peta lokasi sekolah (Google Maps)
+Panel Admin → **Data Sekolah & Kontak** → isian **Lokasi Google Maps** di bagian Data SMA dan Data SMP. Buka Google Maps, cari sekolahnya, klik **Bagikan → Salin link**, lalu tempel. Boleh juga kode **Sematkan peta**, koordinat (`-5.13, 119.49`), atau alamat. Link pendek `maps.app.goo.gl` dibuka otomatis saat penerbitan (`admin/peta.js` + `scripts/sinkron.mjs`). Jika dikosongkan, peta memakai alamat sekolah.

@@ -6,7 +6,7 @@
 // Hanya memakai kunci publik (publishable/anon), sama seperti panel admin.
 import { readFile, writeFile, readdir, unlink } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const cfg = JSON.parse(await readFile(path.join(ROOT, 'admin/konfigurasi.json'), 'utf8'));
@@ -64,6 +64,61 @@ function bersihkanNilai(v) {
 // Teks dari editor tidak boleh dibaca sebagai perintah Liquid oleh Jekyll
 const amankanLiquid = (s) => String(s).replace(/\{([{%])/g, '&#123;$1').replace(/([%}])\}/g, '$1&#125;');
 
+/* ---------- Lokasi Google Maps (isian "peta") ---------- */
+await import(pathToFileURL(path.join(ROOT, 'admin/peta.js')).href);
+const { bacaPeta, petaDariAlamat } = globalThis;
+
+// Link pendek (maps.app.goo.gl) dibuka untuk mendapatkan alamat Google Maps lengkapnya
+async function bukaLinkPendek(url) {
+  let u = url;
+  for (let i = 0; i < 6; i++) {
+    let r;
+    try { r = await fetch(u, { redirect: 'manual', signal: AbortSignal.timeout(8000), headers: { 'User-Agent': 'curl/8.5.0' } }); }
+    catch (e) { return null; }
+    let lok = r.headers.get('location');
+    if (!lok && r.status === 200) {
+      const html = await r.text().catch(() => '');
+      const m = html.match(/https:\/\/(?:www\.)?google\.[a-z.]+\/maps\/[^"'<>\s\\]+/);
+      lok = m && m[0].replace(/&amp;/g, '&');
+    }
+    if (!lok) return null;
+    u = new URL(lok, u).href;
+    const h = new URL(u);
+    if (/^consent\./.test(h.hostname) && h.searchParams.get('continue')) u = h.searchParams.get('continue');
+    const hasil = bacaPeta(u);
+    if (hasil && !hasil.pendek) return u;
+  }
+  return null;
+}
+function tiapObjekPeta(o, f) {
+  if (Array.isArray(o)) o.forEach(x => tiapObjekPeta(x, f));
+  else if (o && typeof o === 'object') { if (typeof o.peta === 'string') f(o); Object.values(o).forEach(x => tiapObjekPeta(x, f)); }
+}
+const dariAlamat = (o) => petaDariAlamat(o.alamat || o.nama);
+async function lengkapiPeta(data, lama) {
+  // Hasil link pendek yang sudah pernah dibuka dipakai lagi (tidak membuka ulang tiap pemeriksaan)
+  const simpan = new Map();
+  if (lama) tiapObjekPeta(lama, o => {
+    const b = bacaPeta(o.peta), cad = dariAlamat(o);
+    if (b && b.pendek && o.peta_embed && (!cad || o.peta_embed !== cad.embed)) simpan.set(o.peta, { embed: o.peta_embed, link: o.peta_link });
+  });
+  const tugas = [];
+  tiapObjekPeta(data, o => tugas.push(o));
+  for (const o of tugas) {
+    let r = simpan.get(o.peta) || bacaPeta(o.peta);
+    if (r && r.pendek) {
+      const asli = await bukaLinkPendek(r.link);
+      const r2 = asli && bacaPeta(asli);
+      const cad = dariAlamat(o);
+      if (r2 && !r2.pendek) r = { embed: r2.embed, link: r.link };
+      else { console.log('  link Google Maps belum bisa dibuka, sementara memakai alamat:', o.peta); r = cad ? { embed: cad.embed, link: r.link } : null; }
+    }
+    if (!r) r = dariAlamat(o);
+    if (r) { o.peta_embed = r.embed; o.peta_link = r.link; }
+    else { delete o.peta_embed; delete o.peta_link; }
+  }
+}
+
 /* ---------- Tulis file hanya jika isinya berubah ---------- */
 let berubah = 0;
 async function tulis(rel, isi) {
@@ -85,6 +140,9 @@ try {
   for (const { kunci, data } of rows) {
     if (!/^[a-z0-9_-]{1,40}$/.test(kunci)) { console.log('  lewati kunci tidak sah:', kunci); continue; }
     if (!data || typeof data !== 'object' || !Object.keys(data).length) continue;
+    let lama = null;
+    try { lama = JSON.parse(await readFile(path.join(ROOT, `_data/${kunci}.json`), 'utf8')); } catch {}
+    await lengkapiPeta(data, lama);
     await tulis(`_data/${kunci}.json`, JSON.stringify(bersihkanNilai(data), null, 2) + '\n');
     await hapus(`_data/${kunci}.yml`);
     await hapus(`_data/${kunci}.yaml`);

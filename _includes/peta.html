@@ -1,0 +1,16 @@
+{%- comment -%} Peta Google Maps satu sekolah. Param: s (data sekolah), judul. Isian diolah scripts/sinkron.mjs → peta_embed & peta_link. {%- endcomment -%}
+{%- assign pt_s = include.s -%}
+{%- assign pt_embed = pt_s.peta_embed -%}
+{%- assign pt_link = pt_s.peta_link -%}
+{%- if pt_embed == nil or pt_embed == "" -%}
+  {%- assign pt_q = pt_s.peta | default: "" | strip -%}
+  {%- if pt_q contains "http" or pt_q contains "<" or pt_q == "" -%}{%- assign pt_q = pt_s.alamat | default: pt_s.nama -%}{%- endif -%}
+  {%- assign pt_embed = "https://www.google.com/maps?output=embed&z=17&q=" | append: pt_q | uri_escape -%}
+  {%- assign pt_link = "https://www.google.com/maps/search/?api=1&query=" | append: pt_q | uri_escape -%}
+{%- endif -%}
+<div class="peta-kartu">
+  <h3>{{ include.judul }}</h3>
+  {% if pt_s.alamat and pt_s.alamat != "" %}<p class="peta-alamat">📍 {{ pt_s.alamat }}</p>{% endif %}
+  <iframe class="peta" src="{{ pt_embed | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Peta lokasi {{ include.judul | escape }}"></iframe>
+  <a class="btn btn-hijau peta-buka" href="{{ pt_link | escape }}" target="_blank" rel="noopener">🗺️ Buka di Google Maps</a>
+</div>

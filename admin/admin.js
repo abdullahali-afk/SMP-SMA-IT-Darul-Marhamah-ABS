@@ -320,6 +320,7 @@ function masukan(f, ambil, set, kunci) {
         ...opsi.map(o => { const op = h('option', { value: o }, o); if (o === v) op.selected = true; return op; }));
     }
     case 'image': case 'file': return medanBerkas(f, ambil, set, kunci);
+    case 'peta': return medanPeta(ambil, set);
     default: return h('input', { type: 'text', value: v ?? '', oninput: e => set(e.target.value) });
   }
 }
@@ -412,6 +413,32 @@ function medanBerkas(f, ambil, set, kunci) {
     h('div', { style: 'display:flex;gap:6px;flex-wrap:wrap' }, h('span', { class: 'unggah' }, label, input),
       h('button', { class: 'btn btn-merah btn-kecil', type: 'button', onclick: () => { set(''); url.value = ''; tampil(); } }, 'Kosongkan')),
     url));
+}
+// Isian lokasi Google Maps: tempel link/kode sematan/koordinat/alamat, langsung ada pratinjau
+function medanPeta(ambil, set) {
+  const isi = h('textarea', { rows: 2, placeholder: 'Contoh: https://maps.app.goo.gl/…  atau  https://www.google.com/maps/place/…', value: ambil() || '' });
+  const status = h('div', { class: 'ket' });
+  const prev = h('div', { class: 'peta-pratinjau' });
+  const tampil = () => {
+    const v = (ambil() || '').trim();
+    const r = v ? window.bacaPeta(v) : null;
+    prev.replaceChildren();
+    status.style.color = '';
+    if (!v) { status.textContent = 'Kosong: peta di website memakai alamat sekolah.'; return; }
+    if (!r) { status.style.color = '#b91c1c'; status.textContent = '✗ Isian ini tidak dikenali sebagai lokasi Google Maps. Tempel link dari tombol Bagikan di Google Maps.'; return; }
+    if (r.pendek) {
+      status.style.color = '#047857';
+      status.replaceChildren('✓ Link Google Maps diterima. Peta tampil di website ±3 menit setelah Simpan (pratinjau tidak tersedia untuk link pendek). ',
+        h('a', { href: r.link, target: '_blank', rel: 'noopener' }, 'Cek link'));
+      return;
+    }
+    status.style.color = '#047857'; status.textContent = '✓ Lokasi terbaca. Pratinjau:';
+    prev.append(h('iframe', { src: r.embed, loading: 'lazy', title: 'Pratinjau peta', style: 'border:0;width:100%;height:240px;border-radius:10px;margin-top:6px' }));
+  };
+  let t;
+  isi.addEventListener('input', () => { set(isi.value.trim()); clearTimeout(t); t = setTimeout(tampil, 600); });
+  tampil();
+  return h('div', null, isi, status, prev);
 }
 function absolut(v) { return /^https?:/i.test(v) ? v : SITUS + String(v).replace(/^\//, ''); }
 

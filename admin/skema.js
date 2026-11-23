@@ -387,8 +387,9 @@ window.SKEMA = [
      },
      {
       "name": "peta",
-      "label": "Kata kunci lokasi Google Maps",
-      "type": "string"
+      "label": "Lokasi Google Maps",
+      "type": "peta",
+      "description": "Buka Google Maps, cari sekolahnya, klik Bagikan lalu Salin link, kemudian tempel di sini. Boleh juga kode Sematkan peta, koordinat, atau alamat."
      }
     ]
    },
@@ -434,8 +435,9 @@ window.SKEMA = [
      },
      {
       "name": "peta",
-      "label": "Kata kunci lokasi Google Maps",
-      "type": "string"
+      "label": "Lokasi Google Maps",
+      "type": "peta",
+      "description": "Buka Google Maps, cari sekolahnya, klik Bagikan lalu Salin link, kemudian tempel di sini. Boleh juga kode Sematkan peta, koordinat, atau alamat."
      }
     ]
    },

@@ -153,6 +153,8 @@ input,select,textarea{width:100%;padding:11px 14px;border:1px solid #cfd8d3;bord
 input:focus,select:focus,textarea:focus{outline:2px solid var(--emas);border-color:transparent}
 button.btn{border:0;cursor:pointer;font:inherit;font-weight:600}
 .peta{border:0;width:100%;height:340px;border-radius:var(--radius)}
+.peta-kartu h3{color:var(--hijau-tua);margin-bottom:6px}.peta-alamat{color:var(--abu,#666);font-size:.92rem;margin-bottom:10px}.peta-buka{margin-top:12px;display:inline-flex}
+@media(max-width:640px){.peta{height:260px}}
 .catatan{background:var(--emas-muda);border-left:4px solid var(--emas);padding:14px 18px;border-radius:8px;font-size:.92rem}
 
 /* CTA & footer */

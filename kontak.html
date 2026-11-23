@@ -25,6 +25,6 @@ description: Alamat, nomor WhatsApp, dan peta lokasi SMP & SMA IT Darul Marhamah
   </div>
 </div></section>
 <section class="bg-putih"><div class="wadah grid g2">
-  <div><h3 style="color:var(--hijau-tua);margin-bottom:8px">Lokasi SMA</h3><iframe class="peta" src="https://www.google.com/maps?q={{ s.sma.peta | uri_escape }}&output=embed" loading="lazy" title="Peta lokasi SMA"></iframe></div>
-  <div><h3 style="color:var(--hijau-tua);margin-bottom:8px">Lokasi SMP</h3><iframe class="peta" src="https://www.google.com/maps?q={{ s.smp.peta | uri_escape }}&output=embed" loading="lazy" title="Peta lokasi SMP"></iframe></div>
+  {% include peta.html s=s.sma judul="Lokasi SMA" %}
+  {% include peta.html s=s.smp judul="Lokasi SMP" %}
 </div></section>
