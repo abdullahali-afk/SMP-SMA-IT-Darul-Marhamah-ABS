@@ -4,6 +4,8 @@
 
 const app = document.getElementById('app');
 const SITUS = new URL('../', location.href).href;
+// Dibuka dari aplikasi Android / aplikasi terpasang: keluar akun kembali ke pintu masuk aplikasi.
+const DI_APLIKASI = /DarulMarhamahApp/.test(navigator.userAgent) || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches);
 const KATEGORI_BERITA = ['Prestasi', 'Kegiatan', 'Akademik', 'PPDB', 'Pengumuman'];
 let sb = null, cfg = {}, sesi = null, profil = null, peranSaya = null, semuaPeran = [];
 
@@ -70,12 +72,12 @@ async function mulai() {
   sb = window.supabase.createClient(cfg.url, cfg.anonKey);
   sb.auth.onAuthStateChange((ev, s) => {
     if (ev === 'PASSWORD_RECOVERY') { sesi = s; tampilGantiPassword(true); return; }
-    if (ev === 'SIGNED_OUT') { sesi = null; profil = null; peranSaya = null; tampilMasuk(); }
+    if (ev === 'SIGNED_OUT') { sesi = null; profil = null; peranSaya = null; if (DI_APLIKASI) return location.replace(SITUS + 'aplikasi/#ganti'); tampilMasuk(); }
   });
   const { data } = await sb.auth.getSession();
   sesi = data.session;
   if (location.hash.includes('type=recovery')) return; // ditangani PASSWORD_RECOVERY
-  if (sesi) await muatProfil(); else tampilMasuk();
+  if (sesi) await muatProfil(); else if (DI_APLIKASI && !/lupa/.test(location.hash)) location.replace(SITUS + 'aplikasi/#ganti'); else tampilMasuk(/lupa/.test(location.hash) ? 'lupa' : 'masuk');
 }
 
 async function muatProfil() {
