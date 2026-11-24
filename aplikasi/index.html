@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#076d45">
+<title>Aplikasi Darul Marhamah</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/logo-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../admin/admin.css?v=3">
+<style>
+.kotak-masuk{width:min(420px,100%)}
+.jenis-akun{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:-8px 0 18px}
+.jenis-akun span{background:var(--hijau-muda);color:var(--hijau-tua);border-radius:20px;padding:2px 10px;font-size:.75rem;font-weight:500}
+.sandi{position:relative}.sandi input{padding-right:64px}
+.sandi button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--hijau);font-size:.8rem;font-weight:600;cursor:pointer;padding:4px 6px}
+.pemisah{display:flex;align-items:center;gap:10px;color:var(--abu);font-size:.8rem;margin:18px 0 12px}
+.pemisah::before,.pemisah::after{content:"";flex:1;height:1px;background:var(--garis)}
+.btn.penuh{width:100%;justify-content:center}
+.bawah{margin-top:16px;text-align:center;font-size:.85rem;display:grid;gap:6px}
+.unduh{margin-top:18px;padding:12px;border:1px dashed var(--hijau);border-radius:9px;text-align:center;font-size:.85rem}
+.unduh .btn{margin-top:8px}
+.memuat-kecil{text-align:center;color:var(--abu);padding:24px 0}
+</style>
+</head>
+<body>
+<div class="masuk"><div class="kotak-masuk" id="kotak">
+  <img src="../assets/logo.png" alt="Logo Darul Marhamah">
+  <h1>Aplikasi Darul Marhamah</h1>
+  <p class="kecil">SMP &amp; SMA Islam Terpadu · Al-Qur'an Boarding School</p>
+  <div id="isi"><div class="memuat-kecil">Memuat…</div></div>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  'use strict';
+  // Satu pintu masuk untuk semua jenis akun.
+  // Calon santri (pendaftar) -> dasbor PPDB (../pendaftaran/)
+  // Admin, Guru, Panitia PPDB, Penguji SPMB, dll. -> panel (../admin/), menu tampil sesuai hak akses perannya.
+  var KUNCI_PPDB = 'sb-ppdb-calon-santri';
+  var TERAKHIR = 'dm-aplikasi-terakhir';
+  var URL_PPDB = '../pendaftaran/', URL_PANEL = '../admin/';
+  var APK = 'https://github.com/abdullahali-afk/SMP-SMA-IT-Darul-Marhamah-ABS/releases/latest/download/DarulMarhamah.apk';
+  var diAplikasi = /DarulMarhamahApp/.test(navigator.userAgent) ||
+    (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  var isi = document.getElementById('isi');
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js').catch(function () {});
+
+  function h(tag, at) {
+    var el = document.createElement(tag);
+    if (at) Object.keys(at).forEach(function (k) {
+      var v = at[k]; if (v == null || v === false) return;
+      if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+      else if (k === 'class') el.className = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    });
+    for (var i = 2; i < arguments.length; i++) {
+      var c = arguments[i]; if (c == null) continue;
+      el.append(c.nodeType ? c : document.createTextNode(c));
+    }
+    return el;
+  }
+  function baca(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function tulis(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* abaikan */ } }
+
+  function pesanGalat(e) {
+    var m = (e && (e.message || e.error_description)) || String(e);
+    if (/invalid login credentials/i.test(m)) return 'Email atau password salah.';
+    if (/email not confirmed/i.test(m)) return 'Email belum dikonfirmasi. Buka link konfirmasi di email Anda (periksa juga folder Spam), atau hubungi admin sekolah.';
+    if (/failed to fetch|network/i.test(m)) return 'Tidak ada koneksi internet. Periksa sinyal/data Anda lalu coba lagi.';
+    if (/rate limit|too many/i.test(m)) return 'Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.';
+    return m;
+  }
+
+  async function mulai() {
+    var cfg = {};
+    try { cfg = await (await fetch('../admin/konfigurasi.json', { cache: 'no-store' })).json(); } catch (e) { /* abaikan */ }
+    if (!cfg.url || !cfg.anonKey || !window.supabase) {
+      isi.replaceChildren(h('div', { class: 'pesan galat' }, 'Tidak dapat terhubung. Periksa koneksi internet Anda, lalu ',
+        h('a', { href: location.href }, 'muat ulang'), '.'));
+      return;
+    }
+    var KUNCI_PANEL = 'sb-' + new URL(cfg.url).hostname.split('.')[0] + '-auth-token';
+    var adaPpdb = !!baca(KUNCI_PPDB), adaPanel = !!baca(KUNCI_PANEL);
+
+    // Sudah pernah masuk: langsung buka dasbornya (kecuali pengguna memilih ganti akun).
+    if (!/ganti/.test(location.hash) && (adaPpdb || adaPanel)) {
+      var t = baca(TERAKHIR);
+      var tujuan = adaPpdb && adaPanel ? (t === 'ppdb' ? URL_PPDB : URL_PANEL) : adaPpdb ? URL_PPDB : URL_PANEL;
+      location.replace(tujuan);
+      return;
+    }
+    tampilMasuk(cfg, KUNCI_PANEL);
+  }
+
+  function tampilMasuk(cfg, KUNCI_PANEL) {
+    var err = h('div');
+    var email = h('input', { type: 'email', required: true, autocomplete: 'username', placeholder: 'nama@email.com', inputmode: 'email' });
+    var pw = h('input', { type: 'password', required: true, autocomplete: 'current-password' });
+    var lihat = h('button', { type: 'button', 'aria-label': 'Tampilkan password', onclick: function () {
+      var tampak = pw.type === 'password'; pw.type = tampak ? 'text' : 'password'; lihat.textContent = tampak ? 'Sembunyi' : 'Lihat';
+    } }, 'Lihat');
+    var btn = h('button', { class: 'btn penuh', type: 'submit' }, 'Masuk');
+    var form = h('form', { onsubmit: async function (e) {
+      e.preventDefault(); err.replaceChildren();
+      btn.disabled = true; btn.textContent = 'Memproses…';
+      try {
+        // Masuk sekali, lalu sesi dipindahkan ke halaman yang sesuai jenis akun.
+        var sementara = window.supabase.createClient(cfg.url, cfg.anonKey,
+          { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'sb-aplikasi-sementara' } });
+        var r = await sementara.auth.signInWithPassword({ email: email.value.trim(), password: pw.value });
+        if (r.error) throw r.error;
+        var meta = r.data.user.user_metadata || {};
+        var pendaftar = meta.jenis === 'pendaftar';
+        var tujuan = window.supabase.createClient(cfg.url, cfg.anonKey,
+          { auth: { storageKey: pendaftar ? KUNCI_PPDB : KUNCI_PANEL, detectSessionInUrl: false } });
+        var s = await tujuan.auth.setSession({ access_token: r.data.session.access_token, refresh_token: r.data.session.refresh_token });
+        if (s.error) throw s.error;
+        tulis(TERAKHIR, pendaftar ? 'ppdb' : 'panel');
+        btn.textContent = 'Membuka…';
+        location.replace(pendaftar ? URL_PPDB : URL_PANEL + '#/');
+      } catch (ex) {
+        btn.disabled = false; btn.textContent = 'Masuk';
+        err.replaceChildren(h('div', { class: 'pesan galat' }, pesanGalat(ex)));
+      }
+    } },
+      h('div', null, h('label', null, 'Email'), email),
+      h('div', null, h('label', null, 'Password'), h('div', { class: 'sandi' }, pw, lihat)),
+      err, btn);
+
+    isi.replaceChildren(
+      h('div', { class: 'jenis-akun' }, h('span', null, 'Calon Santri'), h('span', null, 'Guru'), h('span', null, 'Admin'),
+        h('span', null, 'Panitia PPDB'), h('span', null, 'Penguji SPMB')),
+      form,
+      h('div', { class: 'bawah' },
+        h('span', null, 'Lupa password? ', h('a', { href: URL_PPDB + '#lupa' }, 'Calon santri'), ' · ', h('a', { href: URL_PANEL + '#lupa' }, 'Guru/staf')),
+        h('span', { class: 'kecil' }, 'Akun guru & staf dibuat oleh admin sekolah.')),
+      h('div', { class: 'pemisah' }, 'calon santri baru?'),
+      h('a', { class: 'btn btn-emas penuh', href: URL_PPDB + '#daftar' }, 'Daftar PPDB (buat akun)'),
+      h('div', { class: 'bawah' }, h('a', { href: '../' }, 'Lihat website sekolah')),
+      diAplikasi ? null : h('div', { class: 'unduh' }, 'Pakai HP Android? Pasang aplikasinya agar lebih mudah dibuka.',
+        h('br'), h('a', { class: 'btn btn-garis btn-kecil', href: APK }, '⬇ Unduh Aplikasi Android (APK)'))
+    );
+    if (location.hash) history.replaceState(null, '', location.pathname);
+  }
+
+  mulai();
+})();
+</script>
+</body>
+</html>

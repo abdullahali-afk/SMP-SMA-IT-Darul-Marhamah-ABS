@@ -1,0 +1,16 @@
+{
+  "name": "darul-marhamah-android",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aplikasi Android Darul Marhamah (membuka sistem online sekolah). Dibangun otomatis oleh GitHub Actions.",
+  "dependencies": {
+    "@capacitor/android": "8.4.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.4.3",
+    "@capacitor/splash-screen": "8.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "3.0.5",
+    "@capacitor/cli": "8.4.3"
+  }
+}

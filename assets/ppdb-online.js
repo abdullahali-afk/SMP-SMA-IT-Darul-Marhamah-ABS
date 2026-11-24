@@ -3,6 +3,7 @@
  * Data: tabel public.pendaftar, berkas di bucket privat "ppdb" (lihat supabase/ppdb-online.sql). */
 (function () {
   'use strict';
+  const DI_APLIKASI = /DarulMarhamahApp/.test(navigator.userAgent) || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches);
   const D = JSON.parse(document.getElementById('data-ppdb').textContent || '{}');
   const P = D.ppdb || {};
   const ON = P.online || {};
@@ -74,13 +75,13 @@
     sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { storageKey: 'sb-ppdb-calon-santri' } });
     sb.auth.onAuthStateChange((ev, s) => {
       if (ev === 'PASSWORD_RECOVERY') { sesi = s; tampilGantiPassword(); }
-      else if (ev === 'SIGNED_OUT') { sesi = null; saya = null; tampilMasuk('masuk'); }
+      else if (ev === 'SIGNED_OUT') { sesi = null; saya = null; if (DI_APLIKASI) return location.replace('../aplikasi/#ganti'); tampilMasuk('masuk'); }
     });
     const { data } = await sb.auth.getSession();
     sesi = data.session;
     if (/type=recovery/.test(location.hash)) return;
     if (sesi) return muatPendaftar();
-    tampilMasuk(/daftar/.test(location.hash) ? 'daftar' : 'masuk');
+    tampilMasuk(/daftar/.test(location.hash) ? 'daftar' : /lupa/.test(location.hash) ? 'lupa' : 'masuk');
   }
 
   function tampilPesan(teks, ...lain) {

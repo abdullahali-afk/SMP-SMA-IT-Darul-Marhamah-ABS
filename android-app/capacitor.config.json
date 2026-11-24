@@ -1,0 +1,18 @@
+{
+  "appId": "id.sch.darulmarhamah.abs",
+  "appName": "Darul Marhamah",
+  "webDir": "www",
+  "server": {
+    "url": "https://abdullahali-afk.github.io/SMP-SMA-IT-Darul-Marhamah-ABS/aplikasi/",
+    "errorPath": "offline.html",
+    "cleartext": false
+  },
+  "android": {
+    "appendUserAgent": "DarulMarhamahApp",
+    "backgroundColor": "#076d45",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 800, "backgroundColor": "#076d45", "showSpinner": false }
+  }
+}
