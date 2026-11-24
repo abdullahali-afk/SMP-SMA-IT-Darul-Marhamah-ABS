@@ -1,14 +1,20 @@
 ---
 layout: default
 title: Kontak
-description: Alamat, nomor WhatsApp, dan peta lokasi SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School, Makassar.
+description: Alamat, nomor WhatsApp, dan peta lokasi Program Tahfizh (Sukamaju) dan Program Takhassus (Asal Mula) SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School, Makassar.
 ---
 {%- assign s = site.data.sekolah -%}
+{%- assign ko_lokasi = "" | split: "" -%}
+{%- for p in site.data.program_pendidikan.daftar -%}{%- assign ko_ada = false -%}{%- if p.alamat != nil and p.alamat != "" -%}{%- assign ko_ada = true -%}{%- endif -%}{%- if p.peta != nil and p.peta != "" -%}{%- assign ko_ada = true -%}{%- endif -%}{%- if ko_ada -%}{%- assign ko_lokasi = ko_lokasi | push: p -%}{%- endif -%}{%- endfor -%}
 {% include hero.html judul="Kontak & Lokasi" sub="Kami siap menjawab pertanyaan Anda" induk="Layanan" %}
 <section><div class="wadah grid g2">
   <div class="grid" style="gap:16px;align-content:start">
+    {%- if ko_lokasi.size > 0 %}{% for p in ko_lokasi %}{% include program-url.html nama=p.nama %}
+    <div class="kartu"><h3>📍 {{ p.nama }}{% if p.kampus != nil and p.kampus != "" %} · {{ p.kampus }}{% endif %}</h3><p>{{ p.alamat }}</p><p><a href="{{ pu | relative_url }}">Tentang {{ p.nama }} →</a></p></div>{% endfor %}
+    {%- else %}
     <div class="kartu"><h3>📍 Alamat SMA</h3><p>{{ s.sma.alamat }}</p></div>
     <div class="kartu"><h3>📍 Alamat SMP</h3><p>{{ s.smp.alamat }}</p></div>
+    {%- endif %}
     <div class="kartu"><h3>{% include ikon-wa.html ukuran=22 kelas="hijau-wa" %} Kontak Person WhatsApp</h3>{% include kontak-wa.html gaya="kartu" %}</div>
     <div class="kartu"><h3>✉️ Email</h3><p>{{ s.email }}</p></div>
     <div class="kartu"><h3>🕐 Jam Kantor</h3><p>{{ s.jam_kantor }}</p></div>
@@ -25,6 +31,10 @@ description: Alamat, nomor WhatsApp, dan peta lokasi SMP & SMA IT Darul Marhamah
   </div>
 </div></section>
 <section class="bg-putih"><div class="wadah grid g2">
+  {%- if ko_lokasi.size > 0 %}{% for p in ko_lokasi %}{% capture ko_judul %}Lokasi {{ p.nama }}{% if p.kampus != nil and p.kampus != "" %} ({{ p.kampus }}){% endif %}{% endcapture %}
+  {% include peta.html s=p judul=ko_judul %}{% endfor %}
+  {%- else %}
   {% include peta.html s=s.sma judul="Lokasi SMA" %}
   {% include peta.html s=s.smp judul="Lokasi SMP" %}
+  {%- endif %}
 </div></section>

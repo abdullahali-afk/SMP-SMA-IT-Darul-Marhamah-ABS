@@ -3,11 +3,15 @@ const burger=document.querySelector('.burger'),menu=document.querySelector('.men
 if(burger)burger.addEventListener('click',()=>menu.classList.toggle('buka'));
 // Tahun otomatis di footer
 document.querySelectorAll('.tahun').forEach(e=>e.textContent=new Date().getFullYear());
-// Filter galeri
-document.querySelectorAll('.filter button').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.filter button').forEach(x=>x.classList.remove('aktif'));b.classList.add('aktif');
-  const k=b.dataset.k;document.querySelectorAll('.galeri figure').forEach(f=>{f.style.display=(k==='semua'||f.dataset.k===k)?'':'none'});
-}));
+// Filter (galeri: kategori & program; halaman Program & Sekolah: program). Item tanpa program = kedua program.
+document.querySelectorAll('.filter').forEach(g=>g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  g.querySelectorAll('button').forEach(x=>x.classList.remove('aktif'));b.classList.add('aktif');
+  const w=g.closest('section')||document,grup=[...w.querySelectorAll('.filter')];
+  w.querySelectorAll('.galeri figure,.saring').forEach(el=>{
+    const ok=grup.every(f=>{const a=f.querySelector('button.aktif'),v=a?a.dataset.k:'semua',kn=f.dataset.kunci||'k',isi=el.dataset[kn]||'';
+      return v==='semua'||isi===v||(kn==='p'&&isi==='');});
+    el.style.display=ok?'':'none';});
+})));
 // Lightbox galeri (hanya untuk foto asli)
 const lb=document.querySelector('.lightbox');
 if(lb){document.querySelectorAll('.galeri figure img').forEach(i=>i.parentElement.addEventListener('click',()=>{lb.querySelector('img').src=i.src;lb.classList.add('buka')}));
@@ -19,8 +23,10 @@ document.querySelectorAll('form[data-wa]').forEach(f=>f.addEventListener('submit
   const tj=f.querySelector('[data-tujuan]');
   window.open('https://wa.me/'+(tj&&tj.value?tj.value:f.dataset.wa)+'?text='+encodeURIComponent(t),'_blank');
 }));
-// Filter galeri dari alamat (?k=kegiatan)
-(function(){const k=new URLSearchParams(location.search).get('k');if(!k)return;const b=document.querySelector('.filter button[data-k="'+k+'"]');if(b)b.click();})();
+// Filter dari alamat (?k=kegiatan, ?p=tahfizh)
+(function(){const q=new URLSearchParams(location.search),k=q.get('k'),p=q.get('p');
+if(k){const b=document.querySelector('.filter:not([data-kunci]) button[data-k="'+CSS.escape(k)+'"]');if(b)b.click();}
+if(p)document.querySelectorAll('.filter[data-kunci="p"] button[data-k="'+CSS.escape(p)+'"]').forEach(b=>b.click());})();
 // Slider banner beranda
 (function(){const sl=[...document.querySelectorAll('.slider .slide')],dots=[...document.querySelectorAll('.slider .titik button')];if(sl.length<2)return;let i=0,t;
 function go(n){sl[i].classList.remove('aktif');dots[i]&&dots[i].classList.remove('aktif');i=(n+sl.length)%sl.length;sl[i].classList.add('aktif');dots[i]&&dots[i].classList.add('aktif');}

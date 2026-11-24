@@ -1,0 +1,3 @@
+{%- comment -%} Alamat halaman program dari namanya: pu = "/program-tahfizh.html" / "/program-takhassus.html" / profil. {%- endcomment -%}
+{%- assign pu_n = include.nama | default: "" | downcase -%}
+{%- if pu_n contains "takh" -%}{%- assign pu = "/program-takhassus.html" -%}{%- elsif pu_n contains "tahf" -%}{%- assign pu = "/program-tahfizh.html" -%}{%- else -%}{%- assign pu_s = pu_n | slugify -%}{%- assign pu = "/profil.html#" | append: pu_s -%}{%- endif -%}

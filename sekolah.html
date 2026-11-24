@@ -1,30 +1,45 @@
 ---
 layout: default
-title: Program Pendidikan
-description: Jenjang SMP dan SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School, Makassar.
+title: Program & Sekolah
+description: Program Tahfizh (Kampus Sukamaju) dan Program Takhassus (Kampus Asal Mula) untuk jenjang SMP dan SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School, Makassar.
 ---
-{%- assign s = site.data.sekolah -%}
-{% include hero.html judul="Program Pendidikan" sub="Pembinaan berkesinambungan dari SMP hingga SMA" %}
-<section><div class="wadah grid g2">
+{%- assign s = site.data.sekolah -%}{%- assign pp = site.data.program_pendidikan -%}
+{% include hero.html judul="Program & Sekolah" sub="Dua program pendidikan untuk jenjang SMP dan SMA" %}
+{%- if pp.daftar.size > 0 %}
+<section id="program-kampus"><div class="wadah">
+  {% include judul.html k="Program Pendidikan" t="Pilih Program, Pilih Kampus" %}
+  <div class="grid g2">{% for p in pp.daftar %}{% include kartu-program.html p=p %}{% endfor %}</div>
+</div></section>
+{%- endif %}
+
+<section class="bg-putih" id="jenjang"><div class="wadah">
+  {% include judul.html k="Jenjang" t="SMP dan SMA Islam Terpadu" %}
+  <div class="grid g2">
 {% assign jj = "smp,sma" | split: "," %}{% for id in jj %}{% assign j = s[id] %}
   <div class="jenjang" id="{{ id }}"><div class="kepala pola"><h3>{{ j.nama }}</h3><p>{{ j.keterangan }}</p></div><div class="badan">
-  <ul class="daftar"><li>Masa belajar 3 tahun ({% if id == "smp" %}kelas VII–IX{% else %}kelas X–XII{% endif %})</li><li>Target hafalan: {{ j.target_hafalan }}</li><li>Kurikulum Merdeka + Diniyah (aqidah, fiqih, hadits, bahasa Arab)</li><li>Tinggal di asrama dengan pembinaan musyrifah</li><li>NPSN: {{ j.npsn }}</li><li>Akreditasi: {{ j.akreditasi }}</li><li>Alamat: {{ j.alamat }}</li><li>Kepala sekolah: {{ j.kepala_sekolah }}</li></ul>
+  <ul class="daftar"><li>Masa belajar 3 tahun ({% if id == "smp" %}kelas VII–IX{% else %}kelas X–XII{% endif %})</li><li>Target hafalan: {{ j.target_hafalan }}</li><li>Kurikulum Merdeka + Diniyah (aqidah, fiqih, hadits, bahasa Arab)</li><li>Tinggal di asrama dengan pembinaan musyrifah</li>
+  {%- if pp.daftar.size > 0 %}<li>Tersedia di: {% for p in pp.daftar %}{% include program-url.html nama=p.nama %}<a href="{{ pu | relative_url }}">{{ p.nama }}{% if p.kampus and p.kampus != "" %} ({{ p.kampus }}){% endif %}</a>{% unless forloop.last %} dan {% endunless %}{% endfor %}</li>{% endif %}
+  <li>NPSN: {{ j.npsn }}</li><li>Akreditasi: {{ j.akreditasi }}</li><li>Kepala sekolah: {{ j.kepala_sekolah }}</li></ul>
   <p style="margin-top:16px"><a href="{{ '/ppdb.html' | relative_url }}" class="btn btn-hijau">Info Pendaftaran</a></p></div></div>
 {% endfor %}
+  </div>
 </div></section>
 
-<section class="bg-putih" id="program"><div class="wadah">
-  {% include judul.html k="Program Unggulan" t="Program Tahfidz, Bahasa Arab & Kurikulum" %}
-  <div class="grid g4" style="margin-bottom:24px">{% for p in site.data.program.unggulan %}<div class="kartu"><div class="ikon">{{ p.ikon }}</div><h3>{{ p.judul }}</h3><p>{{ p.isi }}</p></div>{% endfor %}</div>
-  <div class="grid g2">{% for p in site.data.program.kurikulum %}<div class="program"><div class="no">{{ p.ikon }}</div><div><h3>{{ p.judul }}</h3><p>{{ p.isi }}</p></div></div>{% endfor %}</div>
+<section id="program"><div class="wadah">
+  {% include judul.html k="Program Unggulan" t="Program Unggulan Setiap Program" %}
+  {% include filter-program.html %}
+  <div class="grid g4" style="margin-bottom:24px">{% for i in site.data.program.unggulan %}{% include program-kode.html v=i.program %}<div class="kartu saring" data-p="{{ pk }}">{% include lencana-program.html %}<div class="ikon">{{ i.ikon }}</div><h3>{{ i.judul }}</h3><p>{{ i.isi }}</p></div>{% endfor %}</div>
+  <div class="grid g2">{% for i in site.data.program.kurikulum %}{% include program-kode.html v=i.program %}<div class="program saring" data-p="{{ pk }}"><div class="no">{{ i.ikon }}</div><div>{% include lencana-program.html %}<h3>{{ i.judul }}</h3><p>{{ i.isi }}</p></div></div>{% endfor %}</div>
 </div></section>
 
-<section id="fasilitas"><div class="wadah">
+<section class="bg-putih" id="fasilitas"><div class="wadah">
   {% include judul.html k="Fasilitas" t="Gedung & Fasilitas" %}
-  <div class="grid g4">{% for f in site.data.fasilitas.fasilitas %}<div class="ubin"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
+  {% include filter-program.html %}
+  <div class="grid g4">{% for f in site.data.fasilitas.fasilitas %}{% include program-kode.html v=f.program %}<div class="ubin saring" data-p="{{ pk }}"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}{% include lencana-program.html %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
 </div></section>
 
-<section class="bg-putih" id="ekskul"><div class="wadah">
+<section id="ekskul"><div class="wadah">
   {% include judul.html k="Ekstrakurikuler" t="Kembangkan Bakat dan Minat" %}
-  <div class="grid g4">{% for f in site.data.fasilitas.ekstrakurikuler %}<div class="ubin"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
+  {% include filter-program.html %}
+  <div class="grid g4">{% for f in site.data.fasilitas.ekstrakurikuler %}{% include program-kode.html v=f.program %}<div class="ubin saring" data-p="{{ pk }}"><div class="gambar">{% include media.html foto=f.foto ikon=f.ikon alt=f.nama %}{% include lencana-program.html %}</div><h3>{{ f.nama }}</h3></div>{% endfor %}</div>
 </div></section>

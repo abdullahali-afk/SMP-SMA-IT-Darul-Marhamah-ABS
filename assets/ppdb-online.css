@@ -66,6 +66,7 @@
 .po-opsi input{width:auto;margin-top:4px;accent-color:var(--hijau)}
 .po-opsi b{display:block;color:var(--hijau-tua)}
 .po-opsi small{display:block;color:var(--abu);font-size:.84rem}
+.po-opsi small.po-kampus{color:var(--hijau-tua);font-weight:600;margin:2px 0 4px}
 .po-opsi a{font-size:.84rem;font-weight:600}
 .po-form fieldset{border:1px solid #e1e8e4;border-radius:12px;padding:14px 14px 4px;margin:0 0 14px}
 .po-form legend{font-weight:700;color:var(--hijau-tua);padding:0 6px;font-size:.92rem}

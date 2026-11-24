@@ -37,3 +37,12 @@ window.PPDB_STATUS = {
   tes: { belum: 'Belum ada hasil', lulus: 'Lulus', tidak_lulus: 'Tidak lulus' },
   kelulusan: { belum: 'Belum diumumkan', lulus: 'LULUS', tidak_lulus: 'Tidak lulus', cadangan: 'Cadangan' },
 };
+
+// Komponen nilai tes bawaan (dipakai jika pengaturan nilai belum pernah disimpan). Sama dengan isi awal di supabase/ppdb-online.sql.
+window.PPDB_KOMPONEN_AWAL = [
+  { kode: 'sholat', nama: 'Sholat', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1 },
+  { kode: 'tajwid', nama: 'Tajwid', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: true, bobot: 1 },
+  { kode: 'hafalan', nama: 'Pencapaian Hafalan', jenis: 'Jumlah', maks: 13, satuan: 'ayat', keterangan: "Dari 13 ayat (QS. Al-Jumu'ah ayat 1-8)", catatan: false, bobot: 1 },
+  { kode: 'tahfizh', nama: 'Tahfizh', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1 },
+  { kode: 'akademik', nama: 'Akademik', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1 },
+];

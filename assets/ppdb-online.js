@@ -348,12 +348,15 @@
       const cocok = daftarProgram.filter(p => !jenjang || !Array.isArray(p.jenjang) || !p.jenjang.length || p.jenjang.includes(jenjang));
       progBox.replaceChildren(...(cocok.length ? cocok : [{ nama: 'Reguler' }]).map(p => {
         const slug = String(p.nama).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const hp = D.halaman_program || {}, nm = String(p.nama).toLowerCase();
+        const urlProgram = /takh/.test(nm) && hp.takhassus ? hp.takhassus : /tahf/.test(nm) && hp.tahfizh ? hp.tahfizh : D.profil_url + '#' + slug;
         return h('label', { class: 'po-opsi' + (program === p.nama ? ' dipilih' : '') },
           h('input', { type: 'radio', name: 'program', value: p.nama, checked: program === p.nama, disabled: kunci,
             onchange: () => { program = p.nama; gambarProgram(); } }),
           h('span', null, h('b', null, (p.ikon ? p.ikon + ' ' : '') + (p.nama_lengkap || p.nama)),
+            p.kampus ? h('small', { class: 'po-kampus' }, '📍 ' + p.kampus + (p.alamat ? ' · ' + p.alamat : '')) : null,
             p.ringkasan ? h('small', null, p.ringkasan) : null,
-            p.nama !== 'Reguler' ? h('a', { href: D.profil_url + '#' + slug, target: '_blank', onclick: (e) => e.stopPropagation() }, 'Baca informasi program →') : null));
+            p.nama !== 'Reguler' ? h('a', { href: urlProgram, target: '_blank', onclick: (e) => e.stopPropagation() }, 'Baca informasi program →') : null));
       }));
     };
     const opsiJenjang = [['SMP', 'SMP Islam Terpadu', 'Untuk lulusan SD/MI sederajat'], ['SMA', 'SMA Islam Terpadu', 'Untuk lulusan SMP/MTs sederajat']].map(([k, n, ket]) =>

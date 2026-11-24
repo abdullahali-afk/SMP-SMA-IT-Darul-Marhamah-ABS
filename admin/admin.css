@@ -131,3 +131,69 @@ td.tengah,th.tengah{text-align:center}
 .baris-grup{display:grid;grid-template-columns:1fr 1.4fr 30px;gap:8px;margin-bottom:8px}
 @media(max-width:760px){.alat-ppdb,.baris-grup{grid-template-columns:1fr}.data-ppdb{grid-template-columns:1fr}.data-ppdb dt{margin-top:6px}}
 .alat-ppdb input,.alat-ppdb select,.baris-grup input{width:100%;padding:9px 12px;border:1px solid var(--garis);border-radius:8px;background:#fff}
+
+/* Nilai tes & rekap kelulusan */
+.tab-ppdb{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border-bottom:2px solid var(--garis)}
+.tab-ppdb a{padding:9px 16px;text-decoration:none;color:var(--abu);font-weight:600;font-size:.92rem;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab-ppdb a.aktif{color:var(--hijau-tua);border-bottom-color:var(--emas)}
+.tab-ppdb a:hover{color:var(--hijau)}
+.nav-pendaftar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.geser-pendaftar{display:flex;gap:14px;align-items:center;font-size:.9rem}
+.geser-pendaftar a{font-weight:600;text-decoration:none}
+.geser-pendaftar span{color:#b8c3bd}
+.geser-pendaftar small{color:var(--abu)}
+.form-nilai{display:grid;grid-template-columns:200px 1fr;gap:12px 18px;align-items:start;margin:14px 0}
+.label-nilai{font-weight:700;text-align:right;padding-top:9px}
+.isian-nilai{display:grid;gap:8px}
+.baris-isian{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.baris-isian input{flex:1;min-width:140px}
+.baris-isian input.pendek{flex:0 1 240px}
+.ket-nilai{font-weight:600;font-size:.9rem;color:var(--hijau-tua)}
+.form-nilai input.salah{border-color:var(--merah);outline-color:var(--merah);background:#fff5f4}
+.nilai-akhir{display:flex;gap:6px 14px;align-items:baseline;flex-wrap:wrap;background:var(--latar);border:1px solid var(--garis);border-radius:10px;padding:12px 16px}
+.nilai-akhir span{font-weight:600;color:var(--abu)}
+.nilai-akhir b{font-size:1.6rem;color:var(--hijau-tua)}
+.nilai-akhir small{color:var(--abu)}
+.nilai-akhir.lulus{background:#e9f7ef;border-color:#b6e2c8}
+.nilai-akhir.kurang{background:#fdf1ef;border-color:#f3c9c3}
+.atur-nilai summary{cursor:pointer;font-weight:700;color:var(--hijau-tua)}
+.atur-nilai[open] summary{margin-bottom:12px}
+.alat-nilai{grid-template-columns:repeat(3,minmax(130px,1fr)) minmax(150px,1.2fr) auto}
+.tombol-alat{display:flex;gap:6px}
+.massal-ppdb{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;background:#f6faf7;border:1px dashed #b6d8c4;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.9rem}
+.massal-ppdb span{flex:1;min-width:220px}
+.massal-ppdb .btn[disabled]{opacity:.45;cursor:not-allowed}
+.tabel-nilai th{white-space:normal;vertical-align:bottom;min-width:56px;line-height:1.3}
+.tabel-nilai td:nth-child(2){white-space:normal;min-width:170px}
+.tabel-nilai th,.tabel-nilai td{padding:8px 7px}
+.tabel-nilai th:first-child{min-width:0;width:34px}
+.tabel-nilai .btn-kecil{padding:5px 9px}
+.aksi-simpan.aksi-biasa{position:static;background:none;padding-bottom:0}
+.tabel-nilai th.bisa-urut{cursor:pointer;user-select:none}
+.tabel-nilai th.bisa-urut:hover{color:var(--hijau)}
+.tabel-nilai th.aktif{color:var(--hijau-tua);background:#eef6f1}
+.tabel-nilai td.angka{text-align:center}
+.tabel-nilai td.akhir b{font-size:1.05rem}
+.tabel-nilai td.peringkat{font-weight:700;color:var(--abu);text-align:center}
+.tabel-nilai tr.memenuhi td{background:#effaf3}
+.tabel-nilai tr.kurang td{background:#fdf4f2}
+.tabel-nilai tr.memenuhi td.peringkat{color:var(--hijau)}
+.kosong-nilai{color:#b8c3bd}
+.belum-lengkap{display:block;color:#b45309;font-size:.72rem}
+.pilih-cepat{padding:5px 6px;border-radius:7px;font-size:.8rem;font-weight:600;width:auto}
+.pilih-cepat.st-lulus{background:#e3f4ea;color:#0b5d3b;border-color:#9fd3b6}
+.pilih-cepat.st-tidak_lulus{background:#fdecea;color:#9b1c1c;border-color:#f0b4ac}
+.pilih-cepat.st-cadangan{background:#fdf0e3;color:#8a3b10;border-color:#f2c49c}
+@media (max-width:760px){
+  .form-nilai{grid-template-columns:1fr;gap:4px}
+  .label-nilai{text-align:left;padding-top:8px}
+  .alat-nilai{grid-template-columns:1fr 1fr}
+}
+@media print{
+  .samping,.atas,.tab-ppdb,.atur-nilai,.alat-nilai,.massal-ppdb,.tabel-nilai td:last-child,.tabel-nilai th:last-child,.isi>.sub,.isi>.panel>.ket{display:none!important}
+  .kerangka{display:block!important}
+  .panel{border:0;padding:0}
+  .pilih-cepat{border:0;background:none!important;appearance:none;-webkit-appearance:none;padding:0;min-width:0}
+  .tabel-nilai tr.memenuhi td,.tabel-nilai tr.kurang td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tabel-wrap{overflow:visible}
+}

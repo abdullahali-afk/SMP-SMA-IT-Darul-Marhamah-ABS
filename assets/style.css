@@ -426,3 +426,26 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 .poc-ikon{font-size:2.6rem}
 .poc-tombol{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .ppdb-online-cta small{color:var(--abu)}
+
+/* Program & kampus */
+.btn-garis-hijau{border:2px solid var(--hijau);color:var(--hijau);background:#fff}
+.btn-garis-hijau:hover{background:var(--hijau);color:#fff}
+.kartu-program-ringkas{display:flex;flex-direction:column;background:#fff}
+.kartu-program-ringkas .btn{align-self:flex-start;margin-top:auto}
+.kp-kampus{font-size:.92rem;color:var(--teks);margin:-2px 0 12px;padding:10px 14px;background:var(--hijau-muda);border-radius:8px}
+.kp-aksi{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.kp-aksi span{font-weight:600;color:var(--hijau-tua);font-size:.92rem}
+.info-program{list-style:none;margin:16px 0 22px;display:grid;gap:12px}
+.info-program li{display:flex;gap:12px;align-items:flex-start;background:var(--latar);border:1px solid #e3ebe6;border-radius:10px;padding:12px 14px;font-size:.94rem}
+.info-program li>span{font-size:1.3rem;line-height:1.4}
+.info-program b{color:var(--hijau-tua)}
+.tombol-program{display:flex;gap:10px;flex-wrap:wrap}
+.intro-program .vm-foto{font-size:5rem}
+.kosong-program{text-align:center;color:var(--abu);padding:12px 0}
+.program-lain{margin-top:16px;padding-top:14px;border-top:1px dashed #dfe7e2;font-size:.92rem}
+.lencana-program{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:2px 10px;border-radius:99px;background:var(--hijau-muda);color:var(--hijau-tua);margin-bottom:8px}
+.lencana-program.takhassus{background:var(--emas-muda);color:#b04a14}
+.ubin .gambar .lencana-program,.galeri figure .lencana-program{position:absolute;top:10px;left:10px;margin:0;z-index:1;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.filter+.filter{margin-top:-14px}
+.video-program{margin-top:32px}
+.video-program.satu{grid-template-columns:1fr;max-width:860px;margin-inline:auto}

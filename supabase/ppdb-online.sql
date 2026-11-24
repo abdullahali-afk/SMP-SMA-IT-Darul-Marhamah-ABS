@@ -1,5 +1,6 @@
 -- =====================================================================
---  PPDB ONLINE — akun calon santri, berkas, dan status seleksi
+--  PPDB ONLINE — akun calon santri, berkas, status seleksi, nilai tes,
+--  dan tautan menu ke halaman Program Tahfizh & Program Takhassus
 --  Cara pakai: Supabase → SQL Editor → New query → tempel SELURUH isi file
 --  ini → klik RUN. Aman dijalankan ulang. Tidak perlu mengubah apa pun.
 -- =====================================================================
@@ -158,3 +159,56 @@ create policy "ppdb dibaca pemilik atau panitia" on storage.objects for select t
 drop policy if exists "ppdb dihapus panitia" on storage.objects;
 create policy "ppdb dihapus panitia" on storage.objects for delete to authenticated
   using (bucket_id = 'ppdb' and public.boleh('pendaftar'));
+
+-- ---------- 6. Nilai tes calon santri (hanya panitia; tidak terlihat oleh calon santri) ----------
+-- Komponen nilai (Sholat, Tajwid, dst.) bisa ditambah/dihapus dari panel admin → Pendaftar PPDB → Rekap Nilai.
+create table if not exists public.ppdb_penilaian (
+  id          int primary key default 1 check (id = 1),
+  komponen    jsonb not null default '[]'::jsonb,
+  batas_lulus numeric,
+  diubah      timestamptz not null default now()
+);
+insert into public.ppdb_penilaian (id, komponen) values (1, $komponen$[
+  {"kode": "sholat",   "nama": "Sholat",             "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": false, "bobot": 1},
+  {"kode": "tajwid",   "nama": "Tajwid",             "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": true,  "bobot": 1},
+  {"kode": "hafalan",  "nama": "Pencapaian Hafalan", "jenis": "Jumlah", "maks": 13,  "satuan": "ayat", "keterangan": "Dari 13 ayat (QS. Al-Jumu'ah ayat 1-8)", "catatan": false, "bobot": 1},
+  {"kode": "tahfizh",  "nama": "Tahfizh",            "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": false, "bobot": 1},
+  {"kode": "akademik", "nama": "Akademik",           "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": false, "bobot": 1}
+]$komponen$::jsonb) on conflict (id) do nothing;
+
+create table if not exists public.pendaftar_nilai (
+  id      uuid primary key references public.pendaftar(id) on delete cascade,
+  nilai   jsonb not null default '{}'::jsonb,   -- { kode_komponen: angka }
+  catatan jsonb not null default '{}'::jsonb,   -- { kode_komponen: teks }
+  penilai text not null default '',
+  diubah  timestamptz not null default now()
+);
+
+alter table public.ppdb_penilaian enable row level security;
+alter table public.pendaftar_nilai enable row level security;
+revoke all on public.ppdb_penilaian, public.pendaftar_nilai from anon;
+grant select, insert, update on public.ppdb_penilaian to authenticated;
+grant select, insert, update, delete on public.pendaftar_nilai to authenticated;
+drop policy if exists "penilaian panitia" on public.ppdb_penilaian;
+create policy "penilaian panitia" on public.ppdb_penilaian for all to authenticated
+  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+drop policy if exists "nilai panitia" on public.pendaftar_nilai;
+create policy "nilai panitia" on public.pendaftar_nilai for all to authenticated
+  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+
+-- ---------- 7. Menu website: tambahkan halaman Program Tahfizh & Program Takhassus ----------
+-- Dua tautan ditambahkan di bagian atas submenu "Sekolah" (hanya sekali; isi menu lainnya tidak diubah).
+update public.konten k
+set data = jsonb_set(k.data, '{daftar}', (
+      select jsonb_agg(case when e->>'link' = '/sekolah.html'
+        then jsonb_set(e, '{sub}', $menu$[
+          {"link": "/program-tahfizh.html", "judul": "Program Tahfizh (Sukamaju)"},
+          {"link": "/program-takhassus.html", "judul": "Program Takhassus (Asal Mula)"}
+        ]$menu$::jsonb || coalesce(e->'sub', '[]'::jsonb))
+        else e end order by t.i)
+      from jsonb_array_elements(k.data->'daftar') with ordinality as t(e, i))),
+    diubah = now()
+where k.kunci = 'menu'
+  and jsonb_typeof(k.data->'daftar') = 'array'
+  and position('/program-tahfizh.html' in k.data::text) = 0
+  and exists (select 1 from jsonb_array_elements(k.data->'daftar') x where x->>'link' = '/sekolah.html');

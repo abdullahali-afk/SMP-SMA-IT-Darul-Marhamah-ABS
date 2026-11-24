@@ -495,7 +495,7 @@ window.SKEMA = [
  },
  {
   "kunci": "program_pendidikan",
-  "label": "Visi & Misi Program",
+  "label": "Program & Kampus",
   "ikon": "🎓",
   "fields": [
    {
@@ -532,10 +532,32 @@ window.SKEMA = [
      },
      {
       "name": "jenjang",
-      "label": "Jenjang yang memakai visi & misi ini",
+      "label": "Jenjang di program ini",
       "type": "string",
       "list": true,
       "description": "Contoh: SMP, SMA"
+     },
+     {
+      "name": "kampus",
+      "label": "Nama lokasi / kampus",
+      "type": "string",
+      "description": "Contoh: Kampus Sukamaju"
+     },
+     {
+      "name": "alamat",
+      "label": "Alamat kampus",
+      "type": "text"
+     },
+     {
+      "name": "peta",
+      "label": "Lokasi Google Maps kampus",
+      "type": "peta",
+      "description": "Tempel link lokasi dari Google Maps (tombol Bagikan → Salin link)."
+     },
+     {
+      "name": "foto",
+      "label": "Foto sampul program (opsional)",
+      "type": "image"
      },
      {
       "name": "ringkasan",
@@ -554,7 +576,8 @@ window.SKEMA = [
       "list": true,
       "description": "Satu baris untuk satu poin misi"
      }
-    ]
+    ],
+    "description": "Setiap program punya halaman sendiri di website. Program unggulan, ekstrakurikuler, fasilitas, foto galeri, dan video dipilih programnya di menu masing-masing (isian \"Program\")."
    }
   ]
  },
@@ -676,19 +699,60 @@ window.SKEMA = [
     "label": "PPDB Online (akun calon santri)",
     "type": "object",
     "fields": [
-     { "name": "dibuka", "label": "Pendaftaran akun calon santri dibuka", "type": "boolean" },
-     { "name": "biaya_registrasi", "label": "Biaya registrasi PPDB", "type": "string",
-       "description": "Contoh: Rp 300.000. Jika dikosongkan, dipakai baris \"Pendaftaran\" di Rincian biaya." },
-     { "name": "info_bayar", "label": "Petunjuk pembayaran registrasi", "type": "text",
-       "description": "Nomor rekening diambil dari isian \"Rekening pembayaran\" di atas." },
-     { "name": "info_tes_awal", "label": "Informasi Tes/Seleksi Tahap Awal (jadwal & tempat)", "type": "text" },
-     { "name": "info_tes_akhir", "label": "Informasi Tes Tahap Akhir", "type": "text" },
-     { "name": "info_lulus", "label": "Pesan untuk calon santri yang LULUS", "type": "text" },
-     { "name": "pertanyaan_wawancara", "label": "Pertanyaan formulir wawancara", "type": "object", "list": true,
-       "fields": [
-        { "name": "bagian", "label": "Ditujukan untuk", "type": "select", "options": ["Calon santri", "Orang tua / wali"] },
-        { "name": "pertanyaan", "label": "Pertanyaan", "type": "text" }
-       ] }
+     {
+      "name": "dibuka",
+      "label": "Pendaftaran akun calon santri dibuka",
+      "type": "boolean"
+     },
+     {
+      "name": "biaya_registrasi",
+      "label": "Biaya registrasi PPDB",
+      "type": "string",
+      "description": "Contoh: Rp 300.000. Jika dikosongkan, dipakai baris \"Pendaftaran\" di Rincian biaya."
+     },
+     {
+      "name": "info_bayar",
+      "label": "Petunjuk pembayaran registrasi",
+      "type": "text",
+      "description": "Nomor rekening diambil dari isian \"Rekening pembayaran\" di atas."
+     },
+     {
+      "name": "info_tes_awal",
+      "label": "Informasi Tes/Seleksi Tahap Awal (jadwal & tempat)",
+      "type": "text"
+     },
+     {
+      "name": "info_tes_akhir",
+      "label": "Informasi Tes Tahap Akhir",
+      "type": "text"
+     },
+     {
+      "name": "info_lulus",
+      "label": "Pesan untuk calon santri yang LULUS",
+      "type": "text"
+     },
+     {
+      "name": "pertanyaan_wawancara",
+      "label": "Pertanyaan formulir wawancara",
+      "type": "object",
+      "list": true,
+      "fields": [
+       {
+        "name": "bagian",
+        "label": "Ditujukan untuk",
+        "type": "select",
+        "options": [
+         "Calon santri",
+         "Orang tua / wali"
+        ]
+       },
+       {
+        "name": "pertanyaan",
+        "label": "Pertanyaan",
+        "type": "text"
+       }
+      ]
+     }
     ]
    }
   ]
@@ -801,6 +865,17 @@ window.SKEMA = [
       ]
      },
      {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program agar foto ini tampil di bagian Dokumentasi halaman program tersebut. Kosong atau \"Kedua program\" = tampil di kedua program."
+     },
+     {
       "name": "foto",
       "label": "Foto",
       "type": "image"
@@ -835,6 +910,17 @@ window.SKEMA = [
       "label": "Link YouTube",
       "type": "string",
       "description": "Tempel link video biasa, contoh https://www.youtube.com/watch?v=xxxx atau https://youtu.be/xxxx (bukan link channel)."
+     },
+     {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program agar video ini tampil di halaman program tersebut. Kosong atau \"Kedua program\" = tampil di kedua program."
      }
     ]
    }
@@ -908,6 +994,17 @@ window.SKEMA = [
       "type": "string"
      },
      {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program agar item ini tampil di halaman program tersebut. Kosong atau \"Kedua program\" = tampil di halaman kedua program."
+     },
+     {
       "name": "ikon",
       "label": "Ikon (emoji)",
       "type": "string"
@@ -917,7 +1014,8 @@ window.SKEMA = [
       "label": "Foto",
       "type": "image"
      }
-    ]
+    ],
+    "description": "Fasilitas tiap kampus: pilih programnya agar tampil di halaman program yang sesuai."
    },
    {
     "name": "ekstrakurikuler",
@@ -929,6 +1027,17 @@ window.SKEMA = [
       "name": "nama",
       "label": "Nama",
       "type": "string"
+     },
+     {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program agar item ini tampil di halaman program tersebut. Kosong atau \"Kedua program\" = tampil di halaman kedua program."
      },
      {
       "name": "ikon",
@@ -951,7 +1060,7 @@ window.SKEMA = [
   "fields": [
    {
     "name": "unggulan",
-    "label": "Program unggulan (4 kartu)",
+    "label": "Program unggulan",
     "type": "object",
     "list": true,
     "fields": [
@@ -964,6 +1073,17 @@ window.SKEMA = [
       "name": "judul",
       "label": "Judul",
       "type": "string"
+     },
+     {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program agar item ini tampil di halaman program tersebut. Kosong atau \"Kedua program\" = tampil di halaman kedua program."
      },
      {
       "name": "isi",
@@ -1005,6 +1125,17 @@ window.SKEMA = [
       "name": "judul",
       "label": "Judul",
       "type": "string"
+     },
+     {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program agar item ini tampil di halaman program tersebut. Kosong atau \"Kedua program\" = tampil di halaman kedua program."
      },
      {
       "name": "isi",

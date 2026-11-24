@@ -1,0 +1,104 @@
+{%- comment -%}
+Halaman satu program pendidikan. Param: kode ("tahfizh" / "takhassus"), kata (potongan nama untuk mencari program: "tahf" / "takh").
+Data: program_pendidikan.daftar (lokasi, visi misi); item program unggulan, ekstrakurikuler, fasilitas, galeri, dan video
+dipilih lewat isian "program" (kosong / "Kedua program" = tampil di kedua halaman program).
+Semua variabel diberi awalan hp_ karena variabel include di Jekyll 3 terbawa ke luar.
+{%- endcomment -%}
+{%- assign hp_kode = include.kode -%}
+{%- assign hp = nil -%}{%- assign hp_lain = nil -%}
+{%- for hp_p in site.data.program_pendidikan.daftar -%}
+  {%- assign hp_n = hp_p.nama | default: "" | downcase -%}
+  {%- if hp == nil and hp_n contains include.kata -%}{%- assign hp = hp_p -%}{%- elsif hp_lain == nil -%}{%- assign hp_lain = hp_p -%}{%- endif -%}
+{%- endfor -%}
+{%- if hp_lain -%}
+  {%- assign hp_ln = hp_lain.nama | downcase -%}
+  {%- if hp_ln contains "takh" -%}{%- assign hp_lain_url = "/program-takhassus.html" -%}{%- elsif hp_ln contains "tahf" -%}{%- assign hp_lain_url = "/program-tahfizh.html" -%}{%- else -%}{%- assign hp_lain_url = "/sekolah.html" -%}{%- endif -%}
+{%- endif -%}
+{%- if hp == nil -%}
+{% include hero.html judul=page.title induk="Program" %}
+<section><div class="wadah"><p class="kosong-program">Informasi program ini belum diisi. Silakan isi di panel admin → Program &amp; Kampus.</p></div></section>
+{%- else -%}
+{%- assign hp_judul = hp.nama_lengkap | default: hp.nama -%}
+{%- assign hp_ada_kampus = false -%}{%- if hp.kampus and hp.kampus != "" -%}{%- assign hp_ada_kampus = true -%}{%- endif -%}
+{%- assign hp_ada_alamat = false -%}{%- if hp.alamat and hp.alamat != "" -%}{%- assign hp_ada_alamat = true -%}{%- endif -%}
+{%- assign hp_ada_lokasi = hp_ada_alamat -%}{%- if hp.peta and hp.peta != "" -%}{%- assign hp_ada_lokasi = true -%}{%- endif -%}
+{%- assign hp_ada_vm = false -%}{%- if hp.visi and hp.visi != "" -%}{%- assign hp_ada_vm = true -%}{%- endif -%}{%- if hp.misi.size > 0 -%}{%- assign hp_ada_vm = true -%}{%- endif -%}
+{%- assign hp_judul_fas = hp.kampus | default: "Gedung & Fasilitas" -%}
+{%- capture hp_sub -%}{% if hp.jenjang.size > 0 %}Jenjang {{ hp.jenjang | join: " &amp; " }}{% endif %}{% if hp.kampus and hp.kampus != "" %} · {{ hp.kampus }}{% endif %}{%- endcapture -%}
+{% include hero.html judul=hp.nama sub=hp_sub induk="Program" %}
+
+<section class="bg-putih" id="tentang"><div class="wadah vm intro-program">
+  <div class="foto vm-foto">{% include media.html foto=hp.foto ikon=hp.ikon alt=hp_judul %}</div>
+  <div>
+    {% include judul.html k="Program Pendidikan" t=hp_judul kiri=true %}
+    {% if hp.ringkasan and hp.ringkasan != "" %}<p class="kp-ringkas">{{ hp.ringkasan }}</p>{% endif %}
+    <ul class="info-program">
+      {% if hp_ada_kampus or hp_ada_alamat %}<li><span>📍</span><div><b>{{ hp.kampus | default: "Lokasi" }}</b>{% if hp.alamat and hp.alamat != "" %}<br>{{ hp.alamat }}{% endif %}</div></li>{% endif %}
+      {% if hp.jenjang.size > 0 %}<li><span>🎓</span><div><b>Jenjang</b><br>{% for j in hp.jenjang %}{{ j }} Islam Terpadu{% unless forloop.last %} dan {% endunless %}{% endfor %} (khusus putri, berasrama)</div></li>{% endif %}
+    </ul>
+    <p class="tombol-program"><a href="{{ '/pendaftaran/#daftar' | relative_url }}" class="btn btn-emas">Daftar Program Ini →</a>{% if hp_ada_lokasi %} <a href="#lokasi" class="btn btn-garis-hijau">Lihat Lokasi</a>{% endif %}</p>
+  </div>
+</div></section>
+
+{%- if hp_ada_vm %}
+<section id="visi-misi"><div class="wadah">
+  {% include judul.html k="Visi & Misi" t=hp_judul %}
+  <div class="grid g2">
+    <div class="kartu"><h3>🌟 Visi</h3><p style="font-size:1.05rem;color:var(--teks)">"{{ hp.visi | remove: '"' }}"</p></div>
+    <div class="kartu"><h3>🎯 Misi</h3><ol class="misi-nomor">{% for m in hp.misi %}<li>{{ m }}</li>{% endfor %}</ol></div>
+  </div>
+</div></section>
+{%- endif %}
+
+{%- capture hp_unggulan -%}{%- for i in site.data.program.unggulan -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}<div class="kartu"><div class="ikon">{{ i.ikon }}</div><h3>{{ i.judul }}</h3><p>{{ i.isi }}</p></div>{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- capture hp_kurikulum -%}{%- for i in site.data.program.kurikulum -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}<div class="program"><div class="no">{{ i.ikon }}</div><div><h3>{{ i.judul }}</h3><p>{{ i.isi }}</p></div></div>{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- if hp_unggulan != "" or hp_kurikulum != "" %}
+<section class="bg-putih" id="unggulan"><div class="wadah">
+  {% include judul.html k="Program Unggulan" t=hp.nama %}
+  {% if hp_unggulan != "" %}<div class="grid g4" style="margin-bottom:24px">{{ hp_unggulan }}</div>{% endif %}
+  {% if hp_kurikulum != "" %}<div class="grid g2">{{ hp_kurikulum }}</div>{% endif %}
+</div></section>
+{%- endif %}
+
+{%- capture hp_ekskul -%}{%- for i in site.data.fasilitas.ekstrakurikuler -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}<div class="ubin"><div class="gambar">{% include media.html foto=i.foto ikon=i.ikon alt=i.nama %}</div><h3>{{ i.nama }}</h3></div>{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- if hp_ekskul != "" %}
+<section id="ekskul"><div class="wadah">
+  {% include judul.html k="Ekstrakurikuler" t="Kembangkan Bakat dan Minat" %}
+  <div class="grid g4">{{ hp_ekskul }}</div>
+</div></section>
+{%- endif %}
+
+{%- capture hp_fasilitas -%}{%- for i in site.data.fasilitas.fasilitas -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}<div class="ubin"><div class="gambar">{% include media.html foto=i.foto ikon=i.ikon alt=i.nama %}</div><h3>{{ i.nama }}</h3></div>{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- if hp_fasilitas != "" %}
+<section class="bg-putih" id="fasilitas"><div class="wadah">
+  {% include judul.html k="Fasilitas" t=hp_judul_fas %}
+  <div class="grid g4">{{ hp_fasilitas }}</div>
+</div></section>
+{%- endif %}
+
+{%- assign hp_foto_n = 0 -%}
+{%- capture hp_galeri -%}{%- for i in site.data.galeri.daftar -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}{%- if i.foto and i.foto != "" and hp_foto_n < 12 -%}{%- assign hp_foto_n = hp_foto_n | plus: 1 -%}<figure>{% include media.html foto=i.foto ikon=i.ikon alt=i.judul %}<figcaption>{{ i.judul }}</figcaption></figure>{%- endif -%}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- assign hp_vid_n = 0 -%}
+{%- capture hp_video -%}{%- for i in site.data.video.daftar -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}{%- if hp_vid_n < 4 -%}{%- assign hp_vid_n = hp_vid_n | plus: 1 -%}{% include youtube.html url=i.url judul=i.judul %}{%- endif -%}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+<section id="dokumentasi"><div class="wadah">
+  {% include judul.html k="Dokumentasi" t="Kegiatan Santriwati" %}
+  {% if hp_galeri != "" %}<div class="galeri">{{ hp_galeri }}</div>
+  <p style="text-align:center;margin-top:20px"><a href="{{ '/galeri.html' | relative_url }}?p={{ hp_kode }}" class="btn btn-garis-hijau">Lihat Semua Foto {{ hp.nama }}</a></p>
+  {% else %}<p class="kosong-program">Foto dokumentasi {{ hp.nama }} segera hadir.</p>{% endif %}
+  {% if hp_video != "" %}<div class="grid g2 video-program{% if hp_vid_n == 1 %} satu{% endif %}">{{ hp_video }}</div>{% endif %}
+</div></section>
+
+{%- if hp_ada_lokasi %}
+<section class="bg-putih" id="lokasi"><div class="wadah grid g2 lokasi-program">
+  {%- capture hp_judul_peta -%}Lokasi {{ hp.kampus | default: hp.nama }}{%- endcapture -%}
+  {% include peta.html s=hp judul=hp_judul_peta %}
+  <div class="kartu" style="align-self:start">
+    <h3>Ingin bertanya tentang {{ hp.nama }}?</h3>
+    <p>Hubungi panitia penerimaan santriwati baru melalui WhatsApp, atau langsung daftar online.</p>
+    <div style="margin:14px 0">{% include kontak-wa.html gaya="kartu" %}</div>
+    <p><a href="{{ '/ppdb.html' | relative_url }}" class="btn btn-hijau">Info PPDB</a></p>
+    {% if hp_lain %}<p class="program-lain">Lihat juga: <a href="{{ hp_lain_url | relative_url }}">{{ hp_lain.ikon }} {{ hp_lain.nama }}{% if hp_lain.kampus != nil and hp_lain.kampus != "" %} ({{ hp_lain.kampus }}){% endif %} →</a></p>{% endif %}
+  </div>
+</div></section>
+{%- endif %}
+{%- endif -%}

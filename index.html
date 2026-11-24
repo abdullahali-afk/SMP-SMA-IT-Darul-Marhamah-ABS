@@ -28,9 +28,17 @@ title: Beranda
     <blockquote class="visi">{{ s.visi | remove: '"' }}</blockquote>
     <ol class="misi-nomor">{% for m in s.misi %}<li>{{ m }}</li>{% endfor %}</ol>
     {%- assign pp = site.data.program_pendidikan -%}
-    {% if pp.daftar.size > 0 %}<div class="vm-program"><span>Visi & misi program:</span>{% for p in pp.daftar %}<a href="{{ '/profil.html' | relative_url }}#{{ p.nama | slugify }}">{{ p.ikon }} {{ p.nama }}</a>{% endfor %}</div>{% endif %}
+    {% if pp.daftar.size > 0 %}<div class="vm-program"><span>Visi & misi program:</span>{% for p in pp.daftar %}{% include program-url.html nama=p.nama %}<a href="{{ pu | relative_url }}#visi-misi">{{ p.ikon }} {{ p.nama }}</a>{% endfor %}</div>{% endif %}
   </div>
 </div></section>
+
+{%- assign pp = site.data.program_pendidikan -%}
+{%- if pp.daftar.size > 0 %}
+<section class="bg-hijau-muda" id="program"><div class="wadah">
+  {% include judul.html k="Program Pendidikan" t="Dua Program untuk SMP dan SMA" %}
+  <div class="grid g2">{% for p in pp.daftar %}{% include kartu-program.html p=p %}{% endfor %}</div>
+</div></section>
+{%- endif %}
 
 <section class="bg-putih"><div class="wadah">
   <div class="judul-baris"><div>{% include judul.html k="Kabar Sekolah" t="Berita Terbaru" kiri=true %}</div><a href="{{ '/berita.html' | relative_url }}" class="lihat">Selengkapnya →</a></div>

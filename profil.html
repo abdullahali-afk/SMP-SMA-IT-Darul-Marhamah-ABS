@@ -37,6 +37,7 @@ description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & 
       <h4>🎯 Misi</h4>
       <ol class="misi-nomor">{% for m in p.misi %}<li>{{ m }}</li>{% endfor %}</ol>
       {% if p.jenjang.size > 1 %}<p class="kp-catatan">Visi dan misi ini berlaku sama untuk jenjang {{ p.jenjang | join: " dan " }}.</p>{% endif %}
+      {% include program-url.html nama=p.nama %}<p class="kp-aksi">{% if p.kampus != nil and p.kampus != "" %}<span>📍 {{ p.kampus }}</span>{% endif %}<a href="{{ pu | relative_url }}" class="btn btn-hijau btn-kecil">Lihat halaman {{ p.nama }} →</a></p>
     </article>
   {%- endfor %}
   </div>
@@ -51,11 +52,12 @@ description: Selayang pandang, visi misi, program unggulan, dan fasilitas SMP & 
     <tr><td>NPSN</td><td>{{ s.smp.npsn }}</td><td>{{ s.sma.npsn }}</td></tr>
     <tr><td>Akreditasi</td><td>{{ s.smp.akreditasi }}</td><td>{{ s.sma.akreditasi }}</td></tr>
     <tr><td>Kepala Sekolah</td><td>{{ s.smp.kepala_sekolah }}</td><td>{{ s.sma.kepala_sekolah }}</td></tr>
-    <tr><td>Alamat</td><td>{{ s.smp.alamat }}</td><td>{{ s.sma.alamat }}</td></tr>
+    <tr><td>Alamat (sesuai NPSN)</td><td>{{ s.smp.alamat }}</td><td>{{ s.sma.alamat }}</td></tr>
     <tr><td>Status</td><td>Swasta</td><td>Swasta</td></tr>
     <tr><td>Jenis</td><td colspan="2">Boarding school (berasrama) khusus putri</td></tr>
     <tr><td>Yayasan</td><td colspan="2">{{ s.yayasan }}</td></tr>
-    {% if pp.daftar.size > 0 %}<tr><td>Program pendidikan</td><td colspan="2">{{ pp.daftar | map: "nama" | join: " dan " }} (masing-masing untuk SMP dan SMA)</td></tr>{% endif %}
+    {% if pp.daftar.size > 0 %}<tr><td>Program pendidikan</td><td colspan="2">{{ pp.daftar | map: "nama" | join: " dan " }} (masing-masing untuk SMP dan SMA)</td></tr>
+    <tr><td>Lokasi program</td><td colspan="2">{% for p in pp.daftar %}<b>{{ p.nama }}</b>{% if p.kampus != nil and p.kampus != "" %}: {{ p.kampus }}{% endif %}{% if p.alamat != nil and p.alamat != "" %}, {{ p.alamat }}{% endif %}{% unless forloop.last %}<br>{% endunless %}{% endfor %}</td></tr>{% endif %}
     <tr><td>Kurikulum</td><td colspan="2">Kurikulum Merdeka + Kurikulum Diniyah + Tahfidz</td></tr>
   </table></div>
 </div></section>

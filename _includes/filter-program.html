@@ -1,0 +1,4 @@
+{%- assign fp_pp = site.data.program_pendidikan.daftar -%}
+{%- if fp_pp.size > 1 -%}
+<div class="filter" data-kunci="p"><button class="aktif" data-k="semua">Semua program</button>{% for fp in fp_pp %}{% include program-kode.html v=fp.nama %}{% if pk != "" %}<button data-k="{{ pk }}">{{ fp.nama }}</button>{% endif %}{% endfor %}</div>
+{%- endif -%}

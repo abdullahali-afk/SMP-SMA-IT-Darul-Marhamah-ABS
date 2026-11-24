@@ -126,5 +126,27 @@
         }
       ]
     }
+  },
+  "program_pendidikan": {
+    "@daftar": [
+      {
+        "cocok": "tahf",
+        "isi": {
+          "kampus": "Kampus Sukamaju",
+          "alamat": "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar",
+          "peta": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D",
+          "foto": ""
+        }
+      },
+      {
+        "cocok": "takh",
+        "isi": {
+          "kampus": "Kampus Asal Mula",
+          "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar",
+          "peta": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D",
+          "foto": ""
+        }
+      }
+    ]
   }
 }

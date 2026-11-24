@@ -1,0 +1,3 @@
+{%- comment -%} Mengubah isian "Program" (mis. "Program Tahfizh") menjadi kode: pk = "tahfizh" / "takhassus" / "" (kedua program). {%- endcomment -%}
+{%- assign pk_t = include.v | default: "" | downcase -%}
+{%- if pk_t contains "takh" -%}{%- assign pk = "takhassus" -%}{%- elsif pk_t contains "tahf" -%}{%- assign pk = "tahfizh" -%}{%- else -%}{%- assign pk = "" -%}{%- endif -%}

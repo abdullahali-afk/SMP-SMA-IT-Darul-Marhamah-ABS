@@ -1,0 +1,9 @@
+{%- comment -%} Kartu ringkas satu program (halaman Program & Sekolah, beranda). Param: p. {%- endcomment -%}
+{%- assign kp = include.p -%}{% include program-url.html nama=kp.nama %}
+<article class="kartu-program kartu-program-ringkas">
+  <div class="kp-kepala"><span class="kp-ikon">{{ kp.ikon | default: "🎓" }}</span><div><h3>{{ kp.nama_lengkap | default: kp.nama }}</h3>
+    {% if kp.jenjang.size > 0 %}<div class="kp-jenjang">{% for j in kp.jenjang %}<span>{{ j }}</span>{% endfor %}</div>{% endif %}</div></div>
+  {% if kp.kampus != nil and kp.kampus != "" %}<p class="kp-kampus">📍 <b>{{ kp.kampus }}</b>{% if kp.alamat != nil and kp.alamat != "" %} · {{ kp.alamat }}{% endif %}</p>{% endif %}
+  {% if kp.ringkasan != nil and kp.ringkasan != "" %}<p class="kp-ringkas">{{ kp.ringkasan }}</p>{% endif %}
+  <a href="{{ pu | relative_url }}" class="btn btn-hijau">Lihat {{ kp.nama }} →</a>
+</article>

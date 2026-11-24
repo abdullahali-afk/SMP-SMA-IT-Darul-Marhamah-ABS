@@ -168,10 +168,26 @@ async function hapus(rel) {
 // Nilai itu dipakai selama isian tersebut belum ada di database (belum pernah disimpan dari panel).
 let BAWAAN = {};
 try { BAWAAN = JSON.parse(await readFile(path.join(ROOT, 'scripts/bawaan.json'), 'utf8')); } catch {}
+// Kunci berawalan "@" (mis. "@daftar") mengisi isian baru di dalam item daftar yang sudah ada:
+// [{ "cocok": "tahf", "isi": {...} }] → item yang nama/judulnya memuat "tahf" diberi isian yang belum ada.
 function lengkapiBawaan(kunci, data) {
   const b = BAWAAN[kunci];
   if (!b || typeof b !== 'object') return;
-  for (const [k, v] of Object.entries(b)) if (data[k] === undefined) data[k] = JSON.parse(JSON.stringify(v));
+  const salin = (v) => JSON.parse(JSON.stringify(v));
+  for (const [k, v] of Object.entries(b)) {
+    if (k.startsWith('@')) {
+      const arr = data[k.slice(1)];
+      if (!Array.isArray(arr) || !Array.isArray(v)) continue;
+      for (const item of arr) {
+        if (!item || typeof item !== 'object') continue;
+        const nama = String(item.nama || item.judul || '').toLowerCase();
+        const aturan = v.find(a => a && a.cocok && nama.includes(String(a.cocok).toLowerCase()));
+        if (aturan) for (const [ik, iv] of Object.entries(aturan.isi || {})) if (item[ik] === undefined) item[ik] = salin(iv);
+      }
+      continue;
+    }
+    if (data[k] === undefined) data[k] = salin(v);
+  }
 }
 
 /* ---------- 1. Isi halaman (_data) ---------- */
