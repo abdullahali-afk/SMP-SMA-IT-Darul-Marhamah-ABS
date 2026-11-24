@@ -366,7 +366,7 @@ drop policy if exists "ppdb dihapus panitia" on storage.objects;
 create policy "ppdb dihapus panitia" on storage.objects for delete to authenticated
   using (bucket_id = 'ppdb' and public.boleh('pendaftar'));
 
--- ---------- 6. Nilai tes calon santri (hanya panitia; tidak terlihat oleh calon santri) ----------
+-- ---------- 6. Nilai tes calon santri (panitia & penguji; tidak terlihat oleh calon santri) ----------
 -- Komponen nilai (Sholat, Tajwid, dst.) bisa ditambah/dihapus dari panel admin → Pendaftar PPDB → Rekap Nilai.
 create table if not exists public.ppdb_penilaian (
   id          int primary key default 1 check (id = 1),
@@ -377,7 +377,7 @@ create table if not exists public.ppdb_penilaian (
 insert into public.ppdb_penilaian (id, komponen) values (1, $komponen$[
   {"kode": "sholat",   "nama": "Sholat",             "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": false, "bobot": 1},
   {"kode": "tajwid",   "nama": "Tajwid",             "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": true,  "bobot": 1},
-  {"kode": "hafalan",  "nama": "Pencapaian Hafalan", "jenis": "Jumlah", "maks": 13,  "satuan": "ayat", "keterangan": "Dari 13 ayat (QS. Al-Jumu'ah ayat 1-8)", "catatan": false, "bobot": 1},
+  {"kode": "hafalan",  "nama": "Pencapaian Hafalan", "jenis": "Jumlah", "maks": 13,  "satuan": "ayat", "materi": "QS. Al-Jumu'ah ayat 1-8", "keterangan": "", "catatan": false, "bobot": 1},
   {"kode": "tahfizh",  "nama": "Tahfizh",            "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": false, "bobot": 1},
   {"kode": "akademik", "nama": "Akademik",           "jenis": "Nilai",  "maks": 100, "satuan": "",     "keterangan": "", "catatan": false, "bobot": 1}
 ]$komponen$::jsonb) on conflict (id) do nothing;
@@ -395,12 +395,47 @@ alter table public.pendaftar_nilai enable row level security;
 revoke all on public.ppdb_penilaian, public.pendaftar_nilai from anon;
 grant select, insert, update on public.ppdb_penilaian to authenticated;
 grant select, insert, update, delete on public.pendaftar_nilai to authenticated;
+-- Hak akses "Input Nilai SPMB" (kode nilai_ppdb): penguji boleh mengisi nilai tanpa melihat biodata,
+-- berkas, atau status pendaftar. Pengaturan komponen nilai tetap hanya untuk panitia (akses Pendaftar PPDB).
 drop policy if exists "penilaian panitia" on public.ppdb_penilaian;
-create policy "penilaian panitia" on public.ppdb_penilaian for all to authenticated
+drop policy if exists "penilaian dibaca" on public.ppdb_penilaian;
+create policy "penilaian dibaca" on public.ppdb_penilaian for select to authenticated
+  using (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+drop policy if exists "penilaian ditambah panitia" on public.ppdb_penilaian;
+create policy "penilaian ditambah panitia" on public.ppdb_penilaian for insert to authenticated
+  with check (public.boleh('pendaftar'));
+drop policy if exists "penilaian diubah panitia" on public.ppdb_penilaian;
+create policy "penilaian diubah panitia" on public.ppdb_penilaian for update to authenticated
   using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
 drop policy if exists "nilai panitia" on public.pendaftar_nilai;
-create policy "nilai panitia" on public.pendaftar_nilai for all to authenticated
-  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+drop policy if exists "nilai dibaca" on public.pendaftar_nilai;
+create policy "nilai dibaca" on public.pendaftar_nilai for select to authenticated
+  using (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+drop policy if exists "nilai diisi" on public.pendaftar_nilai;
+create policy "nilai diisi" on public.pendaftar_nilai for insert to authenticated
+  with check (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+drop policy if exists "nilai diubah" on public.pendaftar_nilai;
+create policy "nilai diubah" on public.pendaftar_nilai for update to authenticated
+  using (public.boleh('pendaftar') or public.boleh('nilai_ppdb')) with check (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+drop policy if exists "nilai dihapus panitia" on public.pendaftar_nilai;
+create policy "nilai dihapus panitia" on public.pendaftar_nilai for delete to authenticated
+  using (public.boleh('pendaftar'));
+
+-- Daftar peserta tes untuk penguji: hanya nomor, nama, dan pilihan sekolah (tanpa biodata/kontak/berkas)
+create or replace function public.peserta_tes()
+returns table (id uuid, nomor text, nama text, jenjang text, program text, status_bayar text, wawancara_lengkap boolean, dibuat timestamptz)
+language sql stable security definer set search_path = public as $$
+  select p.id, p.nomor, p.nama, p.jenjang, p.program, p.status_bayar, p.wawancara_lengkap, p.dibuat
+  from public.pendaftar p
+  where public.boleh('pendaftar') or public.boleh('nilai_ppdb')
+  order by p.dibuat;
+$$;
+revoke all on function public.peserta_tes() from public, anon;
+grant execute on function public.peserta_tes() to authenticated;
+
+-- Peran siap pakai untuk guru penguji (ubah atau hapus di panel admin → Peran & Hak Akses)
+insert into public.peran (kode, nama, akses, urutan) values ('penguji', 'Penguji SPMB', array['nilai_ppdb'], 30)
+on conflict (kode) do nothing;
 
 -- ---------- 7. Menu website: tambahkan halaman Program Tahfizh & Program Takhassus ----------
 -- Dua tautan ditambahkan di bagian atas submenu "Sekolah" (hanya sekali; isi menu lainnya tidak diubah).

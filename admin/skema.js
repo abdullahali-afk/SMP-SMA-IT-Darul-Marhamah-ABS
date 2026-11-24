@@ -1184,3 +1184,4 @@ window.SKEMA = [
 ];
 window.BAGIAN_BERITA = {kunci:'berita',label:'Berita',ikon:'📰'};
 window.BAGIAN_PENDAFTAR = {kunci:'pendaftar',label:'Pendaftar PPDB',ikon:'🧾'};
+window.BAGIAN_NILAI = {kunci:'nilai_ppdb',label:'Input Nilai SPMB',ikon:'📝'};

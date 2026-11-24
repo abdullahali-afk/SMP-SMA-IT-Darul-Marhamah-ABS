@@ -56,8 +56,8 @@ function sibuk(btn, ya, teks) { btn.disabled = ya; if (teks) btn.textContent = t
 /* ---------- Hak akses ---------- */
 const adalahAdmin = () => !!(peranSaya && peranSaya.akses.includes('*'));
 const boleh = (bagian) => adalahAdmin() || !!(peranSaya && peranSaya.akses.includes(bagian));
-const semuaBagian = () => [window.BAGIAN_BERITA, ...window.SKEMA, window.BAGIAN_PENDAFTAR].filter(Boolean);
-const hrefBagian = (b) => b.kunci === 'berita' ? '#/berita' : b.kunci === 'pendaftar' ? '#/pendaftar' : '#/konten/' + b.kunci;
+const semuaBagian = () => [window.BAGIAN_BERITA, ...window.SKEMA, window.BAGIAN_PENDAFTAR, window.BAGIAN_NILAI].filter(Boolean);
+const hrefBagian = (b) => b.kunci === 'berita' ? '#/berita' : b.kunci === 'pendaftar' ? '#/pendaftar' : b.kunci === 'nilai_ppdb' ? '#/nilai-tes' : '#/konten/' + b.kunci;
 
 /* ---------- Mulai ---------- */
 async function mulai() {
@@ -188,8 +188,11 @@ function kerangka(judul, sub, ...isi) {
     h('div', { class: 'merek' }, h('img', { src: '../assets/logo.png', alt: '' }), h('div', null, h('b', null, 'Darul Marhamah'), h('small', null, 'Panel Admin'))),
     tautan('#/', '🏠', 'Dasbor'));
   if (profil.peran !== 'menunggu') {
-    const isiWeb = semuaBagian().filter(b => boleh(b.kunci));
+    const spmb = ['pendaftar', 'nilai_ppdb'];
+    const terbuka = semuaBagian().filter(b => boleh(b.kunci));
+    const isiWeb = terbuka.filter(b => !spmb.includes(b.kunci)), menuSpmb = terbuka.filter(b => spmb.includes(b.kunci));
     if (isiWeb.length) { samping.append(h('h4', null, 'Isi Website')); isiWeb.forEach(b => samping.append(tautan(hrefBagian(b), b.ikon, b.label))); }
+    if (menuSpmb.length) { samping.append(h('h4', null, 'SPMB')); menuSpmb.forEach(b => samping.append(tautan(hrefBagian(b), b.ikon, b.label))); }
   }
   if (adalahAdmin()) samping.append(h('h4', null, 'Administrasi'), tautan('#/pengguna', '👥', 'Pengguna'), tautan('#/peran', '🔐', 'Peran & Hak Akses'));
   samping.append(h('h4', null, 'Akun'), tautan('#/akun', '⚙️', 'Pengaturan Akun'),
@@ -223,6 +226,7 @@ function rute() {
   if (profil.peran === 'menunggu' || !profil.aktif) return halamanDasbor();
   if (r[0] === 'konten' && r[1]) return boleh(r[1]) ? halamanKonten(r[1]) : tolak();
   if (r[0] === 'pendaftar') return !boleh('pendaftar') ? tolak() : r[1] === 'nilai' ? halamanRekapNilai() : r[1] ? halamanPendaftarDetail(r[1], r[2] === 'nilai') : halamanPendaftar();
+  if (r[0] === 'nilai-tes') return !(boleh('nilai_ppdb') || boleh('pendaftar')) ? tolak() : r[1] ? halamanNilaiPeserta(r[1]) : halamanDaftarPenguji();
   if (r[0] === 'berita') return !boleh('berita') ? tolak() : (r[1] ? halamanBeritaForm(r[1]) : halamanBerita());
   if (r[0] === 'pengguna') return adalahAdmin() ? halamanPengguna() : tolak();
   if (r[0] === 'peran') return adalahAdmin() ? halamanPeran() : tolak();
@@ -930,6 +934,7 @@ async function halamanPendaftarDetail(id, keNilai) {
 
 /* ---------- Nilai tes & rekap kelulusan PPDB (panitia) ---------- */
 const PESAN_NILAI_BELUM = 'Fitur nilai tes belum dipasang di database. Jalankan ulang file supabase/ppdb-online.sql (versi terbaru) di Supabase → SQL Editor. File itu aman dijalankan ulang.';
+const fiturBelumAda = (e) => tabelBelumAda(e) || (e && (e.code === 'PGRST202' || e.code === '42883' || /could not find the function/i.test(e.message || '')));
 const angkaId = (v, d = 1) => (v == null || v === '' || isNaN(v)) ? '–' : Number(v).toLocaleString('id-ID', { maximumFractionDigits: d });
 const maksKomponen = (k) => Number(k.maks) > 0 ? Number(k.maks) : 100;
 const bobotKomponen = (k) => (k.bobot === undefined || k.bobot === null || k.bobot === '' || isNaN(Number(k.bobot))) ? 1 : Math.max(0, Number(k.bobot));
@@ -942,8 +947,10 @@ function tabPpdb(aktif) {
     h('a', { href: '#/pendaftar/nilai', class: aktif === 'nilai' ? 'aktif' : null }, '📊 Rekap nilai & kelulusan'));
 }
 // Nilai akhir = rata-rata (berbobot) semua komponen yang sudah diisi, diubah ke skala 0–100
-function hitungNilai(komp, nilai) {
+const berlakuUntuk = (k, jenjang) => !k.berlaku || k.berlaku === 'Semua jenjang' || !jenjang || k.berlaku === jenjang;
+function hitungNilai(kompSemua, nilai, jenjang) {
   nilai = nilai || {};
+  const komp = kompSemua.filter(k => berlakuUntuk(k, jenjang));
   let jumlah = 0, bobot = 0, terisi = 0, dihitung = 0, dihitungTerisi = 0;
   for (const k of komp) {
     const ada = adaNilai(nilai[k.kode]);
@@ -960,29 +967,38 @@ function hitungNilai(komp, nilai) {
 async function muatPenilaian() {
   const { data, error } = await sb.from('ppdb_penilaian').select('*').eq('id', 1).maybeSingle();
   if (error) return { error };
-  return { komponen: data ? (Array.isArray(data.komponen) ? data.komponen : []) : salin(window.PPDB_KOMPONEN_AWAL || []),
-    batas: data && data.batas_lulus != null && data.batas_lulus !== '' ? Number(data.batas_lulus) : null };
+  const komponen = data ? (Array.isArray(data.komponen) ? data.komponen : []) : salin(window.PPDB_KOMPONEN_AWAL || []);
+  // Versi awal menyimpan surah di "keterangan" (mis. "Dari 13 ayat (QS. Al-Jumu'ah ayat 1-8)") → pindahkan ke isian surah
+  komponen.forEach(k => {
+    const m = !k.materi && typeof k.keterangan === 'string' && k.keterangan.match(/^dari\s+\d+(?:[.,]\d+)?\s*[^()]*\((.+)\)\s*$/i);
+    if (m) { k.materi = m[1].trim(); k.keterangan = ''; }
+  });
+  return { komponen, batas: data && data.batas_lulus != null && data.batas_lulus !== '' ? Number(data.batas_lulus) : null };
 }
 function teksIsian(k) {
-  const jml = k.jenis === 'Jumlah';
-  return { contoh: jml ? 'Jumlah ' + (k.satuan || '') + ' dihafalkan' : 'Nilai ' + (k.nama || ''),
-    ket: k.keterangan || (jml ? 'dari ' + maksKomponen(k) + ' ' + (k.satuan || '') : (maksKomponen(k) !== 100 ? 'maks. ' + maksKomponen(k) : '')) };
+  const jml = k.jenis === 'Jumlah', maks = maksKomponen(k), materi = String(k.materi || '').trim();
+  let ket = jml ? 'Dari ' + maks + ' ' + (k.satuan || '') + (materi ? ' (' + materi + ')' : '')
+    : [materi, maks !== 100 ? 'maks. ' + maks : ''].filter(Boolean).join(' · ');
+  if (k.keterangan) ket = (ket ? ket + ' · ' : '') + k.keterangan;
+  return { contoh: jml ? 'Jumlah ' + (k.satuan || '') + ' dihafalkan' : 'Nilai ' + (k.nama || ''), ket: ket.replace(/\s+/g, ' ').trim() };
 }
 
-async function navigasiPendaftar(id, keNilai) {
+// dasar: '#/pendaftar/' (panitia) atau '#/nilai-tes/' (penguji)
+async function navigasiPendaftar(id, keNilai, dasar = '#/pendaftar/') {
   let urutan = null;
   try { urutan = JSON.parse(bacaSesi('urutan-ppdb') || 'null'); } catch (e) { urutan = null; }
   if (!Array.isArray(urutan) || !urutan.includes(id)) {
-    const { data } = await sb.from('pendaftar').select('id').order('dibuat', { ascending: true });
+    const { data } = dasar === '#/nilai-tes/' ? await sb.rpc('peserta_tes') : await sb.from('pendaftar').select('id').order('dibuat', { ascending: true });
     urutan = (data || []).map(r => r.id);
   }
   const i = urutan.indexOf(id);
   if (i < 0 || urutan.length < 2) return null;
-  const ke = (j) => '#/pendaftar/' + urutan[j] + (keNilai ? '/nilai' : '');
+  const ke = (j) => dasar + urutan[j] + (keNilai ? '/nilai' : '');
+  const keNilaiBerikut = dasar === '#/pendaftar/' ? dasar + urutan[i + 1] + '/nilai' : dasar + urutan[i + 1];
   return h('div', { class: 'geser-pendaftar' },
     i > 0 ? h('a', { href: ke(i - 1) }, '‹ Sebelumnya') : h('span', null, '‹ Sebelumnya'),
     h('small', null, (i + 1) + ' dari ' + urutan.length),
-    i < urutan.length - 1 ? h('a', { href: ke(i + 1), 'data-berikut': urutan[i + 1] }, 'Berikutnya ›') : h('span', null, 'Berikutnya ›'));
+    i < urutan.length - 1 ? h('a', { href: ke(i + 1), 'data-lanjut': keNilaiBerikut }, 'Berikutnya ›') : h('span', null, 'Berikutnya ›'));
 }
 
 async function panelNilai(x) {
@@ -990,12 +1006,13 @@ async function panelNilai(x) {
   const [pn, nl] = await Promise.all([muatPenilaian(), sb.from('pendaftar_nilai').select('*').eq('id', x.id).maybeSingle()]);
   const err = pn.error || nl.error;
   if (err) { box.append(h('div', { class: 'pesan ' + (tabelBelumAda(err) ? 'peringatan' : 'galat') }, tabelBelumAda(err) ? PESAN_NILAI_BELUM : pesanGalat(err))); return box; }
-  const komp = pn.komponen;
-  if (!komp.length) { box.append(h('p', { class: 'ket' }, 'Belum ada komponen nilai. Atur dulu di ', h('a', { href: '#/pendaftar/nilai' }, 'Rekap nilai → Pengaturan nilai'), '.')); return box; }
+  const komp = pn.komponen.filter(k => berlakuUntuk(k, x.jenjang));
+  const linkAtur = boleh('pendaftar') ? h('a', { href: '#/pendaftar/nilai' }, 'Rekap nilai → Pengaturan nilai') : null;
+  if (!komp.length) { box.append(h('p', { class: 'ket' }, 'Belum ada komponen nilai' + (x.jenjang ? ' untuk ' + x.jenjang : '') + '. ', linkAtur ? ['Atur dulu di ', linkAtur, '.'] : 'Hubungi panitia SPMB.')); return box; }
   const nilai = salin((nl.data && nl.data.nilai) || {}), catatan = salin((nl.data && nl.data.catatan) || {});
   const akhir = h('div', { class: 'nilai-akhir' });
   const hitungUlang = () => {
-    const r = hitungNilai(komp, nilai);
+    const r = hitungNilai(komp, nilai, x.jenjang);
     let ket = r.terisi + ' dari ' + r.total + ' komponen terisi';
     if (pn.batas != null && r.akhir != null) ket += r.akhir >= pn.batas ? ' · memenuhi batas lulus (' + angkaId(pn.batas) + ')' : ' · di bawah batas lulus (' + angkaId(pn.batas) + ')';
     akhir.className = 'nilai-akhir' + (pn.batas != null && r.lengkap ? (r.akhir >= pn.batas ? ' lulus' : ' kurang') : '');
@@ -1032,8 +1049,8 @@ async function panelNilai(x) {
     kotor = false;
     toast('Nilai ' + (x.nama || '') + ' disimpan.');
     if (lanjut) {
-      const a = document.querySelector('.geser-pendaftar a[data-berikut]');
-      if (a) location.hash = '#/pendaftar/' + a.dataset.berikut + '/nilai';
+      const a = document.querySelector('.geser-pendaftar a[data-lanjut]');
+      if (a) location.hash = a.dataset.lanjut;
       else toast('Nilai disimpan. Ini pendaftar terakhir di daftar.');
     }
   };
@@ -1051,7 +1068,11 @@ const F_KOMPONEN = { name: 'komponen', label: 'Komponen nilai (urutannya = uruta
     description: 'Nilai = angka 0 sampai nilai maksimal. Jumlah = hitungan, misalnya jumlah ayat yang dihafal.' },
   { name: 'maks', label: 'Nilai / jumlah maksimal', type: 'number', default: 100, description: 'Contoh: 100 untuk nilai, 13 untuk jumlah ayat.' },
   { name: 'satuan', label: 'Satuan (untuk jenis Jumlah)', type: 'string', description: 'Contoh: ayat' },
-  { name: 'keterangan', label: 'Keterangan di samping isian', type: 'string', description: "Contoh: Dari 13 ayat (QS. Al-Jumu'ah ayat 1-8)" },
+  { name: 'materi', label: 'Surah / ayat yang diujikan', type: 'string',
+    description: "Contoh: QS. Al-Jumu'ah ayat 1–8 atau QS. Al-Mulk ayat 1–15. Tampil di samping isian nilai, mis. \"Dari 13 ayat (QS. Al-Jumu'ah ayat 1–8)\". Jika surah diganti, sesuaikan juga jumlah maksimalnya." },
+  { name: 'berlaku', label: 'Berlaku untuk jenjang', type: 'select', options: ['Semua jenjang', 'SMP', 'SMA'], default: 'Semua jenjang',
+    description: 'Pilih SMP atau SMA jika materi tesnya berbeda, lalu buat komponen kedua untuk jenjang lainnya (mis. hafalan SMP dan hafalan SMA dengan surah berbeda).' },
+  { name: 'keterangan', label: 'Keterangan tambahan (opsional)', type: 'string', description: 'Teks tambahan di samping isian nilai.' },
   { name: 'catatan', label: 'Tambahkan kotak catatan untuk komponen ini', type: 'boolean' },
   { name: 'bobot', label: 'Bobot dalam nilai akhir', type: 'number', default: 1, description: '1 = dihitung biasa, 2 = dihitung dua kali lipat, 0 = tidak ikut dihitung dalam nilai akhir.' },
 ] };
@@ -1073,7 +1094,7 @@ async function halamanRekapNilai() {
   let komp = pn.komponen, batas = pn.batas;
   const petaNilai = new Map((rn.data || []).map(r => [r.id, r]));
   const semua = (rp.data || []).map(x => Object.assign(x, { _n: petaNilai.get(x.id) || null }));
-  const hitungSemua = () => semua.forEach(x => { x._r = hitungNilai(komp, x._n && x._n.nilai); });
+  const hitungSemua = () => semua.forEach(x => { x._r = hitungNilai(komp, x._n && x._n.nilai, x.jenjang); });
   hitungSemua();
 
   // ----- Pengaturan nilai (komponen & batas lulus) -----
@@ -1081,7 +1102,7 @@ async function halamanRekapNilai() {
   const inBatas = h('input', { type: 'number', min: 0, max: 100, step: 'any', value: batas ?? '', placeholder: 'Contoh: 70', style: 'max-width:160px' });
   const btnCfg = h('button', { class: 'btn btn-emas', type: 'button' }, '💾 Simpan pengaturan nilai');
   const atur = h('details', { class: 'panel atur-nilai' }, h('summary', null, '⚙️ Pengaturan nilai: komponen & batas lulus'),
-    h('p', { class: 'ket' }, 'Tambah, hapus, atau ubah urutan komponen nilai. Nilai akhir = rata-rata semua komponen (dihitung dalam skala 0–100 sesuai bobotnya). Nilai yang sudah diisi tidak hilang jika nama komponen diubah.'),
+    h('p', { class: 'ket' }, 'Tambah, hapus, atau ubah urutan komponen nilai. Surah hafalan yang diujikan diubah di komponen "Pencapaian Hafalan" (isian "Surah / ayat yang diujikan" dan "Nilai / jumlah maksimal"). Nilai akhir = rata-rata semua komponen (dihitung dalam skala 0–100 sesuai bobotnya). Nilai yang sudah diisi tidak hilang jika nama komponen diubah.'),
     medan(F_KOMPONEN, cfg, 'ppdb'),
     h('div', { class: 'medan' }, h('label', null, 'Batas lulus (nilai akhir minimal, 0–100)'), inBatas,
       h('div', { class: 'ket' }, 'Baris yang nilainya mencapai batas ini ditandai hijau dan bisa diluluskan sekaligus. Kosongkan jika belum ditentukan.')),
@@ -1196,7 +1217,7 @@ async function halamanRekapNilai() {
       return (va > vb ? 1 : -1) * arah;
     });
     ingatUrutan(tersaring, '#/pendaftar/nilai');
-    const kolom = [['#', null], ['Nama', 'nama'], ...komp.map(k => [k.nama + (k.jenis === 'Jumlah' ? ' (' + (k.satuan || 'jumlah') + ')' : ''), 'k:' + k.kode]), ['Nilai akhir', 'akhir'], ['Tes awal', 'tes_awal'], ['Kelulusan', 'kelulusan'], ['', null]];
+    const kolom = [['#', null], ['Nama', 'nama'], ...komp.map(k => [k.nama + (k.jenis === 'Jumlah' ? ' (' + (k.satuan || 'jumlah') + ')' : '') + (k.berlaku && k.berlaku !== 'Semua jenjang' ? ' · ' + k.berlaku : ''), 'k:' + k.kode]), ['Nilai akhir', 'akhir'], ['Tes awal', 'tes_awal'], ['Kelulusan', 'kelulusan'], ['', null]];
     thead.replaceChildren(h('tr', null, kolom.map(([t, kunci]) => !kunci ? h('th', null, t) :
       h('th', { class: 'bisa-urut' + (urut.kunci === kunci ? ' aktif' : ''), title: 'Klik untuk mengurutkan', onclick: () => {
         if (urut.kunci === kunci) urut.turun = !urut.turun; else urut = { kunci, turun: kunci === 'akhir' || kunci.startsWith('k:') };
@@ -1209,7 +1230,8 @@ async function halamanRekapNilai() {
       return h('tr', { class: 'baris-klik ' + kelas, onclick: () => { location.hash = '#/pendaftar/' + x.id + '/nilai'; } },
         h('td', { class: 'peringkat' }, peringkat.get(x.id) || '–'),
         h('td', null, h('b', null, x.nama || '(tanpa nama)'), h('br'), h('small', null, (x.nomor || '-') + (x.jenjang ? ' · ' + x.jenjang + ' · ' + x.program : ''))),
-        ...komp.map(k => h('td', { class: 'angka', title: c[k.kode] ? 'Catatan: ' + c[k.kode] : null },
+        ...komp.map(k => !berlakuUntuk(k, x.jenjang) ? h('td', { class: 'angka tidak-berlaku', title: 'Tidak diujikan untuk ' + x.jenjang }, '·') :
+          h('td', { class: 'angka', title: c[k.kode] ? 'Catatan: ' + c[k.kode] : null },
           adaNilai(n[k.kode]) ? angkaId(n[k.kode], 2) + (k.jenis === 'Jumlah' ? '/' + maksKomponen(k) : '') : h('span', { class: 'kosong-nilai' }, '–'), c[k.kode] ? ' 📝' : null)),
         h('td', { class: 'angka akhir' }, h('b', null, angkaId(r.akhir)), r.terisi && !r.lengkap ? h('small', { class: 'belum-lengkap' }, ' belum lengkap') : null),
         h('td', null, pilihCepat(x, 'tes_awal', 'tes')),
@@ -1235,7 +1257,8 @@ async function halamanRekapNilai() {
 function unduhCsvNilai(baris, komp, batas) {
   const kolom = [['Nomor', x => x.nomor], ['Nama', x => x.nama], ['Jenjang', x => x.jenjang], ['Program', x => x.program],
     ...komp.flatMap(k => {
-      const isi = [[k.nama + (k.jenis === 'Jumlah' ? ' (dari ' + maksKomponen(k) + ' ' + (k.satuan || '') + ')' : ''), x => { const v = x._n && x._n.nilai ? x._n.nilai[k.kode] : ''; return adaNilai(v) ? angkaId(v, 2) : ''; }]];
+      const judulK = k.nama + (k.jenis === 'Jumlah' ? ' (dari ' + maksKomponen(k) + ' ' + (k.satuan || '') + (k.materi ? ', ' + k.materi : '') + ')' : k.materi ? ' (' + k.materi + ')' : '') + (k.berlaku && k.berlaku !== 'Semua jenjang' ? ' - ' + k.berlaku : '');
+      const isi = [[judulK.replace(/\s+/g, ' '), x => { const v = x._n && x._n.nilai ? x._n.nilai[k.kode] : ''; return adaNilai(v) ? angkaId(v, 2) : ''; }]];
       if (k.catatan) isi.push(['Catatan ' + k.nama, x => (x._n && x._n.catatan && x._n.catatan[k.kode]) || '']);
       return isi;
     }),
@@ -1246,6 +1269,83 @@ function unduhCsvNilai(baris, komp, batas) {
   const csv = [kolom.map(k => sel(k[0])).join(';'), ...baris.map(x => kolom.map(k => sel(k[1](x))).join(';'))].join('\r\n');
   const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'rekap-nilai-ppdb-' + new Date().toISOString().slice(0, 10) + '.csv' });
   document.body.append(a); a.click(); a.remove();
+}
+
+
+/* ---------- Input nilai oleh penguji (hak akses "Input Nilai SPMB") ---------- */
+// Penguji hanya melihat nomor, nama, dan pilihan sekolah peserta (fungsi database peserta_tes), lalu mengisi nilai.
+async function halamanDaftarPenguji() {
+  const judul = '📝 Input Nilai SPMB';
+  kerangka(judul, 'Memuat…');
+  const awal0 = location.hash;
+  const [rp, rn, pn] = await Promise.all([sb.rpc('peserta_tes'), sb.from('pendaftar_nilai').select('id, nilai, penilai, diubah'), muatPenilaian()]);
+  if (location.hash !== awal0) return;
+  const galat = rp.error || rn.error || pn.error;
+  if (galat) return kerangka(judul, null, h('div', { class: 'pesan ' + (fiturBelumAda(galat) ? 'peringatan' : 'galat') }, fiturBelumAda(galat) ? PESAN_NILAI_BELUM : pesanGalat(galat)));
+  const komp = pn.komponen;
+  const petaNilai = new Map((rn.data || []).map(r => [r.id, r]));
+  const semua = (rp.data || []).map(x => Object.assign(x, { _n: petaNilai.get(x.id) || null }));
+  semua.forEach(x => { x._r = hitungNilai(komp, x._n && x._n.nilai, x.jenjang); });
+  const program = [...new Set(semua.map(x => x.program).filter(Boolean))];
+  const SARING = {
+    semua: ['Semua peserta', () => true],
+    belum: ['Belum dinilai', x => !x._r.terisi],
+    sebagian: ['Belum lengkap', x => x._r.terisi && !x._r.lengkap],
+    lengkap: ['Sudah lengkap', x => x._r.lengkap],
+  };
+  const pilihS = h('select', null, Object.entries(SARING).map(([k, [t]]) => h('option', { value: k }, t)));
+  const pilihJ = h('select', null, h('option', { value: '' }, 'Semua jenjang'), h('option', { value: 'SMP' }, 'SMP'), h('option', { value: 'SMA' }, 'SMA'));
+  const pilihP = h('select', null, h('option', { value: '' }, 'Semua program'), program.map(p => h('option', { value: p }, p)));
+  const cari = h('input', { type: 'search', placeholder: 'Cari nama atau nomor…' });
+  const tbody = h('tbody');
+  const ringkas = h('div', { class: 'ringkas-ppdb' });
+  const gambar = () => {
+    const q = cari.value.trim().toLowerCase();
+    const t = semua.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value).filter(x => !pilihP.value || x.program === pilihP.value)
+      .filter(x => !q || [x.nama, x.nomor].some(v => String(v || '').toLowerCase().includes(q)));
+    ingatUrutan(t, '#/nilai-tes');
+    tbody.replaceChildren(...(t.length ? t.map(x => h('tr', { class: 'baris-klik ' + (x._r.lengkap ? 'lengkap' : x._r.terisi ? 'sebagian' : 'kosong'), onclick: () => { location.hash = '#/nilai-tes/' + x.id; } },
+      h('td', null, h('b', null, x.nomor || '-')),
+      h('td', null, h('b', null, x.nama || '(tanpa nama)')),
+      h('td', null, x.jenjang ? x.jenjang + ' · ' + x.program : h('small', null, 'Belum memilih')),
+      h('td', null, x._r.lengkap ? h('span', { class: 'lencana-st hijau' }, 'Lengkap') : x._r.terisi ? h('span', { class: 'lencana-st kuning' }, x._r.terisi + ' dari ' + x._r.total) : h('span', { class: 'lencana-st' }, 'Belum dinilai')),
+      h('td', { class: 'angka' }, angkaId(x._r.akhir)),
+      h('td', null, h('small', null, x._n && x._n.penilai ? x._n.penilai : '')),
+      h('td', null, h('a', { href: '#/nilai-tes/' + x.id, class: 'btn btn-garis btn-kecil', onclick: e => e.stopPropagation() }, x._r.terisi ? '✏️ Ubah nilai' : '✏️ Isi nilai'))))
+      : [h('tr', null, h('td', { colspan: 7, style: 'text-align:center;color:var(--abu);padding:24px' }, 'Tidak ada peserta.'))]));
+    ringkas.replaceChildren(...[['Peserta', semua.length], ['Belum dinilai', semua.filter(x => !x._r.terisi).length], ['Belum lengkap', semua.filter(x => x._r.terisi && !x._r.lengkap).length], ['Sudah lengkap', semua.filter(x => x._r.lengkap).length]]
+      .map(([k, v]) => h('div', null, h('b', null, v), h('small', null, k))));
+  };
+  [pilihS, pilihJ, pilihP].forEach(el => el.addEventListener('change', gambar));
+  cari.addEventListener('input', gambar);
+  gambar();
+  kerangka(judul, 'Pilih peserta, isi nilainya, lalu klik "Simpan & lanjut" untuk berpindah ke peserta berikutnya.',
+    boleh('pendaftar') ? h('p', { class: 'ket' }, 'Anda juga punya akses panitia: rekap lengkap, batas lulus, dan kelulusan ada di ', h('a', { href: '#/pendaftar/nilai' }, 'Pendaftar PPDB → Rekap nilai & kelulusan'), '.') : null,
+    ringkas,
+    h('div', { class: 'panel' },
+      h('div', { class: 'alat-ppdb alat-penguji' }, pilihS, pilihJ, pilihP, cari),
+      h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb tabel-penguji' },
+        h('thead', null, h('tr', null, ['No. pendaftaran', 'Nama', 'Pilihan', 'Status nilai', 'Nilai akhir', 'Diisi oleh', ''].map(t => h('th', null, t)))), tbody))));
+}
+
+async function halamanNilaiPeserta(id) {
+  kerangka('📝 Input Nilai SPMB', 'Memuat…');
+  const awal0 = location.hash;
+  const { data, error } = await sb.rpc('peserta_tes');
+  if (location.hash !== awal0) return;
+  const x = (data || []).find(r => r.id === id);
+  if (error || !x) return kerangka('📝 Input Nilai SPMB', null, h('div', { class: 'pesan ' + (error && fiturBelumAda(error) ? 'peringatan' : 'galat') }, error ? (fiturBelumAda(error) ? PESAN_NILAI_BELUM : pesanGalat(error)) : 'Peserta tidak ditemukan.'),
+    h('a', { href: '#/nilai-tes' }, '← Kembali ke daftar peserta'));
+  const [navigasi, nilaiPanel] = await Promise.all([navigasiPendaftar(id, false, '#/nilai-tes/'), panelNilai(x)]);
+  if (location.hash !== awal0) return;
+  kerangka('📝 ' + (x.nama || 'Peserta'), null,
+    h('div', { class: 'nav-pendaftar' }, h('a', { href: '#/nilai-tes' }, '← Kembali ke daftar peserta'), navigasi),
+    h('div', { class: 'panel' }, h('div', { class: 'kepala-ppdb' },
+      h('div', null, h('small', null, 'No. pendaftaran'), h('b', null, x.nomor || '-')),
+      h('div', null, h('small', null, 'Nama'), h('b', null, x.nama || '-')),
+      h('div', null, h('small', null, 'Pilihan'), h('b', null, x.jenjang ? x.jenjang + ' · ' + x.program : 'Belum memilih')))),
+    nilaiPanel);
+  const i = document.querySelector('#panel-nilai input'); if (i) i.focus();
 }
 
 mulai().catch(e => { console.error(e); app.replaceChildren(layarMasuk(h('div', { class: 'pesan galat' }, 'Terjadi kesalahan: ' + pesanGalat(e)))); });

@@ -40,9 +40,9 @@ window.PPDB_STATUS = {
 
 // Komponen nilai tes bawaan (dipakai jika pengaturan nilai belum pernah disimpan). Sama dengan isi awal di supabase/ppdb-online.sql.
 window.PPDB_KOMPONEN_AWAL = [
-  { kode: 'sholat', nama: 'Sholat', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1 },
-  { kode: 'tajwid', nama: 'Tajwid', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: true, bobot: 1 },
-  { kode: 'hafalan', nama: 'Pencapaian Hafalan', jenis: 'Jumlah', maks: 13, satuan: 'ayat', keterangan: "Dari 13 ayat (QS. Al-Jumu'ah ayat 1-8)", catatan: false, bobot: 1 },
-  { kode: 'tahfizh', nama: 'Tahfizh', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1 },
-  { kode: 'akademik', nama: 'Akademik', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1 },
+  { kode: 'sholat', nama: 'Sholat', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1, berlaku: 'Semua jenjang' },
+  { kode: 'tajwid', nama: 'Tajwid', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: true, bobot: 1, berlaku: 'Semua jenjang' },
+  { kode: 'hafalan', nama: 'Pencapaian Hafalan', jenis: 'Jumlah', maks: 13, satuan: 'ayat', materi: "QS. Al-Jumu'ah ayat 1-8", keterangan: '', catatan: false, bobot: 1, berlaku: 'Semua jenjang' },
+  { kode: 'tahfizh', nama: 'Tahfizh', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1, berlaku: 'Semua jenjang' },
+  { kode: 'akademik', nama: 'Akademik', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1, berlaku: 'Semua jenjang' },
 ];
