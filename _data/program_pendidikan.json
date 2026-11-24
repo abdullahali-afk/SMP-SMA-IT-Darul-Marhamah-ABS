@@ -2,6 +2,7 @@
   "judul": "Visi & Misi Program Pendidikan",
   "daftar": [
     {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/program_pendidikan/1795555920945-pvem-screenshot-2026-11-23-074625.jpg",
       "ikon": "📚",
       "misi": [
         "Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani",
@@ -12,21 +13,21 @@
         "Melahirkan Calon Ibu Pendidik Generasi Al-Qur'an"
       ],
       "nama": "Program Takhassus",
+      "peta": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D",
       "visi": "\"Menjadi sekolah model Al-Qur’an\"",
+      "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar",
+      "kampus": "Kampus Asal Mula",
       "jenjang": [
         "SMP",
         "SMA"
       ],
       "ringkasan": "Program pendalaman ilmu syar'i dan bahasa Arab bagi santriwati yang disiapkan untuk melanjutkan studi Islam ke jenjang yang lebih tinggi, tetap disertai pembinaan hafalan Al-Qur'an.",
       "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Takhassus",
-      "kampus": "Kampus Asal Mula",
-      "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar",
-      "peta": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D",
-      "foto": "",
       "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.132229%2C119.480484",
       "peta_link": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"
     },
     {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/program_pendidikan/1795556031622-ev31-screenshot-2026-11-25-053339.png",
       "ikon": "📖",
       "misi": [
         "Pembentukan Pribadi santri yg cerdas dan berkarakter seorang mukminah yang memiliki kesungguhan, kepedulian dan berjiwa gotong royong",
@@ -37,17 +38,16 @@
         "Kehadiran para guru dan pembina yang memiliki karakter pendidik dan pengasuh"
       ],
       "nama": "Program Tahfizh",
+      "peta": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D",
       "visi": "Menjadi sekolah unggul yang berkarakter Alqur'an",
+      "alamat": "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar",
+      "kampus": "Kampus Sukamaju",
       "jenjang": [
         "SMP",
         "SMA"
       ],
       "ringkasan": "Program pembinaan hafalan Al-Qur'an yang intensif dan terukur, dipadukan dengan pendidikan umum, bagi santriwati yang bercita-cita menjadi hafizhah.",
       "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Tahfizh",
-      "kampus": "Kampus Sukamaju",
-      "alamat": "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar",
-      "peta": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D",
-      "foto": "",
       "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.1400465%2C119.4428759",
       "peta_link": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"
     }
