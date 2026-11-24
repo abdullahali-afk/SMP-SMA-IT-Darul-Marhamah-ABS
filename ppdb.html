@@ -8,8 +8,26 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
 {% include hero.html judul=judulppdb sub="SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School (khusus putri)" induk="PPDB" %}
 <section class="bg-putih" id="panduan"><div class="wadah">
   <p style="text-align:center;margin-bottom:24px"><span class="label" style="font-size:.9rem;padding:6px 16px">{{ d.status }}</span></p>
-  {% include judul.html k="Panduan" t="Panduan Pendaftaran" %}
-  <div class="alur">{% for a in d.alur %}<div><h3>{{ a.judul }}</h3><p>{{ a.isi }}</p></div>{% endfor %}</div>
+  {% include judul.html k="Panduan" t="Alur Pendaftaran" %}
+  {%- assign langkah = d.langkah | default: d.alur -%}
+  <ol class="langkah-ppdb">
+  {%- for a in langkah %}
+    <li class="lp" id="langkah-{{ forloop.index }}">
+      <span class="lp-no" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+      <div class="lp-isi">
+        <h3>{{ a.judul }}</h3>
+        <p>{{ a.isi | newline_to_br }}</p>
+        {%- if a.catatan and a.catatan != "" %}<p class="lp-catatan"><b>Catatan:</b> {{ a.catatan }}</p>{% endif -%}
+        {%- if a.tombol and a.tombol != "" and a.tautan and a.tautan != "" -%}
+          {%- assign lp_t = a.tautan | strip -%}
+          {%- assign lp_awal = lp_t | slice: 0 -%}
+          {%- if lp_awal == "/" %}{% assign lp_t = lp_t | relative_url %}{% endif %}
+          <a class="lp-tombol" href="{{ lp_t | escape }}"{% if lp_t contains "://" %} target="_blank" rel="noopener"{% endif %}>{{ a.tombol }} →</a>
+        {%- endif %}
+      </div>
+    </li>
+  {%- endfor %}
+  </ol>
 </div></section>
 
 <section><div class="wadah grid g2">

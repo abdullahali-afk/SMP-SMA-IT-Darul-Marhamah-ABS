@@ -60,3 +60,6 @@ Panel Admin → **Data Sekolah & Kontak** → isian **Lokasi Google Maps** di ba
 
 ### Video testimoni
 Panel Admin → **Testimoni** → buka satu testimoni → isian **Link video testimoni**. Tempel link YouTube (termasuk Shorts), Google Drive (dibagikan "Siapa saja yang memiliki link"), Instagram, TikTok, atau Facebook. Video YouTube diputar langsung di kartu testimoni saat diklik; platform lain memakai pemutar bawaannya. Parser: `admin/video.js` (dipakai juga oleh `scripts/sinkron.mjs`, yang membuka link pendek vt.tiktok.com / fb.watch).
+
+### Isian baru pada bagian yang sudah ada
+Jika sebuah isian ditambahkan ke `admin/skema.js` untuk bagian yang sudah tersimpan di database, isi awalnya ditaruh di `scripts/bawaan.json` (per kunci bagian). Sinkron memakai nilai itu selama isian tersebut belum pernah disimpan dari panel, dan panel menampilkannya sebagai isian awal. Contoh: `ppdb.langkah` (Alur pendaftaran 01–10).

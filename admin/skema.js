@@ -575,20 +575,37 @@ window.SKEMA = [
     "description": "Contoh: Pendaftaran dibuka / Pendaftaran ditutup"
    },
    {
-    "name": "alur",
-    "label": "Alur pendaftaran",
+    "name": "langkah",
+    "label": "Alur pendaftaran (langkah 01, 02, dst.)",
     "type": "object",
     "list": true,
+    "description": "Nomor langkah dibuat otomatis sesuai urutan. Gunakan tombol panah untuk mengubah urutan.",
     "fields": [
      {
       "name": "judul",
-      "label": "Langkah",
+      "label": "Nama langkah",
       "type": "string"
      },
      {
       "name": "isi",
       "label": "Penjelasan",
       "type": "text"
+     },
+     {
+      "name": "catatan",
+      "label": "Catatan (opsional)",
+      "type": "text"
+     },
+     {
+      "name": "tombol",
+      "label": "Teks tombol (opsional)",
+      "type": "string"
+     },
+     {
+      "name": "tautan",
+      "label": "Link tombol (opsional)",
+      "type": "string",
+      "description": "Contoh: #biaya (bagian biaya di halaman ini), /profil.html#visi-misi-program, atau link https://…"
      }
     ]
    },

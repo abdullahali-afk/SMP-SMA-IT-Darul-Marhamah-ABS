@@ -250,6 +250,21 @@ async function halamanKonten(kunci) {
   if (location.hash !== awal0) return;
   if (error) return kerangka(bagian.label, null, h('div', { class: 'pesan galat' }, pesanGalat(error)));
   let ada = !!baris, data = baris ? salin(baris.data) : null, info = null;
+  if (data) {
+    // Isian yang ditambahkan belakangan (belum ada di database) diisi dari isi website saat ini
+    const kosong = bagian.fields.filter(f => data[f.name] === undefined);
+    if (kosong.length) {
+      try {
+        const awal = await (await fetch('data-awal.json', { cache: 'no-store' })).json();
+        const a = awal && awal[kunci];
+        const terisi = kosong.filter(f => a && a[f.name] !== undefined);
+        terisi.forEach(f => { data[f.name] = salin(a[f.name]); });
+        if (terisi.length) info = h('div', { class: 'pesan info', style: 'margin-bottom:14px' },
+          'Isian baru "' + terisi.map(f => f.label).join('", "') + '" sudah diisi sesuai yang tampil di website. Klik Simpan agar tersimpan di panel.');
+      } catch (e) { /* abaikan */ }
+      if (location.hash !== awal0) return;
+    }
+  }
   if (!data) {
     // Belum pernah disimpan dari panel: mulai dari isi yang sekarang tampil di website
     try { const awal = await (await fetch('data-awal.json', { cache: 'no-store' })).json(); data = awal && awal[kunci] ? salin(awal[kunci]) : {}; } catch (e) { data = {}; }

@@ -76,5 +76,77 @@
     }
   ],
   "tahun_ajaran": "2027/2028",
-  "catatan_biaya": "*Tersedia beasiswa untuk santriwati berprestasi dan penghafal Al-Qur'an. [Sesuaikan]"
+  "catatan_biaya": "*Tersedia beasiswa untuk santriwati berprestasi dan penghafal Al-Qur'an. [Sesuaikan]",
+  "langkah": [
+    {
+      "judul": "Buat Akun",
+      "isi": "Calon santri diharapkan untuk membuat akun terlebih dahulu agar dapat login ke dalam sistem PPDB. Pada tahapan ini pastikan untuk menggunakan email aktif, karena kode verifikasi untuk pengaktifan akun akan dikirimkan melalui email.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Login",
+      "isi": "Setelah calon santri membuat dan melakukan verifikasi akun, maka calon santri diharapkan untuk login ke dalam sistem PPDB.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Pembayaran Registrasi",
+      "isi": "Setelah login, calon santri terlebih dahulu harus melakukan pembayaran untuk biaya registrasi PPDB dan kemudian mengunggah (upload) bukti pembayaran tersebut.",
+      "catatan": "Informasi terkait biaya pendaftaran serta rekening pembayaran dapat dilihat pada halaman ini secara detail.",
+      "tombol": "Lihat biaya & rekening",
+      "tautan": "#biaya"
+    },
+    {
+      "judul": "Pemilihan Sekolah",
+      "isi": "Pada tahapan ini calon santri akan diberikan pilihan serta informasi terkait sekolah yang ingin didaftar (SMP-SMA IT atau TAKHASSUS TAHFIZH), yang kemudian calon santri harus menentukan pilihan sekolah.",
+      "catatan": "Sebelum memilih sekolah, mohon untuk membaca informasi terkait sekolah terlebih dahulu.",
+      "tombol": "Baca info program sekolah",
+      "tautan": "/profil.html#visi-misi-program"
+    },
+    {
+      "judul": "Pengisian Biodata",
+      "isi": "Pada tahapan ini calon santri diwajibkan untuk mengisi biodata sesuai dengan form yang telah disediakan. Harap untuk mengisi data tersebut dengan baik dan benar.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Pengisian Berkas Wawancara",
+      "isi": "Pada tahapan ini calon santri akan diberikan form wawancara terkait informasi calon santri, orang tua ataupun wali santri.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Join Group WA",
+      "isi": "Setelah mengisi data wawancara, silakan lanjut join group untuk mengetahui informasi-informasi seputar pondok dan tes.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Tes/Seleksi Offline Tahap Awal",
+      "isi": "Pada tahapan ini calon santri akan mengikuti tes tertulis & kesehatan. Tes tertulis yang dimaksudkan di sini terkait tentang kemampuan dalam membaca dan menghafal Al-Qur'an, akademik, atau pemahaman calon santri tentang Islam.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Tes Tahap Akhir",
+      "isi": "Pada tahap ini dilakukan pemeriksaan hasil kesehatan dan wawancara, tetapi hanya untuk calon santri yang lulus Tes Tahap Awal. Akan ada lampiran surat hasil kesehatan yang diminta sesuai dengan yang telah disepakati oleh pondok; hal ini ditujukan untuk menghindari adanya penyakit yang dapat mengganggu di dalam pondok/sekolah. Selain itu, akan ada wawancara calon santri dan ibu calon santri.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    },
+    {
+      "judul": "Pengumuman Kelulusan",
+      "isi": "Pada tahap ini calon santri akan menerima informasi kelulusan pada dashboard masing-masing di dalam sistem aplikasi PPDB. Sehingga untuk mengetahui kelulusan, calon santri wajib untuk login ke dalam sistem PPDB agar dapat mengetahui pengumuman kelulusan tersebut.",
+      "catatan": "",
+      "tombol": "",
+      "tautan": ""
+    }
+  ]
 }

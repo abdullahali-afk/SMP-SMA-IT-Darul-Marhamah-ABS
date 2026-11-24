@@ -163,6 +163,17 @@ async function hapus(rel) {
   try { await unlink(path.join(ROOT, rel)); berubah++; console.log('  dihapus', rel); } catch {}
 }
 
+/* ---------- Isian baru yang belum pernah disimpan dari panel ---------- */
+// scripts/bawaan.json berisi nilai awal untuk isian yang ditambahkan belakangan ke suatu bagian.
+// Nilai itu dipakai selama isian tersebut belum ada di database (belum pernah disimpan dari panel).
+let BAWAAN = {};
+try { BAWAAN = JSON.parse(await readFile(path.join(ROOT, 'scripts/bawaan.json'), 'utf8')); } catch {}
+function lengkapiBawaan(kunci, data) {
+  const b = BAWAAN[kunci];
+  if (!b || typeof b !== 'object') return;
+  for (const [k, v] of Object.entries(b)) if (data[k] === undefined) data[k] = JSON.parse(JSON.stringify(v));
+}
+
 /* ---------- 1. Isi halaman (_data) ---------- */
 try {
   const rows = await ambil('konten?select=kunci,data');
@@ -172,6 +183,7 @@ try {
     if (!data || typeof data !== 'object' || !Object.keys(data).length) continue;
     let lama = null;
     try { lama = JSON.parse(await readFile(path.join(ROOT, `_data/${kunci}.json`), 'utf8')); } catch {}
+    lengkapiBawaan(kunci, data);
     await lengkapiPeta(data, lama);
     await lengkapiVideo(data, lama);
     await tulis(`_data/${kunci}.json`, JSON.stringify(bersihkanNilai(data), null, 2) + '\n');
