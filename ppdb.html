@@ -7,7 +7,8 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
 {% capture judulppdb %}Penerimaan Santriwati Baru {{ d.tahun_ajaran }}{% endcapture %}
 {% include hero.html judul=judulppdb sub="SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School (khusus putri)" induk="PPDB" %}
 <section class="bg-putih" id="panduan"><div class="wadah">
-  <p style="text-align:center;margin-bottom:24px"><span class="label" style="font-size:.9rem;padding:6px 16px">{{ d.status }}</span></p>
+  <p style="text-align:center;margin-bottom:14px"><span class="label" style="font-size:.9rem;padding:6px 16px">{{ d.status }}</span></p>
+  <p class="ppdb-cta-atas"><a class="btn btn-emas" href="{{ '/pendaftaran/#daftar' | relative_url }}">📝 Daftar Online</a> <a class="btn btn-hijau" href="{{ '/pendaftaran/' | relative_url }}">🔐 Login Dashboard PPDB</a></p>
   {% include judul.html k="Panduan" t="Alur Pendaftaran" %}
   {%- assign langkah = d.langkah | default: d.alur -%}
   <ol class="langkah-ppdb">
@@ -54,21 +55,17 @@ description: Informasi Penerimaan Santriwati Baru SMP dan SMA Islam Terpadu Daru
   {% if d.brosur != "" %}<p id="brosur" style="text-align:center;margin-top:24px"><a href="{{ d.brosur | relative_url }}" class="btn btn-hijau" target="_blank">📄 Unduh Brosur PPDB</a></p>{% endif %}
 </div></section>
 
-<section id="daftar"><div class="wadah" style="max-width:720px">
-  {% include judul.html k="Formulir" t="Daftar Sekarang" %}
-  <div class="kartu">
-  <form data-wa="{% include kontak-wa.html gaya="utama" %}" data-judul="*PENDAFTARAN SANTRIWATI BARU {{ s.nama_singkat }}*">
-    <div><label>Jenjang yang dituju</label><select name="Jenjang"><option>SMP IT Darul Marhamah ABS</option><option>SMA IT Darul Marhamah ABS</option></select></div>
-    <div><label>Nama lengkap calon santriwati</label><input name="Nama" required></div>
-    <div class="grid g2" style="gap:14px"><div><label>Tempat lahir</label><input name="Tempat lahir" required></div>
-    <div><label>Tanggal lahir</label><input type="date" name="Tanggal lahir" required></div></div>
-    <div><label>Asal sekolah</label><input name="Asal sekolah" required></div>
-    <div class="grid g2" style="gap:14px"><div><label>Nama orang tua/wali</label><input name="Orang tua" required></div>
-    <div><label>No. WhatsApp orang tua</label><input type="tel" name="No. WA" required></div></div>
-    <div><label>Jumlah hafalan Al-Qur'an</label><input name="Hafalan" placeholder="contoh: 3 juz"></div>
-    <div><label>Alamat</label><textarea name="Alamat" rows="3"></textarea></div>
-    {% include kontak-wa.html gaya="opsi" %}
-    <button class="btn btn-emas" type="submit">Kirim Pendaftaran via WhatsApp</button>
-    <small style="color:var(--abu)">Data akan dikirim ke WhatsApp admin: {% include kontak-wa.html gaya="teks" %}. Admin akan menghubungi Anda untuk langkah berikutnya.</small>
-  </form></div>
+<section id="daftar"><div class="wadah" style="max-width:760px">
+  {% include judul.html k="PPDB Online" t="Daftar Sekarang" %}
+  <div class="kartu ppdb-online-cta">
+    <div class="poc-ikon" aria-hidden="true">🧑‍🎓</div>
+    <h3>Pendaftaran melalui Dashboard PPDB Online</h3>
+    {%- if d.online.dibuka == false %}
+    <p>Pembuatan akun calon santri sedang <b>ditutup</b>. Calon santri yang sudah terdaftar tetap dapat login untuk melihat perkembangan dan pengumuman kelulusan.</p>
+    {%- else %}
+    <p>Buat akun dengan email aktif, lalu ikuti 10 langkah pendaftaran langsung dari dashboard: unggah bukti pembayaran, pilih sekolah, isi biodata dan wawancara, hingga melihat pengumuman kelulusan.</p>
+    {%- endif %}
+    <p class="poc-tombol">{% unless d.online.dibuka == false %}<a class="btn btn-emas" href="{{ '/pendaftaran/#daftar' | relative_url }}">📝 Buat Akun Calon Santri</a> {% endunless %}<a class="btn btn-hijau" href="{{ '/pendaftaran/' | relative_url }}">🔐 Login ke Dashboard</a></p>
+    <small>Butuh bantuan? Hubungi panitia: {% include kontak-wa.html gaya="teks" %}</small>
+  </div>
 </div></section>

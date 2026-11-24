@@ -1,0 +1,91 @@
+/* PPDB Online — halaman calon santri */
+.po-wadah{max-width:880px}
+.po-memuat{text-align:center;color:var(--abu);padding:60px 0}
+.po-kotak{background:#fff;border-radius:var(--radius);box-shadow:var(--bayang);padding:28px;border-top:4px solid var(--hijau)}
+.po-tengah{text-align:center;max-width:560px;margin:0 auto}
+.po-ikon{font-size:2.6rem;margin-bottom:8px}
+.po-masuk{max-width:520px;margin:0 auto}
+.po-masuk h2{font-size:1.25rem;color:var(--hijau-tua);margin:18px 0 12px}
+.po-masuk form>div,.po-form fieldset>div>div,.po-form fieldset>div{margin-bottom:12px}
+.po-masuk label,.po-form label{display:block;font-weight:600;font-size:.9rem;margin-bottom:5px;color:var(--teks)}
+.po-masuk small{display:block;color:var(--abu);font-size:.8rem;margin-top:4px}
+.po-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--hijau-muda);border-radius:12px;padding:4px;gap:4px}
+.po-tab{border:0;background:transparent;padding:10px;border-radius:9px;font:inherit;font-weight:600;color:var(--hijau-tua);cursor:pointer}
+.po-tab.aktif{background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.po-dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.po-penuh{width:100%;text-align:center;margin-top:6px}
+.po-kecil{font-size:.86rem;color:var(--abu);margin-top:12px}
+.po-link{background:none;border:0;padding:0;color:var(--hijau);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+.po-bantuan{text-align:center;font-size:.88rem;color:var(--abu);margin-top:22px}
+.po-pesan{border-radius:10px;padding:11px 14px;margin:10px 0;font-size:.92rem;line-height:1.55}
+.po-pesan.info{background:#e8f3fb;color:#1c4f74}
+.po-pesan.galat{background:#fde8e8;color:#8f1d1d}
+.po-pesan.sukses{background:var(--hijau-muda);color:var(--hijau-tua)}
+.po-pesan.peringatan{background:var(--emas-muda);color:#8a3b10}
+.po-panitia{border-left:4px solid #1c4f74}
+/* Dasbor */
+.po-atas{display:grid;grid-template-columns:1fr;gap:10px 20px;align-items:center;background:linear-gradient(135deg,var(--hijau),var(--hijau-tua));color:#fff;border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;position:relative}
+.po-atas h2{font-size:1.35rem;margin:2px 0 4px;color:#fff}
+.po-atas p{margin:0;font-size:.88rem;opacity:.9}
+.po-atas small{opacity:.85}
+.po-kemajuan{grid-column:1/-1}
+.po-bar{height:10px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden;margin-bottom:5px}
+.po-bar span{display:block;height:100%;background:var(--emas);border-radius:99px;transition:width .4s}
+.po-keluar{color:#fff;position:absolute;top:18px;right:22px}
+.po-langkah{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.po-l{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #e6ece8;overflow:hidden}
+.po-l.kini{border-color:var(--emas);box-shadow:0 4px 16px rgba(240,122,58,.18)}
+.po-kepala{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:14px 16px;font:inherit;text-align:left;cursor:pointer;color:var(--teks)}
+.po-kepala:disabled{cursor:default;opacity:.6}
+.po-no{flex:0 0 38px;height:38px;border-radius:10px;display:grid;place-items:center;font-weight:800;background:#eef2ef;color:var(--abu)}
+.po-l.st-selesai .po-no{background:var(--hijau);color:#fff}
+.po-l.st-aktif .po-no,.po-l.kini .po-no{background:var(--emas);color:#fff}
+.po-l.st-gagal .po-no{background:#c62828;color:#fff}
+.po-judul{flex:1;font-weight:700;color:var(--hijau-tua);text-transform:uppercase;font-size:.92rem;letter-spacing:.3px}
+.po-status{font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:99px;background:#eef2ef;color:var(--abu);white-space:nowrap}
+.po-status.st-selesai{background:var(--hijau-muda);color:var(--hijau-tua)}
+.po-status.st-aktif{background:var(--emas-muda);color:#b04a14}
+.po-status.st-menunggu{background:#e8f3fb;color:#1c4f74}
+.po-status.st-gagal{background:#fde8e8;color:#8f1d1d}
+.po-badan{padding:4px 18px 18px 66px;font-size:.94rem;line-height:1.6}
+.po-badan>p{margin:0 0 10px}
+.po-badan h4{margin:14px 0 8px;color:var(--hijau-tua);font-size:.95rem}
+.po-badan .btn{margin-top:8px}
+.po-rincian{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:8px 0}
+.po-rincian>div{background:var(--hijau-muda);border-radius:10px;padding:10px 14px}
+.po-rincian small{display:block;color:var(--abu);font-size:.78rem}
+.po-rincian b{color:var(--hijau-tua);word-break:break-word}
+.po-unggah{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:8px;cursor:pointer}
+.po-unggah small{color:var(--abu);font-size:.8rem}
+.po-file{position:absolute;width:1px;height:1px;opacity:0}
+.po-unggah:focus-within .btn{outline:3px solid var(--mint)}
+.po-pilihan{display:grid;gap:10px}
+.po-pilihan.dua{grid-template-columns:1fr 1fr}
+.po-opsi{display:flex;gap:10px;align-items:flex-start;border:2px solid #e1e8e4;border-radius:12px;padding:12px 14px;cursor:pointer;background:#fff}
+.po-opsi.dipilih{border-color:var(--hijau);background:var(--hijau-muda)}
+.po-opsi input{width:auto;margin-top:4px;accent-color:var(--hijau)}
+.po-opsi b{display:block;color:var(--hijau-tua)}
+.po-opsi small{display:block;color:var(--abu);font-size:.84rem}
+.po-opsi a{font-size:.84rem;font-weight:600}
+.po-form fieldset{border:1px solid #e1e8e4;border-radius:12px;padding:14px 14px 4px;margin:0 0 14px}
+.po-form legend{font-weight:700;color:var(--hijau-tua);padding:0 6px;font-size:.92rem}
+.po-kisi{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.po-kisi .lebar{grid-column:1/-1}
+.po-form .kosong{border-color:#c62828;background:#fff7f7}
+.wajib{color:#c62828}
+.po-grup{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.btn-wa{background:#25d366;color:#fff}
+.btn-wa:hover{background:#1da851;color:#fff}
+.po-lulus{text-align:center;background:linear-gradient(135deg,var(--hijau-muda),#fff);border:2px solid var(--hijau);border-radius:14px;padding:20px}
+.po-lulus h3{color:var(--hijau-tua);margin-bottom:8px}
+#po-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:var(--hijau-tua);color:#fff;padding:12px 18px;border-radius:10px;font-size:.92rem;opacity:0;pointer-events:none;transition:.25s;z-index:999;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#po-toast.tampil{opacity:1;transform:translateX(-50%)}
+#po-toast.galat{background:#b71c1c}
+@media(max-width:640px){
+  .po-kotak{padding:20px 16px}
+  .po-dua,.po-kisi,.po-pilihan.dua{grid-template-columns:1fr}
+  .po-badan{padding:4px 14px 16px}
+  .po-kepala{padding:12px;gap:10px}
+  .po-status{font-size:.7rem;padding:3px 8px;white-space:normal;text-align:center;max-width:110px}
+  .po-keluar{top:16px;right:16px}
+}

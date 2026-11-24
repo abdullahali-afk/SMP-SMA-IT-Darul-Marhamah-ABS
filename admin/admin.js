@@ -56,7 +56,8 @@ function sibuk(btn, ya, teks) { btn.disabled = ya; if (teks) btn.textContent = t
 /* ---------- Hak akses ---------- */
 const adalahAdmin = () => !!(peranSaya && peranSaya.akses.includes('*'));
 const boleh = (bagian) => adalahAdmin() || !!(peranSaya && peranSaya.akses.includes(bagian));
-const semuaBagian = () => [window.BAGIAN_BERITA, ...window.SKEMA];
+const semuaBagian = () => [window.BAGIAN_BERITA, ...window.SKEMA, window.BAGIAN_PENDAFTAR].filter(Boolean);
+const hrefBagian = (b) => b.kunci === 'berita' ? '#/berita' : b.kunci === 'pendaftar' ? '#/pendaftar' : '#/konten/' + b.kunci;
 
 /* ---------- Mulai ---------- */
 async function mulai() {
@@ -81,6 +82,10 @@ async function muatProfil() {
   const uid = sesi.user.id;
   const { data: p, error } = await sb.from('profil').select('*').eq('id', uid).maybeSingle();
   if (error) { app.replaceChildren(layarMasuk(h('div', { class: 'pesan galat' }, 'Gagal memuat akun: ' + pesanGalat(error)), tombolKeluar())); return; }
+  if (!p && sesi.user.user_metadata && sesi.user.user_metadata.jenis === 'pendaftar') {
+    app.replaceChildren(layarMasuk(h('div', { class: 'pesan info' }, 'Ini akun calon santri. Silakan masuk melalui halaman ',
+      h('a', { href: SITUS + 'pendaftaran/' }, 'PPDB Online'), '.'), tombolKeluar())); return;
+  }
   if (!p) { app.replaceChildren(layarMasuk(h('div', { class: 'pesan galat' }, 'Akun ini tidak lagi memiliki akses. Hubungi admin sekolah.'), tombolKeluar())); return; }
   profil = p;
   const { data: rs } = await sb.from('peran').select('*').order('urutan');
@@ -184,7 +189,7 @@ function kerangka(judul, sub, ...isi) {
     tautan('#/', '🏠', 'Dasbor'));
   if (profil.peran !== 'menunggu') {
     const isiWeb = semuaBagian().filter(b => boleh(b.kunci));
-    if (isiWeb.length) { samping.append(h('h4', null, 'Isi Website')); isiWeb.forEach(b => samping.append(tautan(b.kunci === 'berita' ? '#/berita' : '#/konten/' + b.kunci, b.ikon, b.label))); }
+    if (isiWeb.length) { samping.append(h('h4', null, 'Isi Website')); isiWeb.forEach(b => samping.append(tautan(hrefBagian(b), b.ikon, b.label))); }
   }
   if (adalahAdmin()) samping.append(h('h4', null, 'Administrasi'), tautan('#/pengguna', '👥', 'Pengguna'), tautan('#/peran', '🔐', 'Peran & Hak Akses'));
   samping.append(h('h4', null, 'Akun'), tautan('#/akun', '⚙️', 'Pengaturan Akun'),
@@ -217,6 +222,7 @@ function rute() {
   if (r[0] === 'akun') return halamanAkun();
   if (profil.peran === 'menunggu' || !profil.aktif) return halamanDasbor();
   if (r[0] === 'konten' && r[1]) return boleh(r[1]) ? halamanKonten(r[1]) : tolak();
+  if (r[0] === 'pendaftar') return !boleh('pendaftar') ? tolak() : (r[1] ? halamanPendaftarDetail(r[1]) : halamanPendaftar());
   if (r[0] === 'berita') return !boleh('berita') ? tolak() : (r[1] ? halamanBeritaForm(r[1]) : halamanBerita());
   if (r[0] === 'pengguna') return adalahAdmin() ? halamanPengguna() : tolak();
   if (r[0] === 'peran') return adalahAdmin() ? halamanPeran() : tolak();
@@ -231,7 +237,7 @@ function halamanDasbor() {
       h('div', { class: 'pesan peringatan' }, 'Akun Anda sudah terdaftar dan sedang menunggu persetujuan admin. Setelah admin memberi peran (misalnya Guru atau Pegawai), menu pengelolaan akan muncul di sini.'));
   }
   const ubin = semuaBagian().filter(b => boleh(b.kunci)).map(b =>
-    h('a', { class: 'ubin', href: b.kunci === 'berita' ? '#/berita' : '#/konten/' + b.kunci }, h('span', { class: 'ik' }, b.ikon), h('div', null, h('b', null, b.label), h('small', null, 'Kelola')) ));
+    h('a', { class: 'ubin', href: hrefBagian(b) }, h('span', { class: 'ik' }, b.ikon), h('div', null, h('b', null, b.label), h('small', null, 'Kelola')) ));
   if (adalahAdmin()) ubin.push(
     h('a', { class: 'ubin', href: '#/pengguna' }, h('span', { class: 'ik' }, '👥'), h('div', null, h('b', null, 'Pengguna'), h('small', null, 'Akun & peran'))),
     h('a', { class: 'ubin', href: '#/peran' }, h('span', { class: 'ik' }, '🔐'), h('div', null, h('b', null, 'Peran & Hak Akses'), h('small', null, 'Buka/tutup akses'))));
@@ -356,7 +362,12 @@ function daftarMedan(f, obj, kunci) {
         box.append(h('div', { class: 'baris-teks' },
           h('div', { style: 'flex:1' }, masukan(f, () => arr[i], val => arr[i] = val, kunci)), ...kontrol));
       } else {
-        const judul = () => { const p = (f.fields || []).find(x => x.type === 'string'); return (p && item[p.name]) || '(baru)'; };
+        const judul = () => {
+          const fs = f.fields || [];
+          const p = fs.find(x => x.type === 'string' && item[x.name]) || fs.find(x => x.type === 'text' && item[x.name]);
+          const t = String((p && item[p.name]) || '').replace(/\s+/g, ' ').trim();
+          return t ? (t.length > 90 ? t.slice(0, 88) + '…' : t) : '(baru)';
+        };
         const jd = h('span', { class: 'judul-item' }, (i + 1) + '. ' + judul());
         const badan = h('div', { class: 'badan-item' }, ...(f.fields || []).map(x => medan(x, item, kunci)));
         badan.addEventListener('input', () => jd.textContent = (i + 1) + '. ' + judul());
@@ -729,6 +740,171 @@ function halamanAkun() {
       h('div', { class: 'medan' }, h('label', null, 'Peran'), h('input', { type: 'text', value: peranSaya.nama, readonly: true })),
       h('div', { class: 'medan' }, h('label', null, 'Nama tampilan'), nama), btnNama),
     h('div', { class: 'panel' }, h('h2', null, 'Ganti password'), tampilGantiPassword(false)));
+}
+
+/* ---------- Pendaftar PPDB online (panitia) ---------- */
+const tabelBelumAda = (e) => e && (e.code === '42P01' || e.code === 'PGRST205' || /does not exist|could not find the table/i.test(e.message || ''));
+const PESAN_BELUM_PASANG = 'Fitur PPDB online belum dipasang di database. Jalankan file supabase/ppdb-online.sql di Supabase → SQL Editor (sekali saja).';
+const ST = () => window.PPDB_STATUS;
+function lencanaStatus(jenis, nilai) {
+  const warna = { diterima: 'hijau', lulus: 'hijau', menunggu: 'biru', ditolak: 'merah', tidak_lulus: 'merah', cadangan: 'kuning' }[nilai] || 'abu';
+  return h('span', { class: 'lencana-st ' + warna }, (ST()[jenis] || {})[nilai] || nilai || '-');
+}
+function tglId(t) { return t ? new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; }
+function waLink(n) { let d = String(n || '').replace(/\D/g, ''); if (d.startsWith('0')) d = '62' + d.slice(1); return d ? 'https://wa.me/' + d : null; }
+async function bukaBerkasPpdb(jalur) {
+  const w = window.open('', '_blank');
+  const { data, error } = await sb.storage.from('ppdb').createSignedUrl(jalur, 600);
+  if (error || !data) { if (w) w.close(); return toast('Berkas tidak bisa dibuka: ' + (error ? pesanGalat(error) : ''), true); }
+  if (w) w.location = data.signedUrl; else location.href = data.signedUrl;
+}
+
+async function halamanPendaftar() {
+  const judul = '🧾 Pendaftar PPDB';
+  kerangka(judul, 'Memuat…');
+  const awal0 = location.hash;
+  const { data, error } = await sb.from('pendaftar').select('*').order('dibuat', { ascending: false });
+  if (location.hash !== awal0) return;
+  if (error) return kerangka(judul, null, h('div', { class: 'pesan ' + (tabelBelumAda(error) ? 'peringatan' : 'galat') }, tabelBelumAda(error) ? PESAN_BELUM_PASANG : pesanGalat(error)));
+  const semua = data || [];
+  const n = (f) => semua.filter(f).length;
+  const ringkas = h('div', { class: 'ringkas-ppdb' }, [
+    ['Total pendaftar', semua.length], ['Bukti bayar perlu dicek', n(x => x.status_bayar === 'menunggu')],
+    ['Wawancara lengkap', n(x => x.wawancara_lengkap)], ['Lulus tes awal', n(x => x.tes_awal === 'lulus')], ['Dinyatakan LULUS', n(x => x.kelulusan === 'lulus')],
+  ].map(([t, v]) => h('div', null, h('b', null, v), h('small', null, t))));
+  const FILTER = {
+    semua: ['Semua pendaftar', () => true],
+    bayar: ['Perlu cek bukti bayar', x => x.status_bayar === 'menunggu'],
+    belum_bayar: ['Belum bayar / ditolak', x => x.status_bayar === 'belum' || x.status_bayar === 'ditolak'],
+    proses: ['Sedang mengisi data', x => (x.status_bayar === 'menunggu' || x.status_bayar === 'diterima') && !x.wawancara_lengkap],
+    tes_awal: ['Menunggu hasil tes awal', x => x.wawancara_lengkap && x.tes_awal === 'belum'],
+    tes_akhir: ['Menunggu hasil tes akhir', x => x.tes_awal === 'lulus' && x.tes_akhir === 'belum'],
+    lulus: ['Lulus', x => x.kelulusan === 'lulus'], cadangan: ['Cadangan', x => x.kelulusan === 'cadangan'], tidak: ['Tidak lulus', x => x.kelulusan === 'tidak_lulus'],
+  };
+  const pilihF = h('select', null, Object.entries(FILTER).map(([k, [t]]) => h('option', { value: k }, t)));
+  const pilihJ = h('select', null, h('option', { value: '' }, 'Semua jenjang'), h('option', { value: 'SMP' }, 'SMP'), h('option', { value: 'SMA' }, 'SMA'));
+  const cari = h('input', { type: 'search', placeholder: 'Cari nama, nomor, atau email…' });
+  const tbody = h('tbody');
+  let tersaring = semua;
+  const gambar = () => {
+    const q = cari.value.trim().toLowerCase();
+    tersaring = semua.filter(FILTER[pilihF.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
+      .filter(x => !q || [x.nama, x.nomor, x.email, x.no_wa].some(v => String(v || '').toLowerCase().includes(q)));
+    tbody.replaceChildren(...(tersaring.length ? tersaring.map(x => h('tr', { class: 'baris-klik', onclick: () => { location.hash = '#/pendaftar/' + x.id; } },
+      h('td', null, h('b', null, x.nomor || '-'), h('br'), h('small', null, tglId(x.dibuat))),
+      h('td', null, h('b', null, x.nama || '(tanpa nama)'), h('br'), h('small', null, x.email || '')),
+      h('td', null, x.jenjang ? x.jenjang + ' · ' + x.program : h('small', null, 'Belum memilih')),
+      h('td', null, lencanaStatus('bayar', x.status_bayar)),
+      h('td', null, (x.biodata_lengkap ? '✅' : '⬜') + ' / ' + (x.wawancara_lengkap ? '✅' : '⬜')),
+      h('td', null, lencanaStatus('tes', x.tes_awal)), h('td', null, lencanaStatus('tes', x.tes_akhir)),
+      h('td', null, lencanaStatus('kelulusan', x.kelulusan)))) : [h('tr', null, h('td', { colspan: 8, style: 'text-align:center;color:var(--abu);padding:24px' }, 'Tidak ada pendaftar.'))]));
+  };
+  [pilihF, pilihJ].forEach(el => el.addEventListener('change', gambar));
+  cari.addEventListener('input', gambar);
+  gambar();
+  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvPendaftar(tersaring) }, '⬇️ Unduh data (Excel/CSV)');
+  kerangka(judul, 'Klik nama pendaftar untuk melihat berkas, biodata, wawancara, dan mengubah status seleksi.',
+    ringkas,
+    h('div', { class: 'panel' },
+      h('div', { class: 'alat-ppdb' }, pilihF, pilihJ, cari, unduh),
+      h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb' },
+        h('thead', null, h('tr', null, ['No. / Tanggal', 'Nama', 'Pilihan', 'Pembayaran', 'Biodata / Wawancara', 'Tes awal', 'Tes akhir', 'Kelulusan'].map(t => h('th', null, t)))), tbody))),
+    await panelGrupWa());
+}
+
+async function panelGrupWa() {
+  const box = h('div', { class: 'panel' }, h('h3', null, '💬 Link grup WhatsApp calon santri'),
+    h('p', { class: 'ket' }, 'Link ini hanya terlihat oleh calon santri yang sudah mengisi formulir wawancara (langkah 07). Contoh link: https://chat.whatsapp.com/…'));
+  const { data, error } = await sb.from('ppdb_rahasia').select('grup_wa').eq('id', 1).maybeSingle();
+  if (error) { box.append(h('div', { class: 'pesan galat' }, pesanGalat(error))); return box; }
+  const grup = salin((data && data.grup_wa) || []);
+  const daftar = h('div');
+  const gambar = () => daftar.replaceChildren(...grup.map((g, i) => h('div', { class: 'baris-grup' },
+    h('input', { type: 'text', placeholder: 'Nama grup, mis. Grup PPDB SMP', value: g.nama || '', oninput: e => { g.nama = e.target.value; } }),
+    h('input', { type: 'url', placeholder: 'https://chat.whatsapp.com/…', value: g.link || '', oninput: e => { g.link = e.target.value.trim(); } }),
+    h('button', { class: 'ikon-btn hapus', type: 'button', title: 'Hapus', onclick: () => { grup.splice(i, 1); gambar(); } }, '✕'))));
+  gambar();
+  const btn = h('button', { class: 'btn btn-emas btn-kecil', type: 'button', onclick: async () => {
+    const bersihGrup = grup.filter(g => g.link);
+    if (bersihGrup.some(g => !/^https:\/\/(chat\.whatsapp\.com|wa\.me|whatsapp\.com)\//i.test(g.link))) return toast('Link grup harus diawali https://chat.whatsapp.com/', true);
+    sibuk(btn, true, 'Menyimpan…');
+    const { data: d2, error: e2 } = await sb.from('ppdb_rahasia').upsert({ id: 1, grup_wa: bersihGrup, diubah: new Date().toISOString() }).select();
+    sibuk(btn, false, '💾 Simpan link grup');
+    if (e2 || !d2 || !d2.length) return toast('Gagal menyimpan: ' + (e2 ? pesanGalat(e2) : 'tidak ada akses'), true);
+    toast('Link grup WhatsApp disimpan.');
+  } }, '💾 Simpan link grup');
+  box.append(daftar, h('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px' },
+    h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => { grup.push({ nama: '', link: '' }); gambar(); } }, '+ Tambah grup'), btn));
+  return box;
+}
+
+function unduhCsvPendaftar(baris) {
+  const bio = (window.PPDB_BIODATA || []).flatMap(g => g.isian);
+  const tanya = [...new Set(baris.flatMap(x => Object.keys(x.wawancara || {})))];
+  const kolom = [['Nomor', x => x.nomor], ['Tanggal daftar', x => tglId(x.dibuat)], ['Nama', x => x.nama], ['Email', x => x.email], ['No. WA', x => x.no_wa],
+    ['Jenjang', x => x.jenjang], ['Program', x => x.program], ['Pembayaran', x => ST().bayar[x.status_bayar]],
+    ...bio.map(([k, label]) => [label, x => (x.biodata || {})[k]]),
+    ...tanya.map(q => ['Wawancara: ' + q, x => (x.wawancara || {})[q]]),
+    ['Gabung grup WA', x => x.gabung_grup ? 'Ya' : 'Belum'], ['Tes awal', x => ST().tes[x.tes_awal]], ['Tes akhir', x => ST().tes[x.tes_akhir]],
+    ['Kelulusan', x => ST().kelulusan[x.kelulusan]], ['Pesan panitia', x => x.pesan_panitia]];
+  const sel = (v) => { let t = String(v == null ? '' : v).replace(/\r?\n/g, ' '); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const csv = [kolom.map(k => sel(k[0])).join(';'), ...baris.map(x => kolom.map(k => sel(k[1](x))).join(';'))].join('\r\n');
+  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'pendaftar-ppdb-' + new Date().toISOString().slice(0, 10) + '.csv' });
+  document.body.append(a); a.click(); a.remove();
+}
+
+async function halamanPendaftarDetail(id) {
+  kerangka('🧾 Data pendaftar', 'Memuat…');
+  const awal0 = location.hash;
+  const { data: x, error } = await sb.from('pendaftar').select('*').eq('id', id).maybeSingle();
+  if (location.hash !== awal0) return;
+  if (error || !x) return kerangka('🧾 Data pendaftar', null, h('div', { class: 'pesan galat' }, error ? (tabelBelumAda(error) ? PESAN_BELUM_PASANG : pesanGalat(error)) : 'Pendaftar tidak ditemukan.'),
+    h('a', { href: '#/pendaftar' }, '← Kembali ke daftar pendaftar'));
+  const ubah = { status_bayar: x.status_bayar, tes_awal: x.tes_awal, tes_akhir: x.tes_akhir, kelulusan: x.kelulusan, pesan_panitia: x.pesan_panitia || '' };
+  const pilih = (kolom, jenis, label, ket) => h('div', { class: 'medan' }, h('label', null, label),
+    h('select', { onchange: e => { ubah[kolom] = e.target.value; tandaiKotor(); } },
+      Object.entries(ST()[jenis]).map(([k, t]) => h('option', { value: k, selected: ubah[kolom] === k }, t))), ket ? h('div', { class: 'ket' }, ket) : null);
+  const btn = h('button', { class: 'btn btn-emas', type: 'button', onclick: async () => {
+    sibuk(btn, true, 'Menyimpan…');
+    const { data: d2, error: e2 } = await sb.from('pendaftar').update(ubah).eq('id', id).select();
+    sibuk(btn, false, '💾 Simpan status');
+    if (e2 || !d2 || !d2.length) return toast('Gagal menyimpan: ' + (e2 ? pesanGalat(e2) : 'tidak ada akses'), true);
+    kotor = false; toast('Status pendaftar disimpan. Calon santri langsung melihatnya di dashboard.');
+  } }, '💾 Simpan status');
+  const tombolBerkas = (jalur, teks) => jalur ? h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => bukaBerkasPpdb(jalur) }, teks) : h('small', { style: 'color:var(--abu)' }, 'Belum diunggah');
+  const bio = x.biodata || {};
+  const biodata = (window.PPDB_BIODATA || []).map(g => h('div', { class: 'grup-data' }, h('h4', null, g.judul),
+    h('dl', { class: 'data-ppdb' }, g.isian.flatMap(([k, label]) => [h('dt', null, label), h('dd', null, bio[k] || '-')]))));
+  const waw = Object.entries(x.wawancara || {});
+  const hp = waLink(x.no_wa);
+  const hapus = h('button', { class: 'btn btn-merah btn-kecil', type: 'button', onclick: async () => {
+    if (!confirm('Hapus data pendaftar ' + (x.nama || x.email) + '? ' + (adalahAdmin() ? 'Akunnya juga ikut dihapus. ' : '') + 'Tindakan ini tidak bisa dibatalkan.')) return;
+    const { error: e3 } = adalahAdmin() ? await sb.rpc('admin_hapus_akun', { pengguna: id }) : await sb.from('pendaftar').delete().eq('id', id);
+    if (e3) return toast('Gagal menghapus: ' + pesanGalat(e3), true);
+    toast('Pendaftar dihapus.'); kotor = false; location.hash = '#/pendaftar';
+  } }, 'Hapus pendaftar');
+  kerangka('🧾 ' + (x.nama || 'Pendaftar'), null,
+    h('p', null, h('a', { href: '#/pendaftar' }, '← Kembali ke daftar pendaftar')),
+    h('div', { class: 'panel' }, h('div', { class: 'kepala-ppdb' },
+      h('div', null, h('small', null, 'No. pendaftaran'), h('b', null, x.nomor || '-')),
+      h('div', null, h('small', null, 'Email'), h('b', null, x.email || '-')),
+      h('div', null, h('small', null, 'WhatsApp'), hp ? h('a', { href: hp, target: '_blank', rel: 'noopener' }, x.no_wa) : h('b', null, '-')),
+      h('div', null, h('small', null, 'Mendaftar'), h('b', null, tglId(x.dibuat))),
+      h('div', null, h('small', null, 'Pilihan'), h('b', null, x.jenjang ? x.jenjang + ' · ' + x.program : 'Belum memilih')))),
+    h('div', { class: 'panel' }, h('h3', null, 'Status seleksi'),
+      h('div', { class: 'kisi-status' },
+        h('div', null, pilih('status_bayar', 'bayar', '03 · Pembayaran registrasi'), h('div', { class: 'medan' }, tombolBerkas(x.bukti_bayar, '📄 Lihat bukti bayar'))),
+        pilih('tes_awal', 'tes', '08 · Tes tahap awal'),
+        h('div', null, pilih('tes_akhir', 'tes', '09 · Tes tahap akhir'), h('div', { class: 'medan' }, tombolBerkas(x.surat_sehat, '📄 Lihat surat kesehatan'))),
+        pilih('kelulusan', 'kelulusan', '10 · Pengumuman kelulusan', 'Hasil ini langsung tampil di dashboard calon santri.')),
+      h('div', { class: 'medan' }, h('label', null, 'Pesan untuk calon santri (tampil di dashboard-nya)'),
+        h('textarea', { value: ubah.pesan_panitia, placeholder: 'Contoh: Bukti transfer kurang jelas, mohon unggah ulang.', oninput: e => { ubah.pesan_panitia = e.target.value; tandaiKotor(); } })),
+      h('div', { class: 'aksi-simpan' }, btn)),
+    h('div', { class: 'panel' }, h('h3', null, '05 · Biodata ', x.biodata_lengkap ? '✅' : '(belum lengkap)'), ...biodata),
+    h('div', { class: 'panel' }, h('h3', null, '06 · Formulir wawancara ', x.wawancara_lengkap ? '✅' : '(belum lengkap)'),
+      waw.length ? h('dl', { class: 'data-ppdb tanya' }, waw.flatMap(([q, a]) => [h('dt', null, q), h('dd', null, a || '-')])) : h('p', { class: 'ket' }, 'Belum diisi.'),
+      h('p', { class: 'ket' }, '07 · Join grup WhatsApp: ', x.gabung_grup ? 'sudah bergabung ✅' : 'belum')),
+    h('div', { class: 'panel' }, h('h3', null, 'Hapus data'), h('p', { class: 'ket' }, 'Gunakan hanya untuk data ganda atau pendaftaran yang dibatalkan.'), hapus));
 }
 
 mulai().catch(e => { console.error(e); app.replaceChildren(layarMasuk(h('div', { class: 'pesan galat' }, 'Terjadi kesalahan: ' + pesanGalat(e)))); });

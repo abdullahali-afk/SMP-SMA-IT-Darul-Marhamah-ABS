@@ -63,3 +63,9 @@ Panel Admin → **Testimoni** → buka satu testimoni → isian **Link video tes
 
 ### Isian baru pada bagian yang sudah ada
 Jika sebuah isian ditambahkan ke `admin/skema.js` untuk bagian yang sudah tersimpan di database, isi awalnya ditaruh di `scripts/bawaan.json` (per kunci bagian). Sinkron memakai nilai itu selama isian tersebut belum pernah disimpan dari panel, dan panel menampilkannya sebagai isian awal. Contoh: `ppdb.langkah` (Alur pendaftaran 01–10).
+
+### PPDB Online (akun & dashboard calon santri)
+- Halaman calon santri: `/pendaftaran/` (`pendaftaran/index.html`, `assets/ppdb-online.js`, `assets/ppdb-online.css`). Calon santri membuat akun, lalu mengikuti 10 langkah: bayar registrasi (unggah bukti), pilih sekolah, biodata, wawancara, join grup WA, tes tahap awal, tes tahap akhir (unggah surat kesehatan), pengumuman kelulusan.
+- Panitia: Panel Admin → **Pendaftar PPDB** (melihat berkas, biodata, wawancara, mengubah status, unduh CSV, link grup WA). Hak akses "Pendaftar PPDB" dibuka admin di **Peran & Hak Akses**.
+- Pengaturan teks (biaya registrasi, info tes, pesan lulus, pertanyaan wawancara): Panel Admin → **Info PPDB** → bagian *PPDB Online*. Formulir biodata: `admin/ppdb-formulir.js`.
+- Pemasangan database (sekali): jalankan `supabase/ppdb-online.sql` di Supabase → SQL Editor. Di Supabase → Authentication → Sign In / Providers: pastikan **Allow new users to sign up** aktif, dan matikan **Confirm email** kecuali sudah memasang SMTP sendiri (email bawaan Supabase hanya terkirim ke anggota tim).

@@ -24,5 +24,6 @@ for f in sorted(glob.glob(os.path.join(ROOT,"_posts","*.*"))):
     rows.append(f"  ({q(fm['title'])}, {q(slug)}, '{tgl}'::date, {q(fm.get('kategori','Kegiatan'))}, {q(fm.get('gambar','') or '')}, {q(fm.get('ringkasan','') or '')}, {q(body)})")
 out.append(",\n".join(rows))
 out.append(") as v(judul, slug, tanggal, kategori, gambar, ringkasan, isi)\nwhere not exists (select 1 from public.berita);")
+out.append("\n" + open(os.path.join(ROOT,"supabase/ppdb-online.sql")).read())
 open(os.path.join(ROOT,"supabase/setup.sql"),"w").write("\n".join(out)+"\n")
 print("ok", len(out))

@@ -108,3 +108,26 @@ td.tengah,th.tengah{text-align:center}
 .form-tambah{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end}
 .ket{font-size:.85rem;color:var(--abu)}
 .samping .merek div{min-width:0}
+/* Pendaftar PPDB */
+.ringkas-ppdb{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.ringkas-ppdb div{background:#fff;border:1px solid var(--garis);border-radius:10px;padding:12px 14px}
+.ringkas-ppdb b{display:block;font-size:1.5rem;color:var(--hijau-tua)}
+.ringkas-ppdb small{color:var(--abu)}
+.alat-ppdb{display:grid;grid-template-columns:220px 150px 1fr auto;gap:8px;margin-bottom:12px;align-items:center}
+.tabel-ppdb td,.tabel-ppdb th{vertical-align:top;white-space:nowrap}
+.tabel-ppdb td small{color:var(--abu)}
+.baris-klik{cursor:pointer}.baris-klik:hover td{background:#f4faf6}
+.lencana-st{display:inline-block;font-size:.74rem;font-weight:600;padding:2px 9px;border-radius:99px;background:#eef1ef;color:#555}
+.lencana-st.hijau{background:#e3f4ea;color:#0b5d3b}.lencana-st.biru{background:#e7f1fb;color:#1c4f74}
+.lencana-st.merah{background:#fdecea;color:#9b1c1c}.lencana-st.kuning{background:#fdf0e3;color:#8a3b10}
+.kepala-ppdb{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kepala-ppdb small{display:block;color:var(--abu);font-size:.78rem}
+.kepala-ppdb b,.kepala-ppdb a{word-break:break-word}
+.kisi-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 16px}
+.data-ppdb{display:grid;grid-template-columns:minmax(160px,260px) 1fr;gap:6px 14px;margin:0 0 12px;font-size:.9rem}
+.data-ppdb dt{color:var(--abu)}.data-ppdb dd{margin:0;white-space:pre-wrap;word-break:break-word}
+.data-ppdb.tanya{grid-template-columns:1fr}.data-ppdb.tanya dt{font-weight:600;color:var(--teks,#222)}.data-ppdb.tanya dd{margin-bottom:8px;padding-left:12px;border-left:3px solid var(--hijau-muda)}
+.grup-data h4{margin:10px 0 6px;color:var(--hijau-tua)}
+.baris-grup{display:grid;grid-template-columns:1fr 1.4fr 30px;gap:8px;margin-bottom:8px}
+@media(max-width:760px){.alat-ppdb,.baris-grup{grid-template-columns:1fr}.data-ppdb{grid-template-columns:1fr}.data-ppdb dt{margin-top:6px}}
+.alat-ppdb input,.alat-ppdb select,.baris-grup input{width:100%;padding:9px 12px;border:1px solid var(--garis);border-radius:8px;background:#fff}

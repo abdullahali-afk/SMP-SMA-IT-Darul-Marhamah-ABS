@@ -15,6 +15,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+{%- for g in page.gaya %}
+<link rel="stylesheet" href="{{ g | relative_url }}">
+{%- endfor %}
+{%- if page.noindex %}
+<meta name="robots" content="noindex">
+{%- endif %}
 </head>
 <body>
 <div class="topbar"><div class="wadah">
@@ -25,7 +31,7 @@
   <a href="{{ '/' | relative_url }}" class="logo"><img src="{{ '/assets/logo.png' | relative_url }}" alt="Logo {{ s.nama_singkat }}" width="64" height="64"><span><b>Darul Marhamah</b><small>SMP & SMA Islam Terpadu · Al-Qur'an Boarding School</small></span></a>
   <div class="aksi-kepala">
     <form action="{{ '/cari.html' | relative_url }}" class="cari-kepala" role="search"><input name="q" type="search" placeholder="Cari..." aria-label="Cari"><button aria-label="Cari">🔍</button></form>
-    <a href="{{ '/ppdb.html#daftar' | relative_url }}" class="btn btn-emas btn-kecil">Daftar Sekarang</a>
+    <a href="{{ '/pendaftaran/#daftar' | relative_url }}" class="btn btn-emas btn-kecil">Daftar Sekarang</a>
   </div>
   <button class="burger" aria-label="Buka menu">☰</button>
 </div></header>
@@ -49,5 +55,8 @@
 {% include kontak-wa.html gaya="mengambang" %}
 <div class="lightbox"><img alt=""></div>
 <script src="{{ '/assets/script.js' | relative_url }}"></script>
+{%- for x in page.skrip %}
+<script src="{% if x contains '://' %}{{ x }}{% else %}{{ x | relative_url }}{% endif %}"></script>
+{%- endfor %}
 </body>
 </html>

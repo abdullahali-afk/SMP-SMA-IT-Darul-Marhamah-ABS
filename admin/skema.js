@@ -670,6 +670,26 @@ window.SKEMA = [
     "name": "brosur",
     "label": "Brosur PPDB (PDF/gambar)",
     "type": "file"
+   },
+   {
+    "name": "online",
+    "label": "PPDB Online (akun calon santri)",
+    "type": "object",
+    "fields": [
+     { "name": "dibuka", "label": "Pendaftaran akun calon santri dibuka", "type": "boolean" },
+     { "name": "biaya_registrasi", "label": "Biaya registrasi PPDB", "type": "string",
+       "description": "Contoh: Rp 300.000. Jika dikosongkan, dipakai baris \"Pendaftaran\" di Rincian biaya." },
+     { "name": "info_bayar", "label": "Petunjuk pembayaran registrasi", "type": "text",
+       "description": "Nomor rekening diambil dari isian \"Rekening pembayaran\" di atas." },
+     { "name": "info_tes_awal", "label": "Informasi Tes/Seleksi Tahap Awal (jadwal & tempat)", "type": "text" },
+     { "name": "info_tes_akhir", "label": "Informasi Tes Tahap Akhir", "type": "text" },
+     { "name": "info_lulus", "label": "Pesan untuk calon santri yang LULUS", "type": "text" },
+     { "name": "pertanyaan_wawancara", "label": "Pertanyaan formulir wawancara", "type": "object", "list": true,
+       "fields": [
+        { "name": "bagian", "label": "Ditujukan untuk", "type": "select", "options": ["Calon santri", "Orang tua / wali"] },
+        { "name": "pertanyaan", "label": "Pertanyaan", "type": "text" }
+       ] }
+    ]
    }
   ]
  },
@@ -1032,3 +1052,4 @@ window.SKEMA = [
  }
 ];
 window.BAGIAN_BERITA = {kunci:'berita',label:'Berita',ikon:'📰'};
+window.BAGIAN_PENDAFTAR = {kunci:'pendaftar',label:'Pendaftar PPDB',ikon:'🧾'};

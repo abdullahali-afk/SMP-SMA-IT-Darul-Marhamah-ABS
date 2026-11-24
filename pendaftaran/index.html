@@ -1,0 +1,20 @@
+---
+layout: default
+title: PPDB Online
+description: Pendaftaran online calon santriwati SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School. Buat akun, unggah bukti pembayaran, isi biodata dan wawancara, lalu pantau hasil seleksi.
+permalink: /pendaftaran/
+gaya: [/assets/ppdb-online.css]
+skrip:
+  - https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js
+  - /admin/ppdb-formulir.js
+  - /assets/ppdb-online.js
+---
+{%- assign d = site.data.ppdb -%}
+{% capture judulpo %}PPDB Online {{ d.tahun_ajaran }}{% endcapture %}
+{% include hero.html judul=judulpo sub="Pendaftaran calon santriwati SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School" induk="PPDB" %}
+<section class="bg-putih"><div class="wadah po-wadah">
+  <div id="portal" class="po-memuat" aria-live="polite">Memuat sistem PPDB…</div>
+  <noscript><p class="catatan">Halaman ini membutuhkan JavaScript. Aktifkan JavaScript di browser Anda.</p></noscript>
+</div></section>
+{%- assign wa_list = site.data.sekolah.kontak_wa -%}
+<script id="data-ppdb" type="application/json">{"ppdb": {{ d | jsonify | replace: "</", "<\/" }}, "program": {{ site.data.program_pendidikan.daftar | jsonify | replace: "</", "<\/" }}, "wa": {{ wa_list | jsonify | replace: "</", "<\/" }}, "wa_cadangan": {{ site.data.sekolah.whatsapp | jsonify }}, "profil_url": {{ '/profil.html' | relative_url | jsonify }}, "ppdb_url": {{ '/ppdb.html' | relative_url | jsonify }}, "konfigurasi": {{ '/admin/konfigurasi.json' | relative_url | jsonify }}}</script>

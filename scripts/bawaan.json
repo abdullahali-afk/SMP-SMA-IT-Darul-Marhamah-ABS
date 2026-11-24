@@ -5,15 +5,15 @@
         "judul": "Buat Akun",
         "isi": "Calon santri diharapkan untuk membuat akun terlebih dahulu agar dapat login ke dalam sistem PPDB. Pada tahapan ini pastikan untuk menggunakan email aktif, karena kode verifikasi untuk pengaktifan akun akan dikirimkan melalui email.",
         "catatan": "",
-        "tombol": "",
-        "tautan": ""
+        "tombol": "Buat akun sekarang",
+        "tautan": "/pendaftaran/#daftar"
       },
       {
         "judul": "Login",
         "isi": "Setelah calon santri membuat dan melakukan verifikasi akun, maka calon santri diharapkan untuk login ke dalam sistem PPDB.",
         "catatan": "",
-        "tombol": "",
-        "tautan": ""
+        "tombol": "Login ke dashboard PPDB",
+        "tautan": "/pendaftaran/"
       },
       {
         "judul": "Pembayaran Registrasi",
@@ -68,9 +68,63 @@
         "judul": "Pengumuman Kelulusan",
         "isi": "Pada tahap ini calon santri akan menerima informasi kelulusan pada dashboard masing-masing di dalam sistem aplikasi PPDB. Sehingga untuk mengetahui kelulusan, calon santri wajib untuk login ke dalam sistem PPDB agar dapat mengetahui pengumuman kelulusan tersebut.",
         "catatan": "",
-        "tombol": "",
-        "tautan": ""
+        "tombol": "Cek pengumuman di dashboard",
+        "tautan": "/pendaftaran/"
       }
-    ]
+    ],
+    "online": {
+      "dibuka": true,
+      "biaya_registrasi": "",
+      "info_bayar": "Transfer biaya registrasi ke rekening di bawah ini, lalu unggah foto atau scan bukti transfer. Panitia akan memeriksa bukti pembayaran Anda.",
+      "info_tes_awal": "Jadwal dan tempat Tes Tahap Awal (tes tertulis & kesehatan) diumumkan oleh panitia melalui grup WhatsApp calon santri.",
+      "info_tes_akhir": "Tes Tahap Akhir hanya untuk calon santri yang lulus Tes Tahap Awal: pemeriksaan hasil kesehatan serta wawancara calon santri dan ibu calon santri. Unggah surat hasil pemeriksaan kesehatan di bawah ini.",
+      "info_lulus": "Selamat! Ananda dinyatakan LULUS seleksi PPDB. Silakan melakukan daftar ulang sesuai jadwal dan ketentuan yang diumumkan panitia.",
+      "pertanyaan_wawancara": [
+        {
+          "bagian": "Calon santri",
+          "pertanyaan": "Apa alasan ananda ingin bersekolah di Darul Marhamah?"
+        },
+        {
+          "bagian": "Calon santri",
+          "pertanyaan": "Siapa yang paling mendorong ananda untuk mondok?"
+        },
+        {
+          "bagian": "Calon santri",
+          "pertanyaan": "Bagaimana kebiasaan shalat lima waktu ananda di rumah?"
+        },
+        {
+          "bagian": "Calon santri",
+          "pertanyaan": "Bagaimana kemampuan membaca Al-Qur'an ananda, dan berapa juz hafalan ananda saat ini?"
+        },
+        {
+          "bagian": "Calon santri",
+          "pertanyaan": "Apa cita-cita ananda?"
+        },
+        {
+          "bagian": "Calon santri",
+          "pertanyaan": "Apakah ananda siap tinggal di asrama dan mengikuti seluruh peraturan pondok?"
+        },
+        {
+          "bagian": "Orang tua / wali",
+          "pertanyaan": "Apa harapan Bapak/Ibu setelah putri bersekolah di Darul Marhamah?"
+        },
+        {
+          "bagian": "Orang tua / wali",
+          "pertanyaan": "Dari mana Bapak/Ibu mengetahui informasi tentang Darul Marhamah?"
+        },
+        {
+          "bagian": "Orang tua / wali",
+          "pertanyaan": "Apakah putri memiliki riwayat penyakit atau kebutuhan khusus yang perlu diketahui pondok?"
+        },
+        {
+          "bagian": "Orang tua / wali",
+          "pertanyaan": "Apakah Bapak/Ibu bersedia mendukung program dan peraturan pondok (termasuk aturan penggunaan HP dan jadwal kunjungan)?"
+        },
+        {
+          "bagian": "Orang tua / wali",
+          "pertanyaan": "Apakah Bapak/Ibu sanggup memenuhi kewajiban biaya pendidikan sesuai ketentuan pondok?"
+        }
+      ]
+    }
   }
 }

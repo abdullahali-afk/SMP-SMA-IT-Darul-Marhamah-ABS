@@ -30,9 +30,17 @@ create table if not exists public.profil (
 );
 
 -- Akun pertama yang mendaftar otomatis menjadi Admin; berikutnya "menunggu".
+-- Akun calon santri (PPDB online, lihat ppdb-online.sql) masuk ke tabel pendaftar.
 create or replace function public.buat_profil() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
+  if coalesce(new.raw_user_meta_data->>'jenis', '') = 'pendaftar' then
+    insert into public.pendaftar (id, email, nama, no_wa)
+    values (new.id, new.email, left(coalesce(new.raw_user_meta_data->>'nama', ''), 120),
+            left(coalesce(new.raw_user_meta_data->>'no_wa', ''), 30))
+    on conflict (id) do nothing;
+    return new;
+  end if;
   insert into public.profil (id, email, nama, peran)
   values (new.id, new.email, coalesce(new.raw_user_meta_data->>'nama', ''),
           case when (select count(*) from public.profil) = 0 then 'admin' else 'menunggu' end)
