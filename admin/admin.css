@@ -202,3 +202,30 @@ td.tengah,th.tengah{text-align:center}
 .tabel-penguji td.angka{text-align:center;font-weight:700}
 .tabel-nilai td.tidak-berlaku{color:#c3ccc7;background:repeating-linear-gradient(135deg,transparent 0 6px,#f3f5f4 6px 12px)}
 @media (max-width:760px){.alat-penguji{grid-template-columns:1fr 1fr}}
+/* Berkas syarat lulus (langkah 09) & tagihan */
+.syarat-baris{border:1px solid var(--garis);border-left:4px solid #d6dcd8;border-radius:10px;padding:12px 14px;margin-top:10px;background:#fff}
+.syarat-baris.st-menunggu{border-left-color:#4a90c2;background:#f7fbfe}
+.syarat-baris.st-diterima{border-left-color:var(--hijau)}
+.syarat-baris.st-ditolak{border-left-color:var(--merah)}
+.syarat-baris.lama{opacity:.75}
+.syarat-kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.syarat-kepala small{color:var(--abu);font-weight:400}
+.syarat-info{font-size:.84rem;color:var(--abu);margin-top:4px}
+.syarat-tagihan{font-size:.86rem;margin-top:6px;padding:6px 10px;border-radius:7px;background:#fff4e5;color:#8a4b0f;display:inline-block}
+.syarat-tagihan.lunas{background:#e3f4ea;color:#0b5d3b}
+.syarat-aksi{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.syarat-form:not(:empty){margin-top:10px;padding:12px;border-radius:8px;background:#f6f8f7}
+.syarat-form label{display:block;font-size:.82rem;font-weight:600;margin-bottom:4px}
+.syarat-isian{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.syarat-isian input{flex:1;min-width:200px}
+.syarat-bayar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
+.syarat-bayar input{width:100%}
+.syarat-hasil{padding:8px 10px;border-radius:8px;background:#fff;border:1px dashed var(--garis)}
+.syarat-hasil small{display:block;color:var(--abu);font-size:.75rem}
+.syarat-hasil b.kurang{color:#8a4b0f}.syarat-hasil b.lunas{color:var(--hijau-tua)}
+.tabel-berkas th{white-space:normal;min-width:90px;font-size:.8rem;vertical-align:bottom}
+.tabel-berkas th:first-child{min-width:160px}
+.tabel-berkas tr.lengkap td{background:#f3faf6}
+.tabel-berkas td.angka{text-align:right}
+.atur-berkas .badan-item textarea{min-height:60px}
+@media(max-width:760px){.syarat-bayar{grid-template-columns:1fr}.syarat-kepala{flex-direction:column;gap:4px}}

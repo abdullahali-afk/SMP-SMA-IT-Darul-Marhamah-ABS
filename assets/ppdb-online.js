@@ -10,6 +10,7 @@
   const root = document.getElementById('portal');
   const BUCKET = 'ppdb';
   let sb = null, sesi = null, saya = null, terbuka = null;
+  let syarat = null; // berkas syarat lulus langkah 09 (null = fitur belum dipasang di database → cara lama: surat kesehatan saja)
 
   /* ---------- Bantuan ---------- */
   function h(tag, attrs, ...anak) {
@@ -193,7 +194,28 @@
       data = r.data;
     }
     saya = data;
+    await muatSyarat();
     tampilDasbor();
+  }
+  async function muatSyarat() {
+    syarat = null;
+    if (saya.tes_awal !== 'lulus') return;
+    const [a, b, c] = await Promise.all([
+      sb.from('ppdb_syarat').select('berkas').eq('id', 1).maybeSingle(),
+      sb.from('pendaftar_berkas').select('*').eq('pendaftar', saya.id),
+      sb.from('tagihan').select('*').eq('akun', saya.id)]);
+    if (a.error || b.error) return; // tabel belum dipasang → tampilan lama
+    syarat = {
+      daftar: window.PPDB_SYARAT_RAPI(a.data ? a.data.berkas : window.PPDB_SYARAT_AWAL),
+      berkas: Object.fromEntries((b.data || []).map(r => [r.kode, r])),
+      tagihan: Object.fromEntries(((!c.error && c.data) || []).map(r => [r.kode, r])),
+    };
+  }
+  function hitungSyarat() {
+    const wajib = syarat.daftar.filter(i => i.wajib);
+    const st = (i) => (syarat.berkas[i.kode] || {}).status || 'belum';
+    return { wajib: wajib.length, diunggah: wajib.filter(i => st(i) === 'menunggu' || st(i) === 'diterima').length,
+      diterima: wajib.filter(i => st(i) === 'diterima').length, ditolak: syarat.daftar.filter(i => st(i) === 'ditolak').length };
   }
   function tombolKeluar() {
     return h('p', null, h('button', { type: 'button', class: 'po-link', onclick: () => sb.auth.signOut() }, 'Keluar'));
@@ -235,12 +257,13 @@
   function tombolLihat(jalur, teks) {
     if (!jalur) return null;
     return h('button', { type: 'button', class: 'po-link', onclick: async () => {
-      const w = window.open('', '_blank');
+      const w = DI_APLIKASI ? null : window.open('', '_blank');
       const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(jalur, 600);
       if (error || !data) { if (w) w.close(); return toast('Berkas tidak bisa dibuka: ' + (error ? pesanGalat(error) : ''), true); }
       if (w) w.location = data.signedUrl; else location.href = data.signedUrl;
     } }, teks);
   }
+  // kolom: nama kolom di tabel pendaftar, atau fungsi async (jalur) => simpan jalur berkas
   function kotakUnggah(label, nama, kolom, pesan) {
     const input = h('input', { type: 'file', accept: 'image/*,application/pdf', class: 'po-file' });
     const tombol = h('span', { class: 'btn btn-emas btn-kecil' }, '📤 ' + label);
@@ -249,7 +272,8 @@
       tombol.textContent = 'Mengunggah…';
       try {
         const jalur = await unggahBerkas(f, nama);
-        await simpan({ [kolom]: jalur }, pesan);
+        const ok = typeof kolom === 'function' ? await kolom(jalur) : await simpan({ [kolom]: jalur }, pesan);
+        if (ok === false) tombol.textContent = '📤 ' + label;
       } catch (e) { toast('Gagal mengunggah: ' + pesanGalat(e), true); tombol.textContent = '📤 ' + label; }
       input.value = '';
     });
@@ -276,8 +300,16 @@
     L.push({ st: !s.wawancara_lengkap ? 'terkunci' : s.gabung_grup ? 'selesai' : 'aktif', ket: s.gabung_grup ? 'Sudah bergabung' : 'Belum bergabung', isi: isiGrup });
     L.push({ st: !s.wawancara_lengkap ? 'terkunci' : s.tes_awal === 'lulus' ? 'selesai' : s.tes_awal === 'tidak_lulus' ? 'gagal' : 'menunggu',
       ket: { belum: 'Menunggu hasil', lulus: 'Lulus', tidak_lulus: 'Tidak lulus' }[s.tes_awal], isi: isiTesAwal });
-    L.push({ st: s.tes_awal !== 'lulus' ? 'terkunci' : s.tes_akhir === 'lulus' ? 'selesai' : s.tes_akhir === 'tidak_lulus' ? 'gagal' : (s.surat_sehat ? 'menunggu' : 'aktif'),
-      ket: s.tes_akhir === 'lulus' ? 'Lulus' : s.tes_akhir === 'tidak_lulus' ? 'Tidak lulus' : s.surat_sehat ? 'Menunggu hasil' : 'Unggah surat kesehatan', isi: isiTesAkhir });
+    if (syarat) {
+      const r = hitungSyarat(), lengkap = r.diunggah >= r.wajib;
+      L.push({ st: s.tes_awal !== 'lulus' ? 'terkunci' : s.tes_akhir === 'lulus' ? 'selesai' : s.tes_akhir === 'tidak_lulus' ? 'gagal' : r.ditolak ? 'gagal' : lengkap ? 'menunggu' : 'aktif',
+        ket: s.tes_akhir === 'lulus' ? 'Lulus' : s.tes_akhir === 'tidak_lulus' ? 'Tidak lulus' : r.ditolak ? 'Ada berkas ditolak'
+          : lengkap ? (r.diterima >= r.wajib ? 'Berkas lengkap, menunggu hasil' : 'Berkas sedang diperiksa') : r.diunggah + ' dari ' + r.wajib + ' berkas diunggah',
+        isi: isiTesAkhir });
+    } else {
+      L.push({ st: s.tes_awal !== 'lulus' ? 'terkunci' : s.tes_akhir === 'lulus' ? 'selesai' : s.tes_akhir === 'tidak_lulus' ? 'gagal' : (s.surat_sehat ? 'menunggu' : 'aktif'),
+        ket: s.tes_akhir === 'lulus' ? 'Lulus' : s.tes_akhir === 'tidak_lulus' ? 'Tidak lulus' : s.surat_sehat ? 'Menunggu hasil' : 'Unggah surat kesehatan', isi: isiTesAkhir });
+    }
     L.push({ st: s.kelulusan === 'lulus' ? 'selesai' : s.kelulusan === 'tidak_lulus' ? 'gagal' : s.kelulusan === 'cadangan' ? 'menunggu'
         : (s.tes_akhir !== 'belum' ? 'menunggu' : 'terkunci'),
       ket: { belum: 'Belum diumumkan', lulus: 'LULUS', tidak_lulus: 'Tidak lulus', cadangan: 'Cadangan' }[s.kelulusan], isi: isiPengumuman });
@@ -453,14 +485,58 @@
         : h('div', { class: 'po-pesan info' }, '⏳ Hasil Tes Tahap Awal akan ditampilkan di sini setelah dinilai panitia.')];
   }
 
+  function hasilTesAkhir(st) {
+    return st === 'lulus' ? h('div', { class: 'po-pesan sukses' }, '✅ Ananda lulus Tes Tahap Akhir. Tunggu pengumuman kelulusan.')
+      : st === 'tidak_lulus' ? h('div', { class: 'po-pesan galat' }, 'Mohon maaf, ananda belum lulus Tes Tahap Akhir.')
+      : h('div', { class: 'po-pesan info' }, '⏳ Hasil Tes Tahap Akhir akan ditampilkan di sini.');
+  }
   function isiTesAkhir() {
+    if (!syarat) return isiTesAkhirLama();
+    const s = saya, kunci = s.tes_akhir !== 'belum' || s.kelulusan !== 'belum';
+    const r = hitungSyarat();
+    return [...paragraf(ON.info_tes_akhir),
+      syarat.daftar.length ? h('p', { class: 'po-kecil' }, 'Berkas wajib: ' + r.diunggah + ' dari ' + r.wajib + ' sudah diunggah' + (r.diterima ? ', ' + r.diterima + ' diterima panitia' : '') + '.') : null,
+      h('div', { class: 'po-syarat-daftar' }, syarat.daftar.map(i => kartuSyarat(i, kunci))),
+      hasilTesAkhir(s.tes_akhir)];
+  }
+  function kartuSyarat(item, kunci) {
+    const r = syarat.berkas[item.kode], st = r ? r.status : 'belum';
+    const bayar = item.jenis === 'Pembayaran';
+    const biaya = bayar ? window.PPDB_BIAYA_SYARAT(item, saya.jenjang) : 0;
+    const tg = syarat.tagihan[item.kode];
+    const warna = { belum: 'st-aktif', menunggu: 'st-menunggu', diterima: 'st-selesai', ditolak: 'st-gagal' }[st];
+    const bisaUnggah = !kunci && st !== 'diterima';
+    const label = r && r.berkas ? 'Unggah ulang' : 'Unggah ' + (bayar ? 'bukti bayar' : 'berkas');
+    return h('div', { class: 'po-syarat st-' + st },
+      h('div', { class: 'po-syarat-kepala' }, h('b', null, item.nama, item.wajib ? '' : h('small', null, ' (tidak wajib)')),
+        h('span', { class: 'po-status ' + warna }, window.PPDB_STATUS.berkas[st] || st)),
+      ...paragraf(item.keterangan),
+      bayar && (biaya || P.rekening) ? h('div', { class: 'po-rincian' },
+        biaya ? h('div', null, h('small', null, 'Biaya ' + (saya.jenjang || '')), h('b', null, window.PPDB_RUPIAH(biaya))) : null,
+        P.rekening ? h('div', null, h('small', null, 'Rekening pembayaran'), h('b', null, P.rekening)) : null) : null,
+      tg ? h('div', { class: 'po-pesan ' + (tg.status === 'lunas' ? 'sukses' : 'peringatan') }, tg.status === 'lunas'
+        ? '✅ Lunas: ' + window.PPDB_RUPIAH(tg.dibayar) + ' sudah tercatat.'
+        : 'Sudah dibayar ' + window.PPDB_RUPIAH(tg.dibayar) + ' dari ' + window.PPDB_RUPIAH(tg.jumlah) + '. Sisa tagihan: ' + window.PPDB_RUPIAH(tg.sisa) + ' (dilunasi sesuai ketentuan pondok).') : null,
+      st === 'ditolak' ? h('div', { class: 'po-pesan galat' }, '❌ Ditolak panitia' + (r.catatan ? ': ' + r.catatan : '') + '. Silakan unggah ulang.') : null,
+      h('div', { class: 'po-syarat-aksi' },
+        item.format ? h('a', { class: 'btn btn-garis-hijau btn-kecil', href: item.format, target: '_blank', rel: 'noopener' }, '📥 Unduh format') : null,
+        r && r.berkas ? tombolLihat(r.berkas, '📄 Lihat berkas saya') : null),
+      bisaUnggah ? kotakUnggah(label, 'syarat-' + item.kode, (jalur) => simpanSyarat(item, jalur)) : null);
+  }
+  async function simpanSyarat(item, jalur) {
+    const { data, error } = await sb.from('pendaftar_berkas').upsert({ pendaftar: saya.id, kode: item.kode, berkas: jalur }).select().maybeSingle();
+    if (error || !data) { toast('Gagal menyimpan: ' + (error ? pesanGalat(error) : 'coba muat ulang halaman'), true); return false; }
+    syarat.berkas[item.kode] = data;
+    toast(item.nama + ' terkirim. Panitia akan memeriksanya.');
+    terbuka = 8; tampilDasbor(); return true;
+  }
+
+  function isiTesAkhirLama() {
     const s = saya, st = s.tes_akhir;
     return [...paragraf(ON.info_tes_akhir),
       s.surat_sehat ? h('p', null, tombolLihat(s.surat_sehat, '📄 Lihat surat kesehatan yang sudah diunggah')) : null,
       st === 'belum' && s.kelulusan === 'belum' ? kotakUnggah(s.surat_sehat ? 'Unggah ulang surat kesehatan' : 'Unggah surat hasil kesehatan', 'surat-sehat', 'surat_sehat', 'Surat kesehatan terkirim.') : null,
-      st === 'lulus' ? h('div', { class: 'po-pesan sukses' }, '✅ Ananda lulus Tes Tahap Akhir. Tunggu pengumuman kelulusan.')
-        : st === 'tidak_lulus' ? h('div', { class: 'po-pesan galat' }, 'Mohon maaf, ananda belum lulus Tes Tahap Akhir.')
-        : h('div', { class: 'po-pesan info' }, '⏳ Hasil Tes Tahap Akhir akan ditampilkan di sini.')];
+      hasilTesAkhir(st)];
   }
 
   function isiPengumuman() {

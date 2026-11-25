@@ -90,3 +90,16 @@
   .po-status{font-size:.7rem;padding:3px 8px;white-space:normal;text-align:center;max-width:110px}
   .po-keluar{top:16px;right:16px}
 }
+/* Berkas syarat lulus (langkah 09) */
+.po-syarat-daftar{display:grid;gap:12px;margin:12px 0}
+.po-syarat{border:1px solid #e3ebe6;border-left:4px solid var(--emas);border-radius:12px;padding:12px 14px;background:#fff}
+.po-syarat.st-menunggu{border-left-color:#4a90c2}
+.po-syarat.st-diterima{border-left-color:var(--hijau)}
+.po-syarat.st-ditolak{border-left-color:#c62828}
+.po-syarat p{margin:6px 0;font-size:.92rem}
+.po-syarat-kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.po-syarat-kepala b{color:var(--hijau-tua);line-height:1.35}
+.po-syarat-kepala small{color:var(--abu);font-weight:400}
+.po-syarat-aksi{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:8px}
+.po-syarat-aksi:empty{display:none}
+@media (max-width:600px){.po-syarat-kepala{flex-direction:column;gap:6px}.po-syarat .po-status{max-width:none}}

@@ -227,7 +227,8 @@ function rute() {
   if (r[0] === 'akun') return halamanAkun();
   if (profil.peran === 'menunggu' || !profil.aktif) return halamanDasbor();
   if (r[0] === 'konten' && r[1]) return boleh(r[1]) ? halamanKonten(r[1]) : tolak();
-  if (r[0] === 'pendaftar') return !boleh('pendaftar') ? tolak() : r[1] === 'nilai' ? halamanRekapNilai() : r[1] ? halamanPendaftarDetail(r[1], r[2] === 'nilai') : halamanPendaftar();
+  if (r[0] === 'pendaftar') return !boleh('pendaftar') ? tolak() : r[1] === 'nilai' ? halamanRekapNilai() : r[1] === 'berkas' ? halamanBerkasSyarat()
+    : r[1] ? halamanPendaftarDetail(r[1], r[2] === 'nilai' || r[2] === 'berkas' ? r[2] : '') : halamanPendaftar();
   if (r[0] === 'nilai-tes') return !(boleh('nilai_ppdb') || boleh('pendaftar')) ? tolak() : r[1] ? halamanNilaiPeserta(r[1]) : halamanDaftarPenguji();
   if (r[0] === 'berita') return !boleh('berita') ? tolak() : (r[1] ? halamanBeritaForm(r[1]) : halamanBerita());
   if (r[0] === 'pengguna') return adalahAdmin() ? halamanPengguna() : tolak();
@@ -452,7 +453,7 @@ function medanBerkas(f, ambil, set, kunci) {
       if (siap.size > 20 * 1024 * 1024) throw new Error('exceeded the maximum allowed size');
       const u = await unggah(siap, kunci || 'umum');
       set(u); url.value = u; tampil(); tandaiKotor();
-      toast('Foto terunggah. Klik "Simpan perubahan" agar tampil di website.');
+      toast((gambar ? 'Foto' : 'File') + ' terunggah. Klik tombol Simpan agar tersimpan.');
     } catch (e) { toast('Gagal mengunggah: ' + pesanGalat(e), true); }
     label.textContent = gambar ? '📷 Unggah foto' : '📎 Unggah file'; input.value = '';
   });
@@ -774,7 +775,7 @@ function lencanaStatus(jenis, nilai) {
 function tglId(t) { return t ? new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; }
 function waLink(n) { let d = String(n || '').replace(/\D/g, ''); if (d.startsWith('0')) d = '62' + d.slice(1); return d ? 'https://wa.me/' + d : null; }
 async function bukaBerkasPpdb(jalur) {
-  const w = window.open('', '_blank');
+  const w = DI_APLIKASI ? null : window.open('', '_blank');
   const { data, error } = await sb.storage.from('ppdb').createSignedUrl(jalur, 600);
   if (error || !data) { if (w) w.close(); return toast('Berkas tidak bisa dibuka: ' + (error ? pesanGalat(error) : ''), true); }
   if (w) w.location = data.signedUrl; else location.href = data.signedUrl;
@@ -875,26 +876,31 @@ function unduhCsvPendaftar(baris) {
   document.body.append(a); a.click(); a.remove();
 }
 
-async function halamanPendaftarDetail(id, keNilai) {
+async function halamanPendaftarDetail(id, bagian) {
   kerangka('🧾 Data pendaftar', 'Memuat…');
   const awal0 = location.hash;
   const { data: x, error } = await sb.from('pendaftar').select('*').eq('id', id).maybeSingle();
   if (location.hash !== awal0) return;
-  const asal = bacaSesi('asal-ppdb') === '#/pendaftar/nilai' ? ['#/pendaftar/nilai', '← Kembali ke rekap nilai'] : ['#/pendaftar', '← Kembali ke daftar pendaftar'];
+  const ASAL = { '#/pendaftar/nilai': '← Kembali ke rekap nilai', '#/pendaftar/berkas': '← Kembali ke berkas & tagihan' };
+  const a0 = bacaSesi('asal-ppdb');
+  const asal = ASAL[a0] ? [a0, ASAL[a0]] : ['#/pendaftar', '← Kembali ke daftar pendaftar'];
   if (error || !x) return kerangka('🧾 Data pendaftar', null, h('div', { class: 'pesan galat' }, error ? (tabelBelumAda(error) ? PESAN_BELUM_PASANG : pesanGalat(error)) : 'Pendaftar tidak ditemukan.'),
     h('a', { href: asal[0] }, asal[1]));
-  const [navigasi, nilaiPanel] = await Promise.all([navigasiPendaftar(id, keNilai), panelNilai(x)]);
+  const infoBerkas = { lengkap: null, teks: '' };
+  const [navigasi, nilaiPanel, berkasPanel] = await Promise.all([navigasiPendaftar(id, bagian), panelNilai(x), panelBerkas(x, infoBerkas)]);
   if (location.hash !== awal0) return;
   const ubah = { status_bayar: x.status_bayar, tes_awal: x.tes_awal, tes_akhir: x.tes_akhir, kelulusan: x.kelulusan, pesan_panitia: x.pesan_panitia || '' };
   const pilih = (kolom, jenis, label, ket) => h('div', { class: 'medan' }, h('label', null, label),
     h('select', { onchange: e => { ubah[kolom] = e.target.value; tandaiKotor(); } },
       Object.entries(ST()[jenis]).map(([k, t]) => h('option', { value: k, selected: ubah[kolom] === k }, t))), ket ? h('div', { class: 'ket' }, ket) : null);
   const btn = h('button', { class: 'btn btn-emas', type: 'button', onclick: async () => {
+    if (ubah.tes_akhir === 'lulus' && x.tes_akhir !== 'lulus' && infoBerkas.lengkap === false
+      && !confirm('Berkas syarat lulus belum lengkap (' + infoBerkas.teks + '). Tetap nyatakan lulus tes tahap akhir?')) return;
     sibuk(btn, true, 'Menyimpan…');
     const { data: d2, error: e2 } = await sb.from('pendaftar').update(ubah).eq('id', id).select();
     sibuk(btn, false, '💾 Simpan status');
     if (e2 || !d2 || !d2.length) return toast('Gagal menyimpan: ' + (e2 ? pesanGalat(e2) : 'tidak ada akses'), true);
-    kotor = false; toast('Status pendaftar disimpan. Calon santri langsung melihatnya di dashboard.');
+    kotor = false; Object.assign(x, ubah); toast('Status pendaftar disimpan. Calon santri langsung melihatnya di dashboard.');
   } }, '💾 Simpan status');
   const tombolBerkas = (jalur, teks) => jalur ? h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => bukaBerkasPpdb(jalur) }, teks) : h('small', { style: 'color:var(--abu)' }, 'Belum diunggah');
   const bio = x.biodata || {};
@@ -920,18 +926,21 @@ async function halamanPendaftarDetail(id, keNilai) {
       h('div', { class: 'kisi-status' },
         h('div', null, pilih('status_bayar', 'bayar', '03 · Pembayaran registrasi'), h('div', { class: 'medan' }, tombolBerkas(x.bukti_bayar, '📄 Lihat bukti bayar'))),
         pilih('tes_awal', 'tes', '08 · Tes tahap awal'),
-        h('div', null, pilih('tes_akhir', 'tes', '09 · Tes tahap akhir'), h('div', { class: 'medan' }, tombolBerkas(x.surat_sehat, '📄 Lihat surat kesehatan'))),
+        h('div', null, pilih('tes_akhir', 'tes', '09 · Tes tahap akhir'), h('div', { class: 'medan' }, infoBerkas.lengkap === null ? tombolBerkas(x.surat_sehat, '📄 Lihat surat kesehatan')
+          : h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => document.getElementById('panel-berkas').scrollIntoView({ behavior: 'smooth' }) }, '📎 Berkas syarat: ' + infoBerkas.teks))),
         pilih('kelulusan', 'kelulusan', '10 · Pengumuman kelulusan', 'Hasil ini langsung tampil di dashboard calon santri.')),
       h('div', { class: 'medan' }, h('label', null, 'Pesan untuk calon santri (tampil di dashboard-nya)'),
         h('textarea', { value: ubah.pesan_panitia, placeholder: 'Contoh: Bukti transfer kurang jelas, mohon unggah ulang.', oninput: e => { ubah.pesan_panitia = e.target.value; tandaiKotor(); } })),
       h('div', { class: 'aksi-simpan' }, btn)),
+    berkasPanel,
     nilaiPanel,
     h('div', { class: 'panel' }, h('h3', null, '05 · Biodata ', x.biodata_lengkap ? '✅' : '(belum lengkap)'), ...biodata),
     h('div', { class: 'panel' }, h('h3', null, '06 · Formulir wawancara ', x.wawancara_lengkap ? '✅' : '(belum lengkap)'),
       waw.length ? h('dl', { class: 'data-ppdb tanya' }, waw.flatMap(([q, a]) => [h('dt', null, q), h('dd', null, a || '-')])) : h('p', { class: 'ket' }, 'Belum diisi.'),
       h('p', { class: 'ket' }, '07 · Join grup WhatsApp: ', x.gabung_grup ? 'sudah bergabung ✅' : 'belum')),
     h('div', { class: 'panel' }, h('h3', null, 'Hapus data'), h('p', { class: 'ket' }, 'Gunakan hanya untuk data ganda atau pendaftaran yang dibatalkan.'), hapus));
-  if (keNilai) { const el = document.getElementById('panel-nilai'); if (el) { el.scrollIntoView({ block: 'start' }); const i = el.querySelector('input'); if (i) i.focus({ preventScroll: true }); } }
+  if (bagian === 'nilai') { const el = document.getElementById('panel-nilai'); if (el) { el.scrollIntoView({ block: 'start' }); const i = el.querySelector('input'); if (i) i.focus({ preventScroll: true }); } }
+  if (bagian === 'berkas') { const el = document.getElementById('panel-berkas'); if (el) el.scrollIntoView({ block: 'start' }); }
 }
 
 /* ---------- Nilai tes & rekap kelulusan PPDB (panitia) ---------- */
@@ -946,7 +955,8 @@ function ingatUrutan(baris, asal) { try { sessionStorage.setItem('urutan-ppdb', 
 function tabPpdb(aktif) {
   return h('nav', { class: 'tab-ppdb' },
     h('a', { href: '#/pendaftar', class: aktif === 'daftar' ? 'aktif' : null }, '🧾 Daftar pendaftar'),
-    h('a', { href: '#/pendaftar/nilai', class: aktif === 'nilai' ? 'aktif' : null }, '📊 Rekap nilai & kelulusan'));
+    h('a', { href: '#/pendaftar/nilai', class: aktif === 'nilai' ? 'aktif' : null }, '📊 Rekap nilai & kelulusan'),
+    h('a', { href: '#/pendaftar/berkas', class: aktif === 'berkas' ? 'aktif' : null }, '📎 Berkas & tagihan'));
 }
 // Nilai akhir = rata-rata (berbobot) semua komponen yang sudah diisi, diubah ke skala 0–100
 const berlakuUntuk = (k, jenjang) => !k.berlaku || k.berlaku === 'Semua jenjang' || !jenjang || k.berlaku === jenjang;
@@ -986,7 +996,7 @@ function teksIsian(k) {
 }
 
 // dasar: '#/pendaftar/' (panitia) atau '#/nilai-tes/' (penguji)
-async function navigasiPendaftar(id, keNilai, dasar = '#/pendaftar/') {
+async function navigasiPendaftar(id, bagian, dasar = '#/pendaftar/') {
   let urutan = null;
   try { urutan = JSON.parse(bacaSesi('urutan-ppdb') || 'null'); } catch (e) { urutan = null; }
   if (!Array.isArray(urutan) || !urutan.includes(id)) {
@@ -995,7 +1005,7 @@ async function navigasiPendaftar(id, keNilai, dasar = '#/pendaftar/') {
   }
   const i = urutan.indexOf(id);
   if (i < 0 || urutan.length < 2) return null;
-  const ke = (j) => dasar + urutan[j] + (keNilai ? '/nilai' : '');
+  const ke = (j) => dasar + urutan[j] + (bagian ? '/' + bagian : '');
   const keNilaiBerikut = dasar === '#/pendaftar/' ? dasar + urutan[i + 1] + '/nilai' : dasar + urutan[i + 1];
   return h('div', { class: 'geser-pendaftar' },
     i > 0 ? h('a', { href: ke(i - 1) }, '‹ Sebelumnya') : h('span', null, '‹ Sebelumnya'),
@@ -1274,6 +1284,253 @@ function unduhCsvNilai(baris, komp, batas) {
 }
 
 
+/* ---------- Berkas syarat lulus Tes Tahap Akhir & tagihan (langkah 09) ---------- */
+const PESAN_BERKAS_BELUM = 'Fitur berkas syarat lulus belum dipasang di database. Jalankan ulang file supabase/ppdb-online.sql (versi terbaru) di Supabase → SQL Editor. File itu aman dijalankan ulang.';
+const rupiah = (n) => window.PPDB_RUPIAH(n);
+const tglJam = (t) => t ? new Date(t).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+async function muatSyarat() {
+  const { data, error } = await sb.from('ppdb_syarat').select('*').eq('id', 1).maybeSingle();
+  if (error) return { error };
+  const mentah = data && Array.isArray(data.berkas) ? data.berkas : salin(window.PPDB_SYARAT_AWAL || []);
+  return { ada: !!data, mentah, daftar: window.PPDB_SYARAT_RAPI(mentah) };
+}
+// berkas: { kode: baris pendaftar_berkas }
+function ringkasSyarat(daftar, berkas) {
+  const st = (i) => (berkas[i.kode] || {}).status || 'belum';
+  const wajib = daftar.filter(i => i.wajib);
+  return { wajib: wajib.length, diterima: wajib.filter(i => st(i) === 'diterima').length,
+    diunggah: wajib.filter(i => st(i) === 'menunggu' || st(i) === 'diterima').length,
+    menunggu: daftar.filter(i => st(i) === 'menunggu').length, ditolak: daftar.filter(i => st(i) === 'ditolak').length,
+    lengkap: wajib.every(i => st(i) === 'diterima') };
+}
+function lencanaBerkas(st, pendek) {
+  const w = { diterima: 'hijau', menunggu: 'biru', ditolak: 'merah' }[st] || 'abu';
+  const t = pendek ? { belum: '–', menunggu: 'Perlu dicek', diterima: '✓ Diterima', ditolak: '✗ Ditolak' }[st] : window.PPDB_STATUS.berkas[st];
+  return h('span', { class: 'lencana-st ' + w }, t || st);
+}
+
+async function panelBerkas(x, info) {
+  const box = h('div', { class: 'panel', id: 'panel-berkas' });
+  const gambar = async () => {
+    const [sy, rb, rt] = await Promise.all([muatSyarat(), sb.from('pendaftar_berkas').select('*').eq('pendaftar', x.id), sb.from('tagihan').select('*').eq('akun', x.id)]);
+    const err = sy.error || rb.error;
+    box.replaceChildren(h('h3', null, '📎 09 · Berkas syarat lulus tes tahap akhir'));
+    if (err) {
+      info.lengkap = null;
+      box.append(h('div', { class: 'pesan ' + (tabelBelumAda(err) ? 'peringatan' : 'galat') }, tabelBelumAda(err) ? PESAN_BERKAS_BELUM : pesanGalat(err)),
+        x.surat_sehat ? h('p', { style: 'margin-top:10px' }, h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => bukaBerkasPpdb(x.surat_sehat) }, '📄 Lihat surat kesehatan')) : null);
+      return;
+    }
+    const berkas = Object.fromEntries((rb.data || []).map(r => [r.kode, r]));
+    const tagihan = Object.fromEntries(((!rt.error && rt.data) || []).map(r => [r.kode, r]));
+    const r = ringkasSyarat(sy.daftar, berkas);
+    info.lengkap = r.lengkap; info.teks = r.diterima + ' dari ' + r.wajib + ' diterima';
+    box.append(h('p', { class: 'ket' },
+      x.tes_awal !== 'lulus' ? 'Calon santri bisa mengunggah berkas ini setelah dinyatakan lulus tes tahap awal. ' : '',
+      sy.daftar.length ? r.diterima + ' dari ' + r.wajib + ' berkas wajib sudah diterima' + (r.menunggu ? ', ' + r.menunggu + ' menunggu pemeriksaan' : '') + '. ' : 'Belum ada berkas syarat. ',
+      h('a', { href: '#/pendaftar/berkas' }, 'Atur daftar berkas'), '.'));
+    sy.daftar.forEach(item => box.append(barisBerkas(x, item, berkas[item.kode], tagihan[item.kode], gambar)));
+    // Berkas yang sudah diunggah tetapi jenisnya sudah dihapus dari daftar
+    Object.values(berkas).filter(b => !sy.daftar.some(i => i.kode === b.kode)).forEach(b => box.append(h('div', { class: 'syarat-baris lama' },
+      h('div', { class: 'syarat-kepala' }, h('div', null, h('b', null, b.kode), h('small', null, ' (tidak lagi diminta)')), lencanaBerkas(b.status)),
+      h('div', { class: 'syarat-aksi' }, h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => bukaBerkasPpdb(b.berkas) }, '📄 Lihat')))));
+  };
+  await gambar();
+  return box;
+}
+
+function barisBerkas(x, item, b, tg, ulang) {
+  const st = b ? b.status : 'belum', bayar = item.jenis === 'Pembayaran', ada = !!(b && b.berkas);
+  const form = h('div', { class: 'syarat-form' });
+  const tutup = () => form.replaceChildren();
+  const ubahStatus = async (status, catatan, btn) => {
+    const teks = btn.textContent;
+    sibuk(btn, true, 'Menyimpan…');
+    const { data, error } = await sb.from('pendaftar_berkas').update({ status, catatan: catatan || '' }).eq('pendaftar', x.id).eq('kode', item.kode).select();
+    if (error || !data || !data.length) { sibuk(btn, false, teks); return toast('Gagal: ' + (error ? pesanGalat(error) : 'tidak ada akses'), true); }
+    toast(item.nama + ': ' + window.PPDB_STATUS.berkas[status].toLowerCase() + '.');
+    ulang();
+  };
+  const formTolak = () => {
+    const alasan = h('input', { type: 'text', value: st === 'ditolak' ? b.catatan : '', placeholder: 'Contoh: tanda tangan belum ada / foto buram' });
+    const kirim = h('button', { class: 'btn btn-merah btn-kecil', type: 'button', onclick: () => {
+      if (!alasan.value.trim()) return toast('Tulis alasan penolakan agar calon santri tahu apa yang harus diperbaiki.', true);
+      ubahStatus('ditolak', alasan.value.trim(), kirim);
+    } }, 'Tolak berkas');
+    form.replaceChildren(h('label', null, 'Alasan penolakan (tampil di dashboard calon santri)'),
+      h('div', { class: 'syarat-isian' }, alasan, kirim, h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: tutup }, 'Batal')),
+      bayar && st === 'diterima' ? h('div', { class: 'ket' }, 'Pembayaran yang sudah dicatat dari bukti ini akan dihapus dari tagihan, lalu calon santri diminta mengunggah ulang.') : null);
+    alasan.focus();
+  };
+  const formBayar = () => {
+    const total0 = tg ? Number(tg.jumlah) : window.PPDB_BIAYA_SYARAT(item, x.jenjang);
+    const total = h('input', { type: 'number', min: 0, step: 'any', inputmode: 'numeric', value: total0 || '', placeholder: 'Contoh: 1500000' });
+    const dibayar = h('input', { type: 'number', min: 0, step: 'any', inputmode: 'numeric', value: st === 'diterima' && tg ? Number(tg.dibayar) : '', placeholder: 'Sesuai bukti transfer' });
+    const hasil = h('b');
+    const hitung = () => {
+      const t = Number(total.value) || 0, d = Number(dibayar.value) || 0;
+      hasil.textContent = !d ? '–' : t - d > 0 ? 'Sisa tagihan ' + rupiah(t - d) : 'Lunas';
+      hasil.className = d && t - d > 0 ? 'kurang' : d ? 'lunas' : '';
+    };
+    total.addEventListener('input', hitung); dibayar.addEventListener('input', hitung); hitung();
+    const simpanB = h('button', { class: 'btn btn-emas btn-kecil', type: 'button', onclick: async () => {
+      const t = Number(total.value), d = Number(dibayar.value);
+      if (!(t > 0)) return toast('Isi total biaya ' + item.nama + ' (angka saja, contoh 1500000).', true);
+      if (!(d > 0)) return toast('Isi nominal yang dibayar sesuai bukti transfer.', true);
+      sibuk(simpanB, true, 'Menyimpan…');
+      const { data, error } = await sb.rpc('terima_pembayaran_ppdb', { p_pendaftar: x.id, p_kode: item.kode, p_total: t, p_dibayar: d });
+      if (error) { sibuk(simpanB, false, '✅ Terima & catat'); return toast('Gagal: ' + (fiturBelumAda(error) ? PESAN_BERKAS_BELUM : pesanGalat(error)), true); }
+      const t2 = Array.isArray(data) ? data[0] : data;
+      toast(t2 && Number(t2.sisa) > 0 ? 'Bukti bayar diterima. Sisa ' + rupiah(t2.sisa) + ' dicatat sebagai tagihan.' : 'Bukti bayar diterima. Pembayaran lunas.');
+      ulang();
+    } }, '✅ Terima & catat');
+    form.replaceChildren(h('div', { class: 'syarat-bayar' },
+      h('div', null, h('label', null, 'Total biaya ' + (x.jenjang || '') + ' (Rp)'), total),
+      h('div', null, h('label', null, 'Nominal dibayar (Rp)'), dibayar),
+      h('div', { class: 'syarat-hasil' }, h('small', null, 'Hasil'), hasil)),
+      h('div', { class: 'syarat-isian' }, simpanB, h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: tutup }, 'Batal')),
+      h('div', { class: 'ket' }, 'Jika belum lunas, berkas tetap diterima sebagai syarat dan sisanya otomatis dicatat sebagai tagihan atas nama calon santri ini (untuk modul keuangan nanti).'));
+    dibayar.focus();
+  };
+  const aksi = h('div', { class: 'syarat-aksi' });
+  if (ada) {
+    aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => bukaBerkasPpdb(b.berkas) }, '📄 Lihat'));
+    if (st !== 'diterima') aksi.append(bayar ? h('button', { class: 'btn btn-kecil', type: 'button', onclick: formBayar }, '✅ Terima & catat pembayaran')
+      : h('button', { class: 'btn btn-kecil', type: 'button', onclick: (e) => ubahStatus('diterima', '', e.currentTarget) }, '✅ Terima'));
+    if (st === 'diterima' && bayar) aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: formBayar }, '✏️ Ubah nominal'));
+    aksi.append(h('button', { class: 'btn btn-merah btn-kecil', type: 'button', onclick: formTolak }, st === 'ditolak' ? '✏️ Ubah alasan' : st === 'diterima' ? 'Batalkan & tolak' : '❌ Tolak'));
+  }
+  const ket = !b ? 'Belum diunggah calon santri.'
+    : 'Diunggah ' + tglJam(b.diunggah) + (st !== 'menunggu' && b.pemeriksa ? ' · diperiksa ' + b.pemeriksa : '') + (st === 'ditolak' && b.catatan ? ' · Alasan: ' + b.catatan : '');
+  return h('div', { class: 'syarat-baris st-' + st },
+    h('div', { class: 'syarat-kepala' }, h('div', null, h('b', null, item.nama), h('small', null, (bayar ? ' · Pembayaran' : '') + (item.wajib ? '' : ' · tidak wajib'))), lencanaBerkas(st)),
+    h('div', { class: 'syarat-info' }, ket),
+    tg ? h('div', { class: 'syarat-tagihan ' + tg.status }, 'Tagihan ' + rupiah(tg.jumlah) + ' · dibayar ' + rupiah(tg.dibayar) + ' · ', h('b', null, tg.status === 'lunas' ? 'Lunas' : 'sisa ' + rupiah(tg.sisa))) : null,
+    ada ? aksi : null, form);
+}
+
+const F_SYARAT = { name: 'berkas', label: 'Berkas syarat lulus (urutannya = urutan di dashboard calon santri)', type: 'object', list: true, fields: [
+  { name: 'nama', label: 'Nama berkas', type: 'string', description: 'Contoh: Surat Hasil Pemeriksaan Kesehatan, Bukti Bayar Administrasi, Surat Pernyataan' },
+  { name: 'jenis', label: 'Jenis', type: 'select', options: ['Berkas', 'Pembayaran'], default: 'Berkas',
+    description: 'Pembayaran = bukti transfer. Saat menerimanya, panitia mencatat nominal yang dibayar; jika belum lunas, sisanya otomatis menjadi tagihan.' },
+  { name: 'keterangan', label: 'Petunjuk untuk calon santri', type: 'text' },
+  { name: 'format', label: 'File format / contoh surat yang bisa diunduh (opsional)', type: 'file',
+    description: 'Unggah file Word atau PDF. Calon santri mengunduhnya dari dashboard, mengisi, lalu mengunggah kembali.' },
+  { name: 'biaya_smp', label: 'Total biaya untuk SMP (Rp), khusus jenis Pembayaran', type: 'number', description: 'Angka saja, contoh: 1500000. Isi 0 jika belum ditentukan.' },
+  { name: 'biaya_sma', label: 'Total biaya untuk SMA (Rp), khusus jenis Pembayaran', type: 'number' },
+  { name: 'wajib', label: 'Wajib sebagai syarat lulus', type: 'boolean', default: true },
+] };
+
+async function halamanBerkasSyarat() {
+  const judul = '📎 Berkas Syarat & Tagihan';
+  kerangka(judul, 'Memuat…');
+  const awal0 = location.hash;
+  const [rp, rb, rt, sy] = await Promise.all([
+    sb.from('pendaftar').select('id, nomor, nama, email, jenjang, program, tes_awal, tes_akhir, kelulusan, dibuat').order('dibuat', { ascending: true }),
+    sb.from('pendaftar_berkas').select('pendaftar, kode, status, diunggah'),
+    sb.from('tagihan').select('*'),
+    muatSyarat()]);
+  if (location.hash !== awal0) return;
+  const galat = rp.error || rb.error || rt.error || sy.error;
+  if (galat) {
+    const belum = tabelBelumAda(galat);
+    return kerangka(judul, null, tabPpdb('berkas'), h('div', { class: 'pesan ' + (belum ? 'peringatan' : 'galat') }, belum ? (rp.error ? PESAN_BELUM_PASANG : PESAN_BERKAS_BELUM) : pesanGalat(galat)));
+  }
+  let daftar = sy.daftar;
+  const petaB = new Map(), petaT = new Map();
+  (rb.data || []).forEach(r => { if (!petaB.has(r.pendaftar)) petaB.set(r.pendaftar, {}); petaB.get(r.pendaftar)[r.kode] = r; });
+  (rt.data || []).forEach(t => { if (!petaT.has(t.akun)) petaT.set(t.akun, []); petaT.get(t.akun).push(t); });
+  const semua = (rp.data || []).map(x => Object.assign(x, { _b: petaB.get(x.id) || {}, _t: petaT.get(x.id) || [] }));
+  const hitungSemua = () => semua.forEach(x => { x._r = ringkasSyarat(daftar, x._b); x._sisa = x._t.reduce((a, t) => a + Number(t.sisa || 0), 0); });
+  hitungSemua();
+
+  // ----- Pengaturan daftar berkas -----
+  const cfg = { berkas: salin(sy.mentah).map(i => Object.assign(i, { wajib: i.wajib !== false })) };
+  const btnCfg = h('button', { class: 'btn btn-emas', type: 'button' }, '💾 Simpan pengaturan berkas');
+  const atur = h('details', { class: 'panel atur-nilai atur-berkas' }, h('summary', null, '⚙️ Pengaturan berkas syarat lulus (langkah 09)'),
+    h('p', { class: 'ket' }, 'Tambah, hapus, atau ubah urutan berkas yang harus diunggah calon santri setelah lulus tes tahap awal. Unggah file format (Word/PDF) agar calon santri bisa mengunduhnya. Untuk jenis "Pembayaran", isi total biayanya; saat bukti bayar diterima, panitia mencatat nominal yang dibayar dan sisanya otomatis menjadi tagihan. Berkas yang sudah diunggah tidak hilang jika nama berkas diubah.'),
+    medan(F_SYARAT, cfg, 'ppdb-format'),
+    h('div', { class: 'aksi-simpan aksi-biasa' }, btnCfg));
+  if (!sy.ada) atur.open = true;
+  atur.addEventListener('input', tandaiKotor);
+  btnCfg.addEventListener('click', async () => {
+    const baru = cfg.berkas.filter(k => String(k.nama || '').trim());
+    const dipakai = new Set(baru.filter(k => k.kode).map(k => k.kode));
+    baru.forEach(k => {
+      k.nama = String(k.nama).trim();
+      if (!k.jenis) k.jenis = 'Berkas';
+      k.wajib = k.wajib !== false;
+      ['biaya_smp', 'biaya_sma'].forEach(f => { k[f] = Number(k[f]) > 0 ? Math.round(Number(k[f])) : 0; });
+      if (!k.kode) { const dasar = slugify(k.nama).replace(/-/g, '_').slice(0, 40) || 'berkas'; let kd = dasar, n = 2; while (dipakai.has(kd)) kd = dasar + '_' + n++; k.kode = kd; dipakai.add(kd); }
+    });
+    sibuk(btnCfg, true, 'Menyimpan…');
+    const { data, error } = await sb.from('ppdb_syarat').upsert({ id: 1, berkas: baru, diubah: new Date().toISOString() }).select();
+    sibuk(btnCfg, false, '💾 Simpan pengaturan berkas');
+    if (error || !data || !data.length) return toast('Gagal menyimpan: ' + (error ? (tabelBelumAda(error) ? PESAN_BERKAS_BELUM : pesanGalat(error)) : 'tidak ada akses'), true);
+    kotor = false; daftar = window.PPDB_SYARAT_RAPI(baru); cfg.berkas.splice(0, cfg.berkas.length, ...salin(baru));
+    hitungSemua(); gambar();
+    toast('Pengaturan berkas disimpan. Langsung tampil di dashboard calon santri.');
+  });
+
+  // ----- Saringan & tabel -----
+  const SARING = {
+    akhir: ['Peserta tahap akhir (lulus tes awal)', x => x.tes_awal === 'lulus'],
+    cek: ['Ada berkas perlu dicek', x => x._r.menunggu > 0],
+    kurang: ['Berkas wajib belum lengkap', x => x.tes_awal === 'lulus' && !x._r.lengkap],
+    lengkap: ['Berkas wajib lengkap', x => x.tes_awal === 'lulus' && x._r.lengkap],
+    tagihan: ['Masih ada sisa tagihan', x => x._sisa > 0],
+    semua: ['Semua pendaftar', () => true],
+  };
+  const pilihS = h('select', null, Object.entries(SARING).map(([k, [t]]) => h('option', { value: k }, t)));
+  const pilihJ = h('select', null, h('option', { value: '' }, 'Semua jenjang'), h('option', { value: 'SMP' }, 'SMP'), h('option', { value: 'SMA' }, 'SMA'));
+  const cari = h('input', { type: 'search', placeholder: 'Cari nama atau nomor…' });
+  const ringkas = h('div', { class: 'ringkas-ppdb' });
+  const thead = h('thead'), tbody = h('tbody');
+  let tersaring = [];
+  const gambar = () => {
+    const q = cari.value.trim().toLowerCase();
+    tersaring = semua.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
+      .filter(x => !q || [x.nama, x.nomor, x.email].some(v => String(v || '').toLowerCase().includes(q)));
+    ingatUrutan(tersaring, '#/pendaftar/berkas');
+    thead.replaceChildren(h('tr', null, h('th', null, 'Nama'), ...daftar.map(i => h('th', { title: i.nama }, i.nama, i.wajib ? '' : h('small', null, ' (tidak wajib)'))),
+      h('th', null, 'Sisa tagihan'), h('th', null, 'Tes akhir')));
+    tbody.replaceChildren(...(tersaring.length ? tersaring.map(x => h('tr', { class: 'baris-klik ' + (x._r.lengkap ? 'lengkap' : x._r.menunggu ? 'sebagian' : 'kosong'), onclick: () => { location.hash = '#/pendaftar/' + x.id + '/berkas'; } },
+      h('td', null, h('b', null, x.nama || '(tanpa nama)'), h('br'), h('small', null, [x.nomor, x.jenjang].filter(Boolean).join(' · '))),
+      ...daftar.map(i => h('td', null, lencanaBerkas((x._b[i.kode] || {}).status || 'belum', true))),
+      h('td', { class: 'angka' }, x._t.length ? (x._sisa > 0 ? rupiah(x._sisa) : h('span', { class: 'lencana-st hijau' }, 'Lunas')) : '–'),
+      h('td', null, lencanaStatus('tes', x.tes_akhir))))
+      : [h('tr', null, h('td', { colspan: daftar.length + 3, style: 'text-align:center;color:var(--abu);padding:24px' }, 'Tidak ada pendaftar pada saringan ini.'))]));
+    const akhir = semua.filter(x => x.tes_awal === 'lulus');
+    ringkas.replaceChildren(...[
+      ['Peserta tahap akhir', akhir.length],
+      ['Berkas perlu dicek', semua.reduce((a, x) => a + x._r.menunggu, 0)],
+      ['Berkas wajib lengkap', akhir.filter(x => x._r.lengkap).length],
+      ['Total sisa tagihan', rupiah(semua.reduce((a, x) => a + x._sisa, 0))],
+    ].map(([k, v]) => h('div', null, h('b', null, v), h('small', null, k))));
+  };
+  [pilihS, pilihJ].forEach(el => el.addEventListener('change', gambar));
+  cari.addEventListener('input', gambar);
+  gambar();
+  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvTagihan(tersaring) }, '⬇️ Unduh tagihan (Excel/CSV)');
+  kerangka(judul, 'Periksa berkas syarat lulus tes tahap akhir dan pantau tagihan pembayaran. Klik nama untuk memeriksa, menerima, atau menolak berkas.',
+    tabPpdb('berkas'), ringkas, atur,
+    h('div', { class: 'panel' },
+      h('div', { class: 'alat-ppdb' }, pilihS, pilihJ, cari, unduh),
+      h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb tabel-berkas' }, thead, tbody))));
+}
+
+function unduhCsvTagihan(baris) {
+  const data = baris.flatMap(x => x._t.map(t => ({ x, t })));
+  if (!data.length) return toast('Belum ada tagihan pada daftar ini.', true);
+  const kolom = [['Nomor', d => d.x.nomor], ['Nama', d => d.x.nama], ['Jenjang', d => d.x.jenjang], ['Program', d => d.x.program], ['Tagihan', d => d.t.nama || d.t.kode],
+    ['Total (Rp)', d => d.t.jumlah], ['Dibayar (Rp)', d => d.t.dibayar], ['Sisa (Rp)', d => d.t.sisa], ['Status', d => (window.PPDB_STATUS.tagihan || {})[d.t.status] || d.t.status],
+    ['Diperbarui', d => tglId(d.t.diubah)]];
+  const sel = (v) => { let t = String(v == null ? '' : v).replace(/\r?\n/g, ' '); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const csv = [kolom.map(k => sel(k[0])).join(';'), ...data.map(d => kolom.map(k => sel(k[1](d))).join(';'))].join('\r\n');
+  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'tagihan-ppdb-' + new Date().toISOString().slice(0, 10) + '.csv' });
+  document.body.append(a); a.click(); a.remove();
+}
+
 /* ---------- Input nilai oleh penguji (hak akses "Input Nilai SPMB") ---------- */
 // Penguji hanya melihat nomor, nama, dan pilihan sekolah peserta (fungsi database peserta_tes), lalu mengisi nilai.
 async function halamanDaftarPenguji() {
@@ -1338,7 +1595,7 @@ async function halamanNilaiPeserta(id) {
   const x = (data || []).find(r => r.id === id);
   if (error || !x) return kerangka('📝 Input Nilai SPMB', null, h('div', { class: 'pesan ' + (error && fiturBelumAda(error) ? 'peringatan' : 'galat') }, error ? (fiturBelumAda(error) ? PESAN_NILAI_BELUM : pesanGalat(error)) : 'Peserta tidak ditemukan.'),
     h('a', { href: '#/nilai-tes' }, '← Kembali ke daftar peserta'));
-  const [navigasi, nilaiPanel] = await Promise.all([navigasiPendaftar(id, false, '#/nilai-tes/'), panelNilai(x)]);
+  const [navigasi, nilaiPanel] = await Promise.all([navigasiPendaftar(id, '', '#/nilai-tes/'), panelNilai(x)]);
   if (location.hash !== awal0) return;
   kerangka('📝 ' + (x.nama || 'Peserta'), null,
     h('div', { class: 'nav-pendaftar' }, h('a', { href: '#/nilai-tes' }, '← Kembali ke daftar peserta'), navigasi),

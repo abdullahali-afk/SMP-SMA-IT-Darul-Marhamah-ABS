@@ -46,3 +46,20 @@ window.PPDB_KOMPONEN_AWAL = [
   { kode: 'tahfizh', nama: 'Tahfizh', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1, berlaku: 'Semua jenjang' },
   { kode: 'akademik', nama: 'Akademik', jenis: 'Nilai', maks: 100, satuan: '', keterangan: '', catatan: false, bobot: 1, berlaku: 'Semua jenjang' },
 ];
+
+// Berkas syarat lulus Tes Tahap Akhir (langkah 09) bawaan, dipakai jika pengaturan belum pernah disimpan.
+// Sama dengan isi awal di supabase/ppdb-online.sql (bagian 8). Jenis "Pembayaran": sisa yang belum dibayar menjadi tagihan.
+window.PPDB_SYARAT_AWAL = [
+  { kode: 'kesehatan', nama: 'Surat Hasil Pemeriksaan Kesehatan', jenis: 'Berkas', wajib: true, format: '',
+    keterangan: 'Unduh format surat, minta dokter/puskesmas mengisinya, lalu unggah foto atau scan surat yang sudah ditandatangani.' },
+  { kode: 'bayar_administrasi', nama: 'Bukti Bayar Administrasi', jenis: 'Pembayaran', wajib: true, format: '', biaya_smp: 0, biaya_sma: 0,
+    keterangan: 'Transfer biaya administrasi ke rekening pondok, lalu unggah bukti transfer. Jika belum bisa membayar penuh, sisanya dicatat sebagai tagihan.' },
+  { kode: 'pernyataan', nama: 'Surat Pernyataan Menaati Peraturan Pondok', jenis: 'Berkas', wajib: true, format: '',
+    keterangan: 'Unduh format surat pernyataan, cetak, isi, dan tanda tangani, lalu unggah foto atau scan-nya.' },
+];
+window.PPDB_STATUS.berkas = { belum: 'Belum diunggah', menunggu: 'Menunggu pemeriksaan', diterima: 'Diterima', ditolak: 'Ditolak' };
+window.PPDB_STATUS.tagihan = { belum: 'Belum dibayar', sebagian: 'Belum lunas', lunas: 'Lunas' };
+// Daftar berkas yang dipakai: hanya item bernama & berkode; item tanpa "wajib" dianggap wajib
+window.PPDB_SYARAT_RAPI = (daftar) => (Array.isArray(daftar) ? daftar : []).filter(i => i && i.kode && String(i.nama || '').trim()).map(i => Object.assign({}, i, { wajib: i.wajib !== false }));
+window.PPDB_BIAYA_SYARAT = (item, jenjang) => { const v = Number(jenjang === 'SMA' ? item.biaya_sma : item.biaya_smp); return v > 0 ? v : 0; };
+window.PPDB_RUPIAH = (n) => 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID');

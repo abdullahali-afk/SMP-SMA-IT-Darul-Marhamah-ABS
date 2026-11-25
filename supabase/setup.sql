@@ -180,7 +180,7 @@ create policy "media dihapus admin" on storage.objects for delete to authenticat
 -- ---------- 7. Isi awal website (tidak menimpa isi yang sudah ada) ----------
 insert into public.konten (kunci, data) values ('menu', $isi${"daftar": [{"link": "/", "judul": "Beranda"}, {"sub": [{"link": "/profil.html#selayang", "judul": "Selayang Pandang"}, {"link": "/profil.html#visi-misi", "judul": "Visi & Misi"}, {"link": "/sekolah.html#program", "judul": "Program Unggulan"}, {"link": "/sekolah.html#fasilitas", "judul": "Fasilitas"}, {"link": "/struktur.html", "judul": "Struktur Organisasi"}, {"link": "/guru.html", "judul": "Guru & Staf"}, {"link": "/testimoni.html", "judul": "Testimoni"}], "link": "/profil.html", "judul": "Profil"}, {"sub": [{"link": "/program-tahfizh.html", "judul": "Program Tahfizh (Sukamaju)"}, {"link": "/program-takhassus.html", "judul": "Program Takhassus (Asal Mula)"}, {"link": "/sekolah.html#smp", "judul": "SMP IT Darul Marhamah ABS"}, {"link": "/sekolah.html#sma", "judul": "SMA IT Darul Marhamah ABS"}, {"link": "/sekolah.html#ekskul", "judul": "Ekstrakurikuler"}], "link": "/sekolah.html", "judul": "Sekolah"}, {"link": "/berita.html", "judul": "Berita"}, {"sub": [{"link": "/galeri.html", "judul": "Foto"}, {"link": "/galeri.html#video", "judul": "Video"}, {"link": "/download.html", "judul": "Download"}], "link": "/galeri.html", "judul": "Galeri"}, {"sub": [{"link": "/kontak.html", "judul": "Kontak & Lokasi"}, {"link": "/layanan.html", "judul": "Layanan & Call Center"}, {"link": "/layanan.html#rekening", "judul": "Rekening"}, {"link": "/layanan.html#saran", "judul": "Kritik & Saran"}], "link": "/kontak.html", "judul": "Kontak"}, {"sub": [{"link": "/ppdb.html#daftar", "judul": "Daftar Sekarang"}, {"link": "/ppdb.html#panduan", "judul": "Panduan Pendaftaran"}, {"link": "/ppdb.html#biaya", "judul": "Rincian Biaya"}], "link": "/ppdb.html", "judul": "Info PPDB", "tombol": true}]}$isi$::jsonb) on conflict (kunci) do nothing;
 insert into public.konten (kunci, data) values ('sekolah', $isi${"sma": {"nama": "SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School", "npsn": "70043438", "peta": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D", "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar", "akreditasi": "[A]", "keterangan": "", "kepala_sekolah": "Abdullah, S.H., M.H.", "target_hafalan": "[30 juz]", "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.132229%2C119.480484", "peta_link": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"}, "smp": {"nama": "SMP Islam Terpadu Darul Marhamah Al-Qur'an Boarding School", "npsn": "70036850", "peta": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D", "alamat": "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar", "akreditasi": "[A]", "keterangan": "Untuk lulusan SD/MI (putri). Fokus pada tahsin, dasar hafalan, dan penguatan akhlak.", "kepala_sekolah": "Nur Wahdaniyah, S.S., M.Hum.", "target_hafalan": "[15 juz]", "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.1400465%2C119.4428759", "peta_link": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"}, "misi": ["Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani", "Melahirkan Muslimah Penghafal Al-Qur'an yang Mutqin", "Melahirkan Muslimah Da'iyah Pejuang Al-Qur'an", "Melahirkan Muslimah yang Peka dengan Lingkungan Sosialnya", "Melahirkan Muslimah yang Kreatif, Inovatif dan Pantang Menyerah", "Melahirkan Calon Ibu Pendidik Generasi Al-Qur'an"], "visi": "\"Menjadi sekolah model Al-Qur’an\"", "email": "darulmarhamah03@gmail.com", "slogan": "Karena Wanita adalah Rahim Peradaban", "sosmed": {"tiktok": "https://www.tiktok.com/@darul.marhamah.abs?lang=en", "youtube": "https://www.youtube.com/@marhamahtv6242", "facebook": "https://www.facebook.com/people/Darul-Marhamah-Al-Quran-Boarding-School-Makassar/100063824633527/", "instagram": "https://www.instagram.com/darulmarhamah_abs/"}, "sejarah": "Darul Marhamah Al-Qur'an Boarding School adalah sekolah berasrama khusus putri di Kota Makassar dengan jenjang SMP dan SMA. Berangkat dari keyakinan \"Karena Wanita adalah Rahim Peradaban\", kami mendidik santriwati agar menjadi muslimah yang cerdas, shalihah, dan kelak melahirkan generasi terbaik.\n\nDengan jenjang SMP dan SMA dalam satu lembaga, pembinaan santriwati dapat berlangsung berkesinambungan selama enam tahun. [Tambahkan sejarah singkat, tahun berdiri, dan nama yayasan.]", "telepon": "0851472433830", "yayasan": "Yayasan Mutiara Alquran Alislamiyah", "whatsapp": "6285211869470", "deskripsi": "Boarding school putri di Kota Makassar yang membina muslimah penghafal Al-Qur'an, berakhlak mulia, dan unggul dalam ilmu.", "kontak_wa": [{"nama": "Wakil Direktur", "nomor": "085211869470"}], "statistik": [{"angka": "[300]", "label": "Santriwati"}, {"angka": "[35]", "label": "Guru & Staf"}, {"angka": "[50]", "label": "Penghafal 10+ Juz"}, {"angka": "[100]", "label": "Prestasi"}], "jam_kantor": "Senin – Sabtu, 07.30 – 15.00 WITA", "foto_sekolah": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/sekolah/1795391205458-screenshot-2026-11-23-074625.jpg", "nama_lengkap": "SMP & SMA Islam Terpadu Darul Marhamah Al-Qur'an Boarding School", "nama_singkat": "Darul Marhamah ABS", "tahun_berdiri": "2023"}$isi$::jsonb) on conflict (kunci) do nothing;
-insert into public.konten (kunci, data) values ('program_pendidikan', $isi${"judul": "Visi & Misi Program Pendidikan", "daftar": [{"ikon": "📚", "misi": ["Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani", "Melahirkan Muslimah Penghafal Al-Qur'an yang Mutqin", "Melahirkan Muslimah Da'iyah Pejuang Al-Qur'an", "Melahirkan Muslimah yang Peka dengan Lingkungan Sosialnya", "Melahirkan Muslimah yang Kreatif, Inovatif dan Pantang Menyerah", "Melahirkan Calon Ibu Pendidik Generasi Al-Qur'an"], "nama": "Program Takhassus", "visi": "\"Menjadi sekolah model Al-Qur’an\"", "jenjang": ["SMP", "SMA"], "ringkasan": "Program pendalaman ilmu syar'i dan bahasa Arab bagi santriwati yang disiapkan untuk melanjutkan studi Islam ke jenjang yang lebih tinggi, tetap disertai pembinaan hafalan Al-Qur'an.", "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Takhassus", "kampus": "Kampus Asal Mula", "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar", "peta": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D", "foto": "", "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.132229%2C119.480484", "peta_link": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"}, {"ikon": "📖", "misi": ["Pembentukan Pribadi santri yg cerdas dan berkarakter seorang mukminah yang memiliki kesungguhan, kepedulian dan berjiwa gotong royong", "Sistem pengelolaan pendidikan yang memadukan target pencapaian hafalan AL-Qur'an 15 juz dengan penguasaan materi pelajaran yang sempurna", "Sistem pendidikan dan pengajaran yang menghasilkan luaran dengan kualifikasi: Hafal, paham dan aplikatif", "Menciptakan suasana lingkungan pendidikan yang kondusif, nyaman dan berkarakter", "Pengawasan terhadap sistem pendidikan dan pengajaran untuk mencapai mutu sekolah yang unggul dan berkarakter", "Kehadiran para guru dan pembina yang memiliki karakter pendidik dan pengasuh"], "nama": "Program Tahfizh", "visi": "Menjadi sekolah unggul yang berkarakter Alqur'an", "jenjang": ["SMP", "SMA"], "ringkasan": "Program pembinaan hafalan Al-Qur'an yang intensif dan terukur, dipadukan dengan pendidikan umum, bagi santriwati yang bercita-cita menjadi hafizhah.", "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Tahfizh", "kampus": "Kampus Sukamaju", "alamat": "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar", "peta": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D", "foto": "", "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.1400465%2C119.4428759", "peta_link": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"}], "pengantar": "Darul Marhamah menyelenggarakan dua program pendidikan. Setiap program memiliki visi dan misi sendiri, dan visi misi tersebut berlaku sama untuk jenjang SMP maupun SMA."}$isi$::jsonb) on conflict (kunci) do nothing;
+insert into public.konten (kunci, data) values ('program_pendidikan', $isi${"judul": "Visi & Misi Program Pendidikan", "daftar": [{"foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/program_pendidikan/1795555920945-pvem-screenshot-2026-11-23-074625.jpg", "ikon": "📚", "misi": ["Melahirkan Muslimah yang Berkarakter dan Berakhlaq Qur'ani", "Melahirkan Muslimah Penghafal Al-Qur'an yang Mutqin", "Melahirkan Muslimah Da'iyah Pejuang Al-Qur'an", "Melahirkan Muslimah yang Peka dengan Lingkungan Sosialnya", "Melahirkan Muslimah yang Kreatif, Inovatif dan Pantang Menyerah", "Melahirkan Calon Ibu Pendidik Generasi Al-Qur'an"], "nama": "Program Takhassus", "peta": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D", "visi": "\"Menjadi sekolah model Al-Qur’an\"", "alamat": "Jl. Perintis Kemerdekaan III, BTN Asal Mula Blok E2 No. 7B, Kota Makassar", "kampus": "Kampus Asal Mula", "jenjang": ["SMP", "SMA"], "ringkasan": "Program pendalaman ilmu syar'i dan bahasa Arab bagi santriwati yang disiapkan untuk melanjutkan studi Islam ke jenjang yang lebih tinggi, tetap disertai pembinaan hafalan Al-Qur'an.", "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Takhassus", "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.132229%2C119.480484", "peta_link": "https://www.google.com/maps/place/Darul+Marhamah+Al-Qur'an+Boarding+School/@-5.1361374,119.4410803,14z/data=!4m10!1m2!2m1!1smaps+sma+it+darul+marhamah!3m6!1s0x2dbefccf239723b1:0x506f0efcb8f1fbf3!8m2!3d-5.132229!4d119.480484!15sChptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haFocIhptYXBzIHNtYSBpdCBkYXJ1bCBtYXJoYW1haJIBEHJlbGlnaW91c19zY2hvb2zgAQA!16s%2Fg%2F11c0wd1pq0?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"}, {"foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/program_pendidikan/1795556031622-ev31-screenshot-2026-11-25-053339.png", "ikon": "📖", "misi": ["Pembentukan Pribadi santri yg cerdas dan berkarakter seorang mukminah yang memiliki kesungguhan, kepedulian dan berjiwa gotong royong", "Sistem pengelolaan pendidikan yang memadukan target pencapaian hafalan AL-Qur'an 15 juz dengan penguasaan materi pelajaran yang sempurna", "Sistem pendidikan dan pengajaran yang menghasilkan luaran dengan kualifikasi: Hafal, paham dan aplikatif", "Menciptakan suasana lingkungan pendidikan yang kondusif, nyaman dan berkarakter", "Pengawasan terhadap sistem pendidikan dan pengajaran untuk mencapai mutu sekolah yang unggul dan berkarakter", "Kehadiran para guru dan pembina yang memiliki karakter pendidik dan pengasuh"], "nama": "Program Tahfizh", "peta": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D", "visi": "Menjadi sekolah unggul yang berkarakter Alqur'an", "alamat": "Jl. Sukamaju III No. 66, Kel. Tamamaung, Kota Makassar", "kampus": "Kampus Sukamaju", "jenjang": ["SMP", "SMA"], "ringkasan": "Program pembinaan hafalan Al-Qur'an yang intensif dan terukur, dipadukan dengan pendidikan umum, bagi santriwati yang bercita-cita menjadi hafizhah.", "nama_lengkap": "SMP-SMA IT Darul Marhamah Program Tahfizh", "peta_embed": "https://www.google.com/maps?output=embed&z=17&q=-5.1400465%2C119.4428759", "peta_link": "https://www.google.com/maps/place/Pondok+Al-Qur'an+Darul+Marhamah+SukaMaju/@-5.139969,119.4428813,18z/data=!4m14!1m7!3m6!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!2sPondok+Al-Qur'an+Darul+Marhamah+SukaMaju!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt!3m5!1s0x2dbefdac5a1054b9:0x4d546915ee269ca3!8m2!3d-5.1400465!4d119.4428759!16s%2Fg%2F11h4nrmmkt?entry=ttu&g_ep=EgoyMDI2MTExOC4xIKXMDSoASAFQAw%3D%3D"}], "pengantar": "Darul Marhamah menyelenggarakan dua program pendidikan. Setiap program memiliki visi dan misi sendiri, dan visi misi tersebut berlaku sama untuk jenjang SMP maupun SMA."}$isi$::jsonb) on conflict (kunci) do nothing;
 insert into public.konten (kunci, data) values ('beranda', $isi${"hero": [{"sub": "SMP & SMA Islam Terpadu khusus putri di Kota Makassar. Karena Wanita adalah Rahim Peradaban.", "foto": "", "link": "/ppdb.html", "judul": "Selamat Datang di Darul Marhamah Al-Qur'an Boarding School", "tombol": "MENJADI BAGIAN", "judul_arab": "أَهْلًا وَسَهْلًا بِكُمْ فِي دَارِ الْمَرْحَمَة"}, {"sub": "Program tahfidz terbimbing, bahasa Arab aktif, dan pembinaan adab di lingkungan asrama yang aman.", "foto": "", "link": "/ppdb.html", "judul": "Mencetak Muslimah Penghafal Al-Qur'an", "tombol": "INFO PPDB", "judul_arab": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"}], "mitra": [], "alasan": {"foto": "", "daftar": [{"isi": "Target hafalan terukur dengan setoran harian dan ujian tasmi' berkala.", "judul": "Fokus Al-Qur'an"}, {"isi": "Bahasa Arab menjadi bekal memahami Al-Qur'an, hadits, dan kitab para ulama.", "judul": "Bahasa Arab Aktif"}, {"isi": "Adab islami dibiasakan setiap hari bersama ustadzah dan musyrifah.", "judul": "Pembinaan Karakter"}, {"isi": "Lingkungan khusus putri yang terjaga, nyaman, dan diawasi 24 jam.", "judul": "Asrama Putri yang Aman"}, {"isi": "Kurikulum nasional tetap utuh sehingga lulusan siap ke jenjang berikutnya.", "judul": "Kurikulum Lengkap"}]}, "alumni": {"link": "/testimoni.html", "teks": "Alumni Darul Marhamah diharapkan menjadi muslimah yang berperan di keluarga dan masyarakat: sebagai pendidik, penghafal Al-Qur'an, dan da'iyah.", "judul": "Kontribusi dan Kiprah Alumni"}, "tautan": [{"isi": "Mengenal sejarah, visi misi, dan lembaga yang menaungi sekolah.", "ikon": "🏫", "link": "/profil.html", "judul": "Tentang Darul Marhamah"}, {"isi": "Keseharian santriwati: ibadah berjamaah, halaqah tahfidz, dan kegiatan asrama.", "ikon": "🌙", "link": "/galeri.html", "judul": "Kehidupan Asrama"}, {"isi": "Alasan orang tua mempercayakan pendidikan putrinya kepada kami.", "ikon": "⭐", "link": "/#alasan", "judul": "Mengapa Memilih Kami"}, {"isi": "Peluang kerja sama dengan orang tua, alumni, lembaga, dan masyarakat.", "ikon": "🤝", "link": "/layanan.html", "judul": "Ruang Kolaborasi"}], "capaian": {"teks": "Sejak berdiri pada tahun 2023, Darul Marhamah Al-Qur'an Boarding School terus berkembang dalam membina muslimah penghafal Al-Qur'an di Kota Makassar.", "judul": "Capaian Kami"}, "layanan": [{"link": "/kontak.html", "nama": "Layanan Akademik"}, {"link": "/kontak.html", "nama": "Layanan Asrama"}, {"link": "/kontak.html", "nama": "Administrasi / Tata Usaha"}, {"link": "/layanan.html#rekening", "nama": "Keuangan & Rekening"}, {"link": "/kontak.html", "nama": "Media dan Humas"}], "foto_visi": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/beranda/1795425511375-screenshot-2026-11-14-114209.png", "call_center": [{"nomor": "082386333048", "bagian": "Akademik"}, {"nomor": "085343503788", "bagian": "Akunting"}, {"nomor": "082347726686", "bagian": "Kesantrian"}, {"nomor": "085194587206", "bagian": "Umum"}, {"nomor": "085147243830", "bagian": "PPDB"}]}$isi$::jsonb) on conflict (kunci) do nothing;
 insert into public.konten (kunci, data) values ('ppdb', $isi${"alur": [{"isi": "Isi formulir di halaman ini atau datang langsung ke sekolah.", "judul": "Isi Formulir"}, {"isi": "Transfer biaya pendaftaran ke rekening sekolah (lihat di bawah).", "judul": "Bayar Pendaftaran"}, {"isi": "Tes akademik, baca Al-Qur'an, hafalan, dan wawancara calon santriwati & orang tua.", "judul": "Tes Seleksi"}, {"isi": "Hasil seleksi diumumkan melalui WhatsApp.", "judul": "Pengumuman"}, {"isi": "Melengkapi administrasi dan berkas untuk menjadi santriwati resmi.", "judul": "Daftar Ulang"}], "biaya": [{"sma": "Rp [000.000]", "smp": "Rp [000.000]", "komponen": "Pendaftaran"}, {"sma": "Rp [0.000.000]", "smp": "Rp [0.000.000]", "komponen": "Uang pangkal (bisa dicicil)"}, {"sma": "Rp [000.000]", "smp": "Rp [000.000]", "komponen": "Asrama & makan per bulan"}, {"sma": "Rp [0.000.000]", "smp": "Rp [0.000.000]", "komponen": "Seragam & perlengkapan"}, {"sma": "Rp [000.000]", "smp": "Rp [000.000]", "komponen": "SPP per bulan"}], "brosur": "", "status": "Pendaftaran dibuka", "syarat": ["Calon santriwati (perempuan)", "SMP: lulusan SD/MI sederajat", "SMA: lulusan SMP/MTs sederajat", "Bersedia tinggal di asrama", "Fotokopi ijazah/SKL dan rapor terakhir", "Fotokopi Akta Kelahiran & Kartu Keluarga", "Pas foto 3×4 (4 lembar)", "Mampu membaca Al-Qur'an"], "rekening": "[Nama Bank – No. Rekening a.n. ...]", "gelombang": [{"nama": "Gelombang 1", "waktu": "[1 November – 31 Desember 2026]"}, {"nama": "Gelombang 2", "waktu": "[1 Januari – 28 Februari 2027]"}, {"nama": "Gelombang 3", "waktu": "[1 Maret – 30 April 2027]"}], "tahun_ajaran": "2027/2028", "catatan_biaya": "*Tersedia beasiswa untuk santriwati berprestasi dan penghafal Al-Qur'an. [Sesuaikan]", "langkah": [{"judul": "Buat Akun", "isi": "Calon santri diharapkan untuk membuat akun terlebih dahulu agar dapat login ke dalam sistem PPDB. Pada tahapan ini pastikan untuk menggunakan email aktif, karena kode verifikasi untuk pengaktifan akun akan dikirimkan melalui email.", "catatan": "", "tombol": "Buat akun sekarang", "tautan": "/pendaftaran/#daftar"}, {"judul": "Login", "isi": "Setelah calon santri membuat dan melakukan verifikasi akun, maka calon santri diharapkan untuk login ke dalam sistem PPDB.", "catatan": "", "tombol": "Login ke dashboard PPDB", "tautan": "/pendaftaran/"}, {"judul": "Pembayaran Registrasi", "isi": "Setelah login, calon santri terlebih dahulu harus melakukan pembayaran untuk biaya registrasi PPDB dan kemudian mengunggah (upload) bukti pembayaran tersebut.", "catatan": "Informasi terkait biaya pendaftaran serta rekening pembayaran dapat dilihat pada halaman ini secara detail.", "tombol": "Lihat biaya & rekening", "tautan": "#biaya"}, {"judul": "Pemilihan Sekolah", "isi": "Pada tahapan ini calon santri akan diberikan pilihan serta informasi terkait sekolah yang ingin didaftar (SMP-SMA IT atau TAKHASSUS TAHFIZH), yang kemudian calon santri harus menentukan pilihan sekolah.", "catatan": "Sebelum memilih sekolah, mohon untuk membaca informasi terkait sekolah terlebih dahulu.", "tombol": "Baca info program sekolah", "tautan": "/profil.html#visi-misi-program"}, {"judul": "Pengisian Biodata", "isi": "Pada tahapan ini calon santri diwajibkan untuk mengisi biodata sesuai dengan form yang telah disediakan. Harap untuk mengisi data tersebut dengan baik dan benar.", "catatan": "", "tombol": "", "tautan": ""}, {"judul": "Pengisian Berkas Wawancara", "isi": "Pada tahapan ini calon santri akan diberikan form wawancara terkait informasi calon santri, orang tua ataupun wali santri.", "catatan": "", "tombol": "", "tautan": ""}, {"judul": "Join Group WA", "isi": "Setelah mengisi data wawancara, silakan lanjut join group untuk mengetahui informasi-informasi seputar pondok dan tes.", "catatan": "", "tombol": "", "tautan": ""}, {"judul": "Tes/Seleksi Offline Tahap Awal", "isi": "Pada tahapan ini calon santri akan mengikuti tes tertulis & kesehatan. Tes tertulis yang dimaksudkan di sini terkait tentang kemampuan dalam membaca dan menghafal Al-Qur'an, akademik, atau pemahaman calon santri tentang Islam.", "catatan": "", "tombol": "", "tautan": ""}, {"judul": "Tes Tahap Akhir", "isi": "Pada tahap ini dilakukan pemeriksaan hasil kesehatan dan wawancara, tetapi hanya untuk calon santri yang lulus Tes Tahap Awal. Akan ada lampiran surat hasil kesehatan yang diminta sesuai dengan yang telah disepakati oleh pondok; hal ini ditujukan untuk menghindari adanya penyakit yang dapat mengganggu di dalam pondok/sekolah. Selain itu, akan ada wawancara calon santri dan ibu calon santri.", "catatan": "", "tombol": "", "tautan": ""}, {"judul": "Pengumuman Kelulusan", "isi": "Pada tahap ini calon santri akan menerima informasi kelulusan pada dashboard masing-masing di dalam sistem aplikasi PPDB. Sehingga untuk mengetahui kelulusan, calon santri wajib untuk login ke dalam sistem PPDB agar dapat mengetahui pengumuman kelulusan tersebut.", "catatan": "", "tombol": "Cek pengumuman di dashboard", "tautan": "/pendaftaran/"}], "online": {"dibuka": true, "biaya_registrasi": "", "info_bayar": "Transfer biaya registrasi ke rekening di bawah ini, lalu unggah foto atau scan bukti transfer. Panitia akan memeriksa bukti pembayaran Anda.", "info_tes_awal": "Jadwal dan tempat Tes Tahap Awal (tes tertulis & kesehatan) diumumkan oleh panitia melalui grup WhatsApp calon santri.", "info_tes_akhir": "Tes Tahap Akhir hanya untuk calon santri yang lulus Tes Tahap Awal: pemeriksaan hasil kesehatan serta wawancara calon santri dan ibu calon santri. Unggah surat hasil pemeriksaan kesehatan di bawah ini.", "info_lulus": "Selamat! Ananda dinyatakan LULUS seleksi PPDB. Silakan melakukan daftar ulang sesuai jadwal dan ketentuan yang diumumkan panitia.", "pertanyaan_wawancara": [{"bagian": "Calon santri", "pertanyaan": "Apa alasan ananda ingin bersekolah di Darul Marhamah?"}, {"bagian": "Calon santri", "pertanyaan": "Siapa yang paling mendorong ananda untuk mondok?"}, {"bagian": "Calon santri", "pertanyaan": "Bagaimana kebiasaan shalat lima waktu ananda di rumah?"}, {"bagian": "Calon santri", "pertanyaan": "Bagaimana kemampuan membaca Al-Qur'an ananda, dan berapa juz hafalan ananda saat ini?"}, {"bagian": "Calon santri", "pertanyaan": "Apa cita-cita ananda?"}, {"bagian": "Calon santri", "pertanyaan": "Apakah ananda siap tinggal di asrama dan mengikuti seluruh peraturan pondok?"}, {"bagian": "Orang tua / wali", "pertanyaan": "Apa harapan Bapak/Ibu setelah putri bersekolah di Darul Marhamah?"}, {"bagian": "Orang tua / wali", "pertanyaan": "Dari mana Bapak/Ibu mengetahui informasi tentang Darul Marhamah?"}, {"bagian": "Orang tua / wali", "pertanyaan": "Apakah putri memiliki riwayat penyakit atau kebutuhan khusus yang perlu diketahui pondok?"}, {"bagian": "Orang tua / wali", "pertanyaan": "Apakah Bapak/Ibu bersedia mendukung program dan peraturan pondok (termasuk aturan penggunaan HP dan jadwal kunjungan)?"}, {"bagian": "Orang tua / wali", "pertanyaan": "Apakah Bapak/Ibu sanggup memenuhi kewajiban biaya pendidikan sesuai ketentuan pondok?"}]}}$isi$::jsonb) on conflict (kunci) do nothing;
 insert into public.konten (kunci, data) values ('program', $isi${"unggulan": [{"isi": "Halaqah hafalan harian dengan target [minimal 5 juz SMP / 10 juz SMA] dan setoran rutin kepada musyrifah.", "ikon": "📖", "judul": "Tahfidzul Qur'an"}, {"isi": "Penguasaan bahasa Arab aktif untuk memahami Al-Qur'an, hadits, dan kitab para ulama.", "ikon": "🗣️", "judul": "Bahasa Arab"}, {"isi": "Bimbingan langsung wudhu, shalat, dzikir, dan ibadah harian sesuai tuntunan sunnah.", "ikon": "🕌", "judul": "Praktik Ibadah"}, {"isi": "Menghafal hadits-hadits pilihan beserta penjelasan singkat dan pengamalannya.", "ikon": "📜", "judul": "Hafalan Hadits"}], "kurikulum": [{"isi": "Santriwati dibimbing memperbaiki bacaan (tahsin) lalu menambah hafalan secara bertahap dengan metode talaqqi dan murajaah terjadwal. Ujian tasmi' diadakan setiap semester.", "ikon": "📖", "judul": "Tahfidzul Qur'an & Tahsin"}, {"isi": "Pembelajaran nahwu, sharaf, dan percakapan sehari-hari, dilengkapi hari berbahasa Arab dan muhadharah.", "ikon": "🗣️", "judul": "Bahasa Arab Aktif"}, {"isi": "Mengkaji makna ayat-ayat yang dihafal agar hafalan disertai pemahaman dan pengamalan.", "ikon": "📘", "judul": "Tafsir Ringkas"}, {"isi": "Hafalan hadits arbain dan hadits adab, dipraktikkan dalam keseharian di sekolah dan asrama.", "ikon": "📜", "judul": "Hafalan Hadits & Adab"}, {"isi": "Mata pelajaran umum (Kurikulum Merdeka) tetap diajarkan lengkap sehingga lulusan siap melanjutkan ke jenjang berikutnya, negeri maupun swasta.", "ikon": "🧪", "judul": "Kurikulum Nasional"}], "keunggulan": [{"isi": "Kurikulum nasional dan kurikulum diniyah berjalan bersama dalam satu jadwal.", "judul": "Kurikulum Terintegrasi."}, {"isi": "Pembiasaan adab harian: salam, berbakti kepada orang tua, dan menghormati guru.", "judul": "Adab Sebelum Ilmu."}, {"isi": "Shalat berjamaah, dzikir pagi-petang, dan tilawah menjadi rutinitas setiap hari di asrama.", "judul": "Lingkungan Islami."}], "biaya_ringan": "Uang pangkal dapat dicicil [3 kali] dalam setahun. Tersedia beasiswa untuk santriwati berprestasi dan penghafal Al-Qur'an. [Sesuaikan]"}$isi$::jsonb) on conflict (kunci) do nothing;
@@ -206,7 +206,8 @@ where not exists (select 1 from public.berita);
 
 -- =====================================================================
 --  PPDB ONLINE — akun calon santri, berkas, status seleksi, nilai tes,
---  dan tautan menu ke halaman Program Tahfizh & Program Takhassus
+--  tautan menu ke halaman Program Tahfizh & Program Takhassus, berkas syarat
+--  lulus tes tahap akhir, dan tagihan pembayaran
 --  Cara pakai: Supabase → SQL Editor → New query → tempel SELURUH isi file
 --  ini → klik RUN. Aman dijalankan ulang. Tidak perlu mengubah apa pun.
 -- =====================================================================
@@ -453,4 +454,199 @@ where k.kunci = 'menu'
   and jsonb_typeof(k.data->'daftar') = 'array'
   and position('/program-tahfizh.html' in k.data::text) = 0
   and exists (select 1 from jsonb_array_elements(k.data->'daftar') x where x->>'link' = '/sekolah.html');
+
+-- ---------- 8. Berkas syarat lulus Tes Tahap Akhir (langkah 09) dan tagihan pembayaran ----------
+-- Daftar berkas bisa ditambah/dihapus di panel admin → Pendaftar PPDB → Berkas & tagihan.
+-- Jenis "Pembayaran": panitia mencatat nominal yang dibayar; jika belum lunas, sisanya tetap tercatat
+-- di tabel tagihan (dipakai juga oleh modul keuangan/akunting nanti).
+create table if not exists public.ppdb_syarat (
+  id     int primary key default 1 check (id = 1),
+  berkas jsonb not null default '[]'::jsonb,
+  diubah timestamptz not null default now()
+);
+insert into public.ppdb_syarat (id, berkas) values (1, $berkas$[
+  {"kode": "kesehatan", "nama": "Surat Hasil Pemeriksaan Kesehatan", "jenis": "Berkas", "wajib": true, "format": "",
+   "keterangan": "Unduh format surat, minta dokter/puskesmas mengisinya, lalu unggah foto atau scan surat yang sudah ditandatangani."},
+  {"kode": "bayar_administrasi", "nama": "Bukti Bayar Administrasi", "jenis": "Pembayaran", "wajib": true, "format": "", "biaya_smp": 0, "biaya_sma": 0,
+   "keterangan": "Transfer biaya administrasi ke rekening pondok, lalu unggah bukti transfer. Jika belum bisa membayar penuh, sisanya dicatat sebagai tagihan."},
+  {"kode": "pernyataan", "nama": "Surat Pernyataan Menaati Peraturan Pondok", "jenis": "Berkas", "wajib": true, "format": "",
+   "keterangan": "Unduh format surat pernyataan, cetak, isi, dan tanda tangani, lalu unggah foto atau scan-nya."}
+]$berkas$::jsonb) on conflict (id) do nothing;
+
+create table if not exists public.pendaftar_berkas (
+  pendaftar uuid not null references public.pendaftar(id) on delete cascade,
+  kode      text not null,                         -- kode berkas di ppdb_syarat
+  berkas    text not null default '',              -- jalur file di bucket "ppdb"
+  status    text not null default 'menunggu' check (status in ('menunggu', 'diterima', 'ditolak')),
+  catatan   text not null default '',              -- alasan penolakan dari panitia
+  pemeriksa text not null default '',
+  diunggah  timestamptz not null default now(),
+  diperiksa timestamptz,
+  primary key (pendaftar, kode)
+);
+
+create table if not exists public.tagihan (
+  id      bigint generated by default as identity primary key,
+  akun    uuid not null references auth.users on delete cascade,   -- akun calon santri (nanti: santri)
+  kode    text not null,                                           -- mis. bayar_administrasi
+  nama    text not null default '',
+  jumlah  numeric(14, 0) not null default 0 check (jumlah >= 0),   -- total yang harus dibayar
+  dibayar numeric(14, 0) not null default 0 check (dibayar >= 0),  -- dihitung otomatis dari tabel pembayaran
+  sisa    numeric(14, 0) generated always as (greatest(jumlah - dibayar, 0)) stored,
+  status  text generated always as (case when dibayar >= jumlah then 'lunas' when dibayar > 0 then 'sebagian' else 'belum' end) stored,
+  sumber  text not null default 'ppdb',
+  dibuat  timestamptz not null default now(),
+  diubah  timestamptz not null default now(),
+  unique (akun, kode)
+);
+
+create table if not exists public.pembayaran (
+  id           bigint generated by default as identity primary key,
+  tagihan      bigint not null references public.tagihan(id) on delete cascade,
+  jumlah       numeric(14, 0) not null check (jumlah > 0),
+  bukti        text not null default '',                           -- jalur bukti transfer di bucket "ppdb"
+  tanggal      date not null default ((now() at time zone 'Asia/Makassar')::date),
+  dicatat_oleh text not null default '',
+  dibuat       timestamptz not null default now(),
+  unique (tagihan, bukti)
+);
+
+-- Surat kesehatan yang diunggah sebelum fitur ini ada → jadi berkas "kesehatan"
+insert into public.pendaftar_berkas (pendaftar, kode, berkas, status)
+select p.id, 'kesehatan', p.surat_sehat, 'menunggu' from public.pendaftar p where p.surat_sehat <> ''
+on conflict (pendaftar, kode) do nothing;
+
+-- Calon santri hanya boleh mengunggah/mengganti berkasnya sendiri; status & catatan hanya diubah panitia.
+create or replace function public.jaga_berkas() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare
+  p public.pendaftar;
+  staf text;
+begin
+  if auth.uid() is null or public.boleh('pendaftar') then
+    if tg_op = 'INSERT' or new.status is distinct from old.status then
+      new.diperiksa := case when new.status = 'menunggu' then null else now() end;
+      select coalesce(nullif(nama, ''), email, '') into staf from public.profil where id = auth.uid();
+      if new.status <> 'menunggu' then new.pemeriksa := coalesce(staf, new.pemeriksa); end if;
+    end if;
+    -- Penerimaan bukti bayar dibatalkan → catatan pembayarannya ikut dihapus
+    if tg_op = 'UPDATE' and old.status = 'diterima' and (new.status <> 'diterima' or new.berkas <> old.berkas) then
+      delete from public.pembayaran b using public.tagihan t
+      where b.tagihan = t.id and t.akun = old.pendaftar and t.kode = old.kode and b.bukti = old.berkas;
+    end if;
+    return new;
+  end if;
+  select * into p from public.pendaftar where id = new.pendaftar;
+  if p.id is null or p.id <> auth.uid() then raise exception 'Akses ditolak.'; end if;
+  if p.tes_awal <> 'lulus' then raise exception 'Berkas tahap akhir baru bisa diunggah setelah lulus Tes Tahap Awal.'; end if;
+  if p.tes_akhir <> 'belum' or p.kelulusan <> 'belum' then raise exception 'Berkas sudah dikunci karena hasil Tes Tahap Akhir sudah keluar.'; end if;
+  if tg_op = 'UPDATE' then
+    if old.status = 'diterima' then raise exception 'Berkas ini sudah diterima panitia dan tidak bisa diganti.'; end if;
+    new.pendaftar := old.pendaftar; new.kode := old.kode;
+  end if;
+  if coalesce(new.berkas, '') = '' or split_part(new.berkas, '/', 1) <> auth.uid()::text then raise exception 'Berkas tidak valid.'; end if;
+  if not exists (select 1 from public.ppdb_syarat s, jsonb_array_elements(s.berkas) e where s.id = 1 and e->>'kode' = new.kode) then
+    raise exception 'Jenis berkas ini tidak lagi diminta panitia. Muat ulang halaman.';
+  end if;
+  new.status := 'menunggu'; new.catatan := ''; new.pemeriksa := ''; new.diunggah := now(); new.diperiksa := null;
+  return new;
+end $$;
+drop trigger if exists jaga_berkas on public.pendaftar_berkas;
+create trigger jaga_berkas before insert or update on public.pendaftar_berkas
+  for each row execute function public.jaga_berkas();
+
+-- Total "dibayar" di tagihan selalu = jumlah semua pembayaran
+create or replace function public.hitung_tagihan() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  update public.tagihan t
+  set dibayar = coalesce((select sum(b.jumlah) from public.pembayaran b where b.tagihan = t.id), 0), diubah = now()
+  where t.id in (new.tagihan, old.tagihan);
+  return null;
+end $$;
+drop trigger if exists hitung_tagihan on public.pembayaran;
+create trigger hitung_tagihan after insert or update or delete on public.pembayaran
+  for each row execute function public.hitung_tagihan();
+
+-- Panitia menerima bukti bayar: catat total biaya & nominal yang dibayar, sisa otomatis jadi tagihan
+create or replace function public.terima_pembayaran_ppdb(p_pendaftar uuid, p_kode text, p_total numeric, p_dibayar numeric)
+returns public.tagihan
+language plpgsql security definer set search_path = public as $$
+declare
+  b public.pendaftar_berkas;
+  t public.tagihan;
+  nama_item text;
+  staf text;
+begin
+  if not public.boleh('pendaftar') then raise exception 'Akses ditolak.'; end if;
+  if p_total is null or p_total < 0 then raise exception 'Total biaya harus diisi.'; end if;
+  if p_dibayar is null or p_dibayar <= 0 then raise exception 'Nominal yang dibayar harus lebih dari 0.'; end if;
+  select * into b from public.pendaftar_berkas where pendaftar = p_pendaftar and kode = p_kode;
+  if b.pendaftar is null or b.berkas = '' then raise exception 'Bukti bayar belum diunggah.'; end if;
+  select e->>'nama' into nama_item from public.ppdb_syarat s, jsonb_array_elements(s.berkas) e
+  where s.id = 1 and e->>'kode' = p_kode and e->>'jenis' = 'Pembayaran' limit 1;
+  if nama_item is null then raise exception 'Berkas ini bukan jenis Pembayaran.'; end if;
+  select coalesce(nullif(nama, ''), email, '') into staf from public.profil where id = auth.uid();
+  insert into public.tagihan (akun, kode, nama, jumlah) values (p_pendaftar, p_kode, coalesce(nama_item, p_kode), round(p_total))
+  on conflict (akun, kode) do update set jumlah = excluded.jumlah, nama = excluded.nama, diubah = now()
+  returning * into t;
+  insert into public.pembayaran (tagihan, jumlah, bukti, dicatat_oleh) values (t.id, round(p_dibayar), b.berkas, coalesce(staf, ''))
+  on conflict (tagihan, bukti) do update set jumlah = excluded.jumlah, dicatat_oleh = excluded.dicatat_oleh;
+  update public.pendaftar_berkas set status = 'diterima', catatan = '' where pendaftar = p_pendaftar and kode = p_kode;
+  select * into t from public.tagihan where id = t.id;
+  return t;
+end $$;
+revoke all on function public.terima_pembayaran_ppdb(uuid, text, numeric, numeric) from public, anon;
+grant execute on function public.terima_pembayaran_ppdb(uuid, text, numeric, numeric) to authenticated;
+
+alter table public.ppdb_syarat enable row level security;
+alter table public.pendaftar_berkas enable row level security;
+alter table public.tagihan enable row level security;
+alter table public.pembayaran enable row level security;
+revoke all on public.ppdb_syarat, public.pendaftar_berkas, public.tagihan, public.pembayaran from anon;
+grant select, insert, update on public.ppdb_syarat to authenticated;
+grant select, insert, update, delete on public.pendaftar_berkas, public.tagihan, public.pembayaran to authenticated;
+
+drop policy if exists "syarat dibaca" on public.ppdb_syarat;
+create policy "syarat dibaca" on public.ppdb_syarat for select to authenticated using (true);
+drop policy if exists "syarat ditambah panitia" on public.ppdb_syarat;
+create policy "syarat ditambah panitia" on public.ppdb_syarat for insert to authenticated
+  with check (public.boleh('pendaftar'));
+drop policy if exists "syarat diubah panitia" on public.ppdb_syarat;
+create policy "syarat diubah panitia" on public.ppdb_syarat for update to authenticated
+  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+
+drop policy if exists "berkas dibaca" on public.pendaftar_berkas;
+create policy "berkas dibaca" on public.pendaftar_berkas for select to authenticated
+  using (pendaftar = auth.uid() or public.boleh('pendaftar'));
+drop policy if exists "berkas diunggah" on public.pendaftar_berkas;
+create policy "berkas diunggah" on public.pendaftar_berkas for insert to authenticated
+  with check (pendaftar = auth.uid() or public.boleh('pendaftar'));
+drop policy if exists "berkas diubah" on public.pendaftar_berkas;
+create policy "berkas diubah" on public.pendaftar_berkas for update to authenticated
+  using (pendaftar = auth.uid() or public.boleh('pendaftar')) with check (pendaftar = auth.uid() or public.boleh('pendaftar'));
+drop policy if exists "berkas dihapus panitia" on public.pendaftar_berkas;
+create policy "berkas dihapus panitia" on public.pendaftar_berkas for delete to authenticated
+  using (public.boleh('pendaftar'));
+
+drop policy if exists "tagihan dibaca" on public.tagihan;
+create policy "tagihan dibaca" on public.tagihan for select to authenticated
+  using (akun = auth.uid() or public.boleh('pendaftar'));
+drop policy if exists "tagihan dikelola panitia" on public.tagihan;
+create policy "tagihan dikelola panitia" on public.tagihan for all to authenticated
+  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+
+drop policy if exists "pembayaran dibaca" on public.pembayaran;
+create policy "pembayaran dibaca" on public.pembayaran for select to authenticated
+  using (public.boleh('pendaftar') or exists (select 1 from public.tagihan t where t.id = pembayaran.tagihan and t.akun = auth.uid()));
+drop policy if exists "pembayaran dikelola panitia" on public.pembayaran;
+create policy "pembayaran dikelola panitia" on public.pembayaran for all to authenticated
+  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+
+-- Teks bawaan langkah 09 di dashboard calon santri (hanya diganti jika belum pernah diubah)
+update public.konten k
+set data = jsonb_set(k.data, '{online,info_tes_akhir}', to_jsonb('Tes Tahap Akhir hanya untuk calon santri yang lulus Tes Tahap Awal: pemeriksaan hasil kesehatan serta wawancara calon santri dan ibu calon santri. Lengkapi berkas syarat lulus di bawah ini: unduh formatnya (jika ada), isi, lalu unggah.'::text)),
+    diubah = now()
+where k.kunci = 'ppdb'
+  and k.data->'online'->>'info_tes_akhir' = 'Tes Tahap Akhir hanya untuk calon santri yang lulus Tes Tahap Awal: pemeriksaan hasil kesehatan serta wawancara calon santri dan ibu calon santri. Unggah surat hasil pemeriksaan kesehatan di bawah ini.';
 
