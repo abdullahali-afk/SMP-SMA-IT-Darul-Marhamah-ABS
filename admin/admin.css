@@ -158,7 +158,7 @@ td.tengah,th.tengah{text-align:center}
 .nilai-akhir.kurang{background:#fdf1ef;border-color:#f3c9c3}
 .atur-nilai summary{cursor:pointer;font-weight:700;color:var(--hijau-tua)}
 .atur-nilai[open] summary{margin-bottom:12px}
-.alat-nilai{grid-template-columns:repeat(3,minmax(130px,1fr)) minmax(150px,1.2fr) auto}
+.alat-nilai{grid-template-columns:repeat(2,minmax(130px,1fr)) minmax(150px,1.2fr) auto}
 .tombol-alat{display:flex;gap:6px}
 .massal-ppdb{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;background:#f6faf7;border:1px dashed #b6d8c4;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.9rem}
 .massal-ppdb span{flex:1;min-width:220px}
@@ -197,7 +197,7 @@ td.tengah,th.tengah{text-align:center}
   .tabel-nilai tr.memenuhi td,.tabel-nilai tr.kurang td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .tabel-wrap{overflow:visible}
 }
-.alat-penguji{grid-template-columns:repeat(3,minmax(130px,1fr)) minmax(150px,1.4fr)}
+.alat-penguji{grid-template-columns:repeat(2,minmax(130px,1fr)) minmax(150px,1.4fr)}
 .tabel-penguji tr.lengkap td{background:#f3faf6}
 .tabel-penguji td.angka{text-align:center;font-weight:700}
 .tabel-nilai td.tidak-berlaku{color:#c3ccc7;background:repeating-linear-gradient(135deg,transparent 0 6px,#f3f5f4 6px 12px)}
@@ -229,3 +229,13 @@ td.tengah,th.tengah{text-align:center}
 .tabel-berkas td.angka{text-align:right}
 .atur-berkas .badan-item textarea{min-height:60px}
 @media(max-width:760px){.syarat-bayar{grid-template-columns:1fr}.syarat-kepala{flex-direction:column;gap:4px}}
+/* Pemisah data per program (Takhassus / Tahfizh) */
+.saklar-program{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.saklar-program button{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--garis);background:#fff;color:var(--hijau-tua);font-weight:600;font-size:.92rem;cursor:pointer}
+.saklar-program button:hover{border-color:var(--hijau)}
+.saklar-program button.aktif{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.saklar-program .jml{min-width:24px;padding:1px 8px;border-radius:99px;background:var(--hijau-muda);color:var(--hijau-tua);font-size:.8rem;text-align:center}
+.saklar-program button.aktif .jml{background:rgba(255,255,255,.22);color:#fff}
+.saklar-program .cek{font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:99px;background:#fff4e5;color:#8a4b0f}
+@media(max-width:760px){.saklar-program button{flex:1 1 calc(50% - 8px);justify-content:space-between;padding:9px 12px;font-size:.86rem}}
+@media print{.saklar-program button:not(.aktif){display:none}.saklar-program button.aktif{background:none;color:#000;border:0;padding:0;font-size:1.1rem}.saklar-program .jml{display:none}}

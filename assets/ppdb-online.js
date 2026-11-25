@@ -294,7 +294,7 @@
       st: s.status_bayar === 'diterima' ? 'selesai' : s.status_bayar === 'menunggu' ? 'menunggu' : s.status_bayar === 'ditolak' ? 'gagal' : 'aktif',
       ket: { belum: 'Belum dibayar', menunggu: 'Menunggu pemeriksaan', diterima: 'Diterima', ditolak: 'Ditolak, unggah ulang' }[s.status_bayar] || '',
       isi: isiBayar });
-    L.push({ st: !sudahBayar ? 'terkunci' : pilih ? 'selesai' : 'aktif', ket: pilih ? s.jenjang + ' · ' + s.program : 'Belum memilih', isi: isiPilih });
+    L.push({ st: !sudahBayar ? 'terkunci' : pilih ? 'selesai' : 'aktif', ket: pilih ? s.program + ' · ' + s.jenjang : 'Belum memilih', isi: isiPilih });
     L.push({ st: !pilih ? 'terkunci' : s.biodata_lengkap ? 'selesai' : 'aktif', ket: s.biodata_lengkap ? 'Lengkap' : 'Belum lengkap', isi: isiBiodata });
     L.push({ st: !s.biodata_lengkap ? 'terkunci' : s.wawancara_lengkap ? 'selesai' : 'aktif', ket: s.wawancara_lengkap ? 'Lengkap' : 'Belum lengkap', isi: isiWawancara });
     L.push({ st: !s.wawancara_lengkap ? 'terkunci' : s.gabung_grup ? 'selesai' : 'aktif', ket: s.gabung_grup ? 'Sudah bergabung' : 'Belum bergabung', isi: isiGrup });
@@ -375,37 +375,44 @@
   function isiPilih() {
     const s = saya, kunci = s.kelulusan !== 'belum';
     let jenjang = s.jenjang || '', program = s.program || '';
-    const progBox = h('div', { class: 'po-pilihan' });
     const daftarProgram = (D.program || []).filter(p => p && p.nama);
+    const pilihan = daftarProgram.length ? daftarProgram : [{ nama: 'Reguler' }];
+    const progBox = h('div', { class: 'po-pilihan' + (pilihan.length === 2 ? ' dua' : '') });
+    const jBox = h('div', { class: 'po-pilihan dua' });
+    // 1. Program (Takhassus / Tahfizh), 2. Jenjang yang tersedia di program itu (SMP / SMA)
+    const jenjangProgram = () => { const p = pilihan.find(x => x.nama === program); return p && Array.isArray(p.jenjang) && p.jenjang.length ? p.jenjang : ['SMP', 'SMA']; };
+    const gambarJenjang = () => {
+      const ada = jenjangProgram();
+      if (jenjang && !ada.includes(jenjang)) jenjang = '';
+      jBox.replaceChildren(...[['SMP', 'SMP Islam Terpadu', 'Untuk lulusan SD/MI sederajat'], ['SMA', 'SMA Islam Terpadu', 'Untuk lulusan SMP/MTs sederajat']].filter(([k]) => ada.includes(k)).map(([k, n, ket]) =>
+        h('label', { class: 'po-opsi' + (jenjang === k ? ' dipilih' : '') },
+          h('input', { type: 'radio', name: 'jenjang', value: k, checked: jenjang === k, disabled: kunci || !program,
+            onchange: () => { jenjang = k; gambarJenjang(); } }),
+          h('span', null, h('b', null, n), h('small', null, program ? ket : 'Pilih program terlebih dahulu')))));
+    };
     const gambarProgram = () => {
-      const cocok = daftarProgram.filter(p => !jenjang || !Array.isArray(p.jenjang) || !p.jenjang.length || p.jenjang.includes(jenjang));
-      progBox.replaceChildren(...(cocok.length ? cocok : [{ nama: 'Reguler' }]).map(p => {
+      progBox.replaceChildren(...pilihan.map(p => {
         const slug = String(p.nama).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         const hp = D.halaman_program || {}, nm = String(p.nama).toLowerCase();
         const urlProgram = /takh/.test(nm) && hp.takhassus ? hp.takhassus : /tahf/.test(nm) && hp.tahfizh ? hp.tahfizh : D.profil_url + '#' + slug;
         return h('label', { class: 'po-opsi' + (program === p.nama ? ' dipilih' : '') },
           h('input', { type: 'radio', name: 'program', value: p.nama, checked: program === p.nama, disabled: kunci,
-            onchange: () => { program = p.nama; gambarProgram(); } }),
+            onchange: () => { program = p.nama; gambarProgram(); gambarJenjang(); } }),
           h('span', null, h('b', null, (p.ikon ? p.ikon + ' ' : '') + (p.nama_lengkap || p.nama)),
             p.kampus ? h('small', { class: 'po-kampus' }, '📍 ' + p.kampus + (p.alamat ? ' · ' + p.alamat : '')) : null,
+            Array.isArray(p.jenjang) && p.jenjang.length ? h('small', null, 'Jenjang: ' + p.jenjang.join(' & ')) : null,
             p.ringkasan ? h('small', null, p.ringkasan) : null,
             p.nama !== 'Reguler' ? h('a', { href: urlProgram, target: '_blank', onclick: (e) => e.stopPropagation() }, 'Baca informasi program →') : null));
       }));
     };
-    const opsiJenjang = [['SMP', 'SMP Islam Terpadu', 'Untuk lulusan SD/MI sederajat'], ['SMA', 'SMA Islam Terpadu', 'Untuk lulusan SMP/MTs sederajat']].map(([k, n, ket]) =>
-      h('label', { class: 'po-opsi' + (jenjang === k ? ' dipilih' : '') },
-        h('input', { type: 'radio', name: 'jenjang', value: k, checked: jenjang === k, disabled: kunci,
-          onchange: () => { jenjang = k; [...jBox.children].forEach(c => c.classList.toggle('dipilih', c.querySelector('input').checked)); gambarProgram(); } }),
-        h('span', null, h('b', null, n), h('small', null, ket))));
-    const jBox = h('div', { class: 'po-pilihan dua' }, opsiJenjang);
-    gambarProgram();
+    gambarProgram(); gambarJenjang();
     const btn = h('button', { type: 'button', class: 'btn btn-hijau', disabled: kunci, onclick: async () => {
-      if (!jenjang || !program) return toast('Pilih jenjang dan program terlebih dahulu.', true);
+      if (!program || !jenjang) return toast('Pilih program dan jenjang terlebih dahulu.', true);
       sibuk(btn, true, 'Menyimpan…');
       if (!(await simpan({ jenjang, program }, 'Pilihan sekolah disimpan.'))) sibuk(btn, false, 'Simpan pilihan');
     } }, 'Simpan pilihan');
     return [h('p', null, 'Sebelum memilih, mohon baca informasi setiap program terlebih dahulu.'),
-      h('h4', null, '1. Jenjang'), jBox, h('h4', null, '2. Program'), progBox, kunci ? null : btn];
+      h('h4', null, '1. Program'), progBox, h('h4', null, '2. Jenjang'), jBox, kunci ? null : btn];
   }
 
   function isiBiodata() {

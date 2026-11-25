@@ -111,6 +111,62 @@ create table if not exists public.ppdb_rahasia (
 );
 insert into public.ppdb_rahasia (id) values (1) on conflict (id) do nothing;
 
+-- ---------- 3b. Akun panitia per program (mis. Ketua Panitia PPDB khusus Program Tahfizh) ----------
+-- Admin mengatur "Program" setiap akun di Panel Admin → Pengguna. Kosong = semua program.
+-- Akun berprogram hanya melihat pendaftar program itu (ditambah pendaftar yang belum memilih program).
+alter table public.profil add column if not exists program_ppdb text not null default '';
+alter table public.profil drop constraint if exists profil_program_ppdb_cek;
+alter table public.profil add constraint profil_program_ppdb_cek check (program_ppdb in ('', 'tahfizh', 'takhassus'));
+
+create or replace function public.kode_program(p text) returns text
+language sql immutable as $$
+  select case when coalesce(p, '') ilike '%takh%' then 'takhassus' when coalesce(p, '') ilike '%tahf%' then 'tahfizh' else '' end
+$$;
+-- Program akun yang sedang masuk ('' = semua program; Admin selalu semua program)
+create or replace function public.program_saya() returns text
+language sql stable security definer set search_path = public as $$
+  select coalesce((select case when '*' = any(r.akses) then '' else p.program_ppdb end
+    from public.profil p join public.peran r on r.kode = p.peran where p.id = auth.uid()), '')
+$$;
+create or replace function public.boleh_program(p_program text) returns boolean
+language sql stable set search_path = public as $$
+  select public.program_saya() = '' or public.kode_program(p_program) in ('', public.program_saya())
+$$;
+create or replace function public.panitia_program(p_program text) returns boolean
+language sql stable set search_path = public as $$
+  select public.boleh('pendaftar') and public.boleh_program(p_program)
+$$;
+-- Panitia semua program: boleh mengubah pengaturan bersama (komponen nilai, batas lulus, berkas syarat)
+create or replace function public.panitia_pusat() returns boolean
+language sql stable set search_path = public as $$
+  select public.boleh('pendaftar') and public.program_saya() = ''
+$$;
+create or replace function public.panitia_untuk(p_id uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select public.boleh('pendaftar') and (public.program_saya() = '' or exists (
+    select 1 from public.pendaftar p where p.id = p_id and public.boleh_program(p.program)))
+$$;
+create or replace function public.penilai_untuk(p_id uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select (public.boleh('pendaftar') or public.boleh('nilai_ppdb')) and (public.program_saya() = '' or exists (
+    select 1 from public.pendaftar p where p.id = p_id and public.boleh_program(p.program)))
+$$;
+-- Berkas di bucket "ppdb" disimpan di folder <id pendaftar>/...
+create or replace function public.panitia_berkas(p_nama text) returns boolean
+language plpgsql stable security definer set search_path = public as $$
+declare
+  f text := split_part(coalesce(p_nama, ''), '/', 1);
+begin
+  if not public.boleh('pendaftar') then return false; end if;
+  if public.program_saya() = '' then return true; end if;
+  if f !~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' then return false; end if;
+  return public.panitia_untuk(f::uuid);
+end $$;
+
+-- Peran siap pakai: atur programnya per akun di Pengguna
+insert into public.peran (kode, nama, akses, urutan) values ('ketua_ppdb', 'Ketua Panitia PPDB', array['pendaftar', 'nilai_ppdb'], 25)
+on conflict (kode) do nothing;
+
 -- ---------- 4. Keamanan (Row Level Security) ----------
 alter table public.pendaftar enable row level security;
 alter table public.ppdb_rahasia enable row level security;
@@ -121,16 +177,16 @@ grant usage on sequence public.pendaftar_urut to authenticated;
 
 drop policy if exists "pendaftar dibaca" on public.pendaftar;
 create policy "pendaftar dibaca" on public.pendaftar for select to authenticated
-  using (id = auth.uid() or public.boleh('pendaftar'));
+  using (id = auth.uid() or public.panitia_program(program));
 drop policy if exists "pendaftar ditambah" on public.pendaftar;
 create policy "pendaftar ditambah" on public.pendaftar for insert to authenticated
-  with check ((id = auth.uid() and coalesce(auth.jwt()->'user_metadata'->>'jenis', '') = 'pendaftar') or public.boleh('pendaftar'));
+  with check ((id = auth.uid() and coalesce(auth.jwt()->'user_metadata'->>'jenis', '') = 'pendaftar') or public.panitia_program(program));
 drop policy if exists "pendaftar diubah" on public.pendaftar;
 create policy "pendaftar diubah" on public.pendaftar for update to authenticated
-  using (id = auth.uid() or public.boleh('pendaftar')) with check (id = auth.uid() or public.boleh('pendaftar'));
+  using (id = auth.uid() or public.panitia_program(program)) with check (id = auth.uid() or public.panitia_program(program));
 drop policy if exists "pendaftar dihapus panitia" on public.pendaftar;
 create policy "pendaftar dihapus panitia" on public.pendaftar for delete to authenticated
-  using (public.boleh('pendaftar'));
+  using (public.panitia_program(program));
 
 -- Link grup WA hanya terlihat oleh panitia dan calon santri yang sudah mengisi wawancara
 drop policy if exists "rahasia dibaca" on public.ppdb_rahasia;
@@ -156,10 +212,10 @@ create policy "ppdb diunggah pemilik" on storage.objects for insert to authentic
     and exists (select 1 from public.pendaftar p where p.id = auth.uid()));
 drop policy if exists "ppdb dibaca pemilik atau panitia" on storage.objects;
 create policy "ppdb dibaca pemilik atau panitia" on storage.objects for select to authenticated
-  using (bucket_id = 'ppdb' and ((storage.foldername(name))[1] = auth.uid()::text or public.boleh('pendaftar')));
+  using (bucket_id = 'ppdb' and ((storage.foldername(name))[1] = auth.uid()::text or public.panitia_berkas(name)));
 drop policy if exists "ppdb dihapus panitia" on storage.objects;
 create policy "ppdb dihapus panitia" on storage.objects for delete to authenticated
-  using (bucket_id = 'ppdb' and public.boleh('pendaftar'));
+  using (bucket_id = 'ppdb' and public.panitia_berkas(name));
 
 -- ---------- 6. Nilai tes calon santri (panitia & penguji; tidak terlihat oleh calon santri) ----------
 -- Komponen nilai (Sholat, Tajwid, dst.) bisa ditambah/dihapus dari panel admin → Pendaftar PPDB → Rekap Nilai.
@@ -198,23 +254,23 @@ create policy "penilaian dibaca" on public.ppdb_penilaian for select to authenti
   using (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
 drop policy if exists "penilaian ditambah panitia" on public.ppdb_penilaian;
 create policy "penilaian ditambah panitia" on public.ppdb_penilaian for insert to authenticated
-  with check (public.boleh('pendaftar'));
+  with check (public.panitia_pusat());
 drop policy if exists "penilaian diubah panitia" on public.ppdb_penilaian;
 create policy "penilaian diubah panitia" on public.ppdb_penilaian for update to authenticated
-  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+  using (public.panitia_pusat()) with check (public.panitia_pusat());
 drop policy if exists "nilai panitia" on public.pendaftar_nilai;
 drop policy if exists "nilai dibaca" on public.pendaftar_nilai;
 create policy "nilai dibaca" on public.pendaftar_nilai for select to authenticated
-  using (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+  using (public.penilai_untuk(id));
 drop policy if exists "nilai diisi" on public.pendaftar_nilai;
 create policy "nilai diisi" on public.pendaftar_nilai for insert to authenticated
-  with check (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+  with check (public.penilai_untuk(id));
 drop policy if exists "nilai diubah" on public.pendaftar_nilai;
 create policy "nilai diubah" on public.pendaftar_nilai for update to authenticated
-  using (public.boleh('pendaftar') or public.boleh('nilai_ppdb')) with check (public.boleh('pendaftar') or public.boleh('nilai_ppdb'));
+  using (public.penilai_untuk(id)) with check (public.penilai_untuk(id));
 drop policy if exists "nilai dihapus panitia" on public.pendaftar_nilai;
 create policy "nilai dihapus panitia" on public.pendaftar_nilai for delete to authenticated
-  using (public.boleh('pendaftar'));
+  using (public.panitia_untuk(id));
 
 -- Daftar peserta tes untuk penguji: hanya nomor, nama, dan pilihan sekolah (tanpa biodata/kontak/berkas)
 create or replace function public.peserta_tes()
@@ -222,7 +278,7 @@ returns table (id uuid, nomor text, nama text, jenjang text, program text, statu
 language sql stable security definer set search_path = public as $$
   select p.id, p.nomor, p.nama, p.jenjang, p.program, p.status_bayar, p.wawancara_lengkap, p.dibuat
   from public.pendaftar p
-  where public.boleh('pendaftar') or public.boleh('nilai_ppdb')
+  where (public.boleh('pendaftar') or public.boleh('nilai_ppdb')) and public.boleh_program(p.program)
   order by p.dibuat;
 $$;
 revoke all on function public.peserta_tes() from public, anon;
@@ -372,7 +428,7 @@ declare
   nama_item text;
   staf text;
 begin
-  if not public.boleh('pendaftar') then raise exception 'Akses ditolak.'; end if;
+  if not public.panitia_untuk(p_pendaftar) then raise exception 'Akses ditolak.'; end if;
   if p_total is null or p_total < 0 then raise exception 'Total biaya harus diisi.'; end if;
   if p_dibayar is null or p_dibayar <= 0 then raise exception 'Nominal yang dibayar harus lebih dari 0.'; end if;
   select * into b from public.pendaftar_berkas where pendaftar = p_pendaftar and kode = p_kode;
@@ -405,37 +461,38 @@ drop policy if exists "syarat dibaca" on public.ppdb_syarat;
 create policy "syarat dibaca" on public.ppdb_syarat for select to authenticated using (true);
 drop policy if exists "syarat ditambah panitia" on public.ppdb_syarat;
 create policy "syarat ditambah panitia" on public.ppdb_syarat for insert to authenticated
-  with check (public.boleh('pendaftar'));
+  with check (public.panitia_pusat());
 drop policy if exists "syarat diubah panitia" on public.ppdb_syarat;
 create policy "syarat diubah panitia" on public.ppdb_syarat for update to authenticated
-  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+  using (public.panitia_pusat()) with check (public.panitia_pusat());
 
 drop policy if exists "berkas dibaca" on public.pendaftar_berkas;
 create policy "berkas dibaca" on public.pendaftar_berkas for select to authenticated
-  using (pendaftar = auth.uid() or public.boleh('pendaftar'));
+  using (pendaftar = auth.uid() or public.panitia_untuk(pendaftar));
 drop policy if exists "berkas diunggah" on public.pendaftar_berkas;
 create policy "berkas diunggah" on public.pendaftar_berkas for insert to authenticated
-  with check (pendaftar = auth.uid() or public.boleh('pendaftar'));
+  with check (pendaftar = auth.uid() or public.panitia_untuk(pendaftar));
 drop policy if exists "berkas diubah" on public.pendaftar_berkas;
 create policy "berkas diubah" on public.pendaftar_berkas for update to authenticated
-  using (pendaftar = auth.uid() or public.boleh('pendaftar')) with check (pendaftar = auth.uid() or public.boleh('pendaftar'));
+  using (pendaftar = auth.uid() or public.panitia_untuk(pendaftar)) with check (pendaftar = auth.uid() or public.panitia_untuk(pendaftar));
 drop policy if exists "berkas dihapus panitia" on public.pendaftar_berkas;
 create policy "berkas dihapus panitia" on public.pendaftar_berkas for delete to authenticated
-  using (public.boleh('pendaftar'));
+  using (public.panitia_untuk(pendaftar));
 
 drop policy if exists "tagihan dibaca" on public.tagihan;
 create policy "tagihan dibaca" on public.tagihan for select to authenticated
-  using (akun = auth.uid() or public.boleh('pendaftar'));
+  using (akun = auth.uid() or public.panitia_untuk(akun));
 drop policy if exists "tagihan dikelola panitia" on public.tagihan;
 create policy "tagihan dikelola panitia" on public.tagihan for all to authenticated
-  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+  using (public.panitia_untuk(akun)) with check (public.panitia_untuk(akun));
 
 drop policy if exists "pembayaran dibaca" on public.pembayaran;
 create policy "pembayaran dibaca" on public.pembayaran for select to authenticated
-  using (public.boleh('pendaftar') or exists (select 1 from public.tagihan t where t.id = pembayaran.tagihan and t.akun = auth.uid()));
+  using (exists (select 1 from public.tagihan t where t.id = pembayaran.tagihan and (t.akun = auth.uid() or public.panitia_untuk(t.akun))));
 drop policy if exists "pembayaran dikelola panitia" on public.pembayaran;
 create policy "pembayaran dikelola panitia" on public.pembayaran for all to authenticated
-  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+  using (exists (select 1 from public.tagihan t where t.id = pembayaran.tagihan and public.panitia_untuk(t.akun)))
+  with check (exists (select 1 from public.tagihan t where t.id = pembayaran.tagihan and public.panitia_untuk(t.akun)));
 
 -- Teks bawaan langkah 09 di dashboard calon santri (hanya diganti jika belum pernah diubah)
 update public.konten k

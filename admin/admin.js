@@ -202,7 +202,7 @@ function kerangka(judul, sub, ...isi) {
     h('a', { href: '#', onclick: (e) => { e.preventDefault(); sb.auth.signOut(); } }, h('span', null, '🚪'), 'Keluar'));
   const burger = h('button', { class: 'burger', 'aria-label': 'Menu', onclick: () => samping.classList.toggle('buka') }, '☰');
   samping.addEventListener('click', (e) => { if (e.target.closest('a')) samping.classList.remove('buka'); });
-  const atas = h('div', { class: 'atas' }, burger, h('div', { class: 'siapa' }, 'Masuk sebagai ', h('b', null, profil.nama || profil.email), h('span', { class: 'lencana' }, peranSaya.nama)));
+  const atas = h('div', { class: 'atas' }, burger, h('div', { class: 'siapa' }, 'Masuk sebagai ', h('b', null, profil.nama || profil.email), h('span', { class: 'lencana' }, peranSaya.nama + (programSaya() ? ' · ' + namaProgram(programSaya()) : ''))));
   app.replaceChildren(h('div', { class: 'kerangka' }, samping, h('div', { class: 'utama' }, atas,
     h('div', { class: 'isi' }, h('h1', null, judul), sub ? h('p', { class: 'sub' }, sub) : null, ...isi))));
 }
@@ -633,15 +633,22 @@ async function halamanPengguna() {
   semuaPeran = rs || semuaPeran;
   const linkDaftar = location.href.split('#')[0];
   const tbody = h('tbody');
+  // Kolom program_ppdb ada setelah ppdb-online.sql versi terbaru dijalankan
+  const adaProgram = (org || []).some(p => p && 'program_ppdb' in p);
+  const pilihProgramAkun = (v) => h('select', { title: 'Program PPDB yang boleh dikelola akun ini' },
+    [['', 'Semua program'], ...PROGRAM_PPDB].map(([k, t]) => h('option', { value: k, selected: (v || '') === k }, t)));
   (org || []).forEach(p => {
     const nama = h('input', { type: 'text', value: p.nama || '' });
     const pilih = h('select', null, ...opsiPeran(p.peran));
+    const prog = adaProgram ? pilihProgramAkun(p.program_ppdb) : null;
     const aktif = h('input', { type: 'checkbox', checked: p.aktif, title: 'Aktif' });
     const diriSendiri = p.id === sesi.user.id;
-    if (diriSendiri) { pilih.disabled = true; aktif.disabled = true; }
+    if (diriSendiri) { pilih.disabled = true; aktif.disabled = true; if (prog) prog.disabled = true; }
     const simpan = h('button', { class: 'btn btn-kecil', onclick: async () => {
       sibuk(simpan, true);
-      const { data, error } = await sb.from('profil').update({ nama: nama.value.trim(), peran: pilih.value, aktif: aktif.checked }).eq('id', p.id).select();
+      const isian = { nama: nama.value.trim(), peran: pilih.value, aktif: aktif.checked };
+      if (prog) isian.program_ppdb = prog.value;
+      const { data, error } = await sb.from('profil').update(isian).eq('id', p.id).select();
       sibuk(simpan, false);
       if (error || !data.length) return toast('Gagal: ' + (error ? pesanGalat(error) : 'tidak ada akses'), true);
       toast('Akun ' + (nama.value || p.email) + ' diperbarui.');
@@ -661,7 +668,7 @@ async function halamanPengguna() {
       toast('Akun dihapus.'); halamanPengguna();
     } }, 'Hapus');
     tbody.append(h('tr', null, h('td', null, nama), h('td', null, p.email, diriSendiri ? h('span', { class: 'lencana' }, 'Anda') : ''), h('td', null, pilih),
-      h('td', { class: 'tengah' }, aktif), h('td', { style: 'white-space:nowrap' }, simpan, ' ', sandi, ' ', hapus)));
+      adaProgram ? h('td', null, prog) : null, h('td', { class: 'tengah' }, aktif), h('td', { style: 'white-space:nowrap' }, simpan, ' ', sandi, ' ', hapus)));
   });
   const menunggu = (org || []).filter(p => p.peran === 'menunggu').length;
 
@@ -670,6 +677,7 @@ async function halamanPengguna() {
   const tEmail = h('input', { type: 'email', required: true, placeholder: 'nama@email.com', autocomplete: 'off' });
   const tPw = h('input', { type: 'text', required: true, minlength: 6, placeholder: 'Minimal 6 karakter', autocomplete: 'off' });
   const tPeran = h('select', null, ...opsiPeran('guru').filter(o => o.value !== 'menunggu'));
+  const tProg = adaProgram ? pilihProgramAkun('') : null;
   const tBtn = h('button', { class: 'btn btn-emas', type: 'submit' }, '+ Buat akun');
   const tambah = h('form', { class: 'form-tambah', onsubmit: async (e) => {
     e.preventDefault(); sibuk(tBtn, true, 'Membuat akun…');
@@ -680,13 +688,16 @@ async function halamanPengguna() {
       if (!data.user || (data.user.identities && data.user.identities.length === 0)) throw new Error('Email ini sudah terdaftar.');
       const uid = data.user.id;
       if (!data.session) { const r = await sb.rpc('admin_atur_password', { pengguna: uid, password_baru: tPw.value }); if (r.error) throw r.error; }
-      const { error: e2 } = await sb.from('profil').update({ nama: tNama.value.trim(), peran: tPeran.value, aktif: true }).eq('id', uid);
+      const isianBaru = { nama: tNama.value.trim(), peran: tPeran.value, aktif: true };
+      if (tProg) isianBaru.program_ppdb = tProg.value;
+      const { error: e2 } = await sb.from('profil').update(isianBaru).eq('id', uid);
       if (e2) throw e2;
       toast('Akun ' + tEmail.value.trim() + ' dibuat. Sampaikan email & password kepada pemiliknya.');
       halamanPengguna();
     } catch (err) { toast('Gagal membuat akun: ' + pesanGalat(err), true); sibuk(tBtn, false, '+ Buat akun'); }
   } }, h('div', null, h('label', null, 'Nama'), tNama), h('div', null, h('label', null, 'Email'), tEmail),
-    h('div', null, h('label', null, 'Password awal'), tPw), h('div', null, h('label', null, 'Peran'), tPeran), h('div', null, tBtn));
+    h('div', null, h('label', null, 'Password awal'), tPw), h('div', null, h('label', null, 'Peran'), tPeran),
+    tProg ? h('div', null, h('label', null, 'Program PPDB'), tProg) : null, h('div', null, tBtn));
 
   kerangka('👥 Pengguna', 'Buat akun guru/pegawai, atur perannya, ganti password, atau hapus akun.',
     menunggu ? h('div', { class: 'pesan peringatan', style: 'margin-bottom:14px' }, menunggu + ' akun menunggu persetujuan. Pilih perannya lalu klik Simpan.') : null,
@@ -694,7 +705,10 @@ async function halamanPengguna() {
       h('p', { class: 'ket', style: 'margin-top:12px' }, 'Atau minta guru/pegawai mendaftar sendiri lewat link ini, lalu setujui akunnya di tabel di bawah:'),
       h('div', { style: 'display:flex;gap:8px;margin-top:6px;flex-wrap:wrap' }, h('input', { type: 'text', value: linkDaftar, readonly: true, style: 'flex:1;min-width:220px' }),
         h('button', { class: 'btn btn-garis', onclick: () => { navigator.clipboard.writeText(linkDaftar).then(() => toast('Link disalin.')); } }, 'Salin link'))),
-    h('div', { class: 'panel tabel-wrap' }, h('table', null, h('thead', null, h('tr', null, h('th', null, 'Nama'), h('th', null, 'Email'), h('th', null, 'Peran'), h('th', { class: 'tengah' }, 'Aktif'), h('th', null, ''))), tbody)));
+    h('div', { class: 'panel tabel-wrap' }, h('table', null, h('thead', null, h('tr', null, h('th', null, 'Nama'), h('th', null, 'Email'), h('th', null, 'Peran'),
+      adaProgram ? h('th', null, 'Program PPDB') : null, h('th', { class: 'tengah' }, 'Aktif'), h('th', null, ''))), tbody)),
+    adaProgram ? h('div', { class: 'pesan info' }, 'Program PPDB: pilih "Program Tahfizh" atau "Program Takhassus" untuk akun panitia/penguji yang hanya boleh mengelola satu program, misalnya peran "Ketua Panitia PPDB". Akun itu hanya melihat pendaftar program tersebut (dan pendaftar yang belum memilih program). "Semua program" = tanpa batasan. Admin selalu melihat semua program.')
+      : h('div', { class: 'pesan peringatan' }, 'Untuk membatasi akun panitia per program (Tahfizh/Takhassus), jalankan ulang file supabase/ppdb-online.sql versi terbaru di Supabase → SQL Editor.'));
 }
 
 /* ---------- Peran & hak akses (admin) ---------- */
@@ -789,11 +803,15 @@ async function halamanPendaftar() {
   if (location.hash !== awal0) return;
   if (error) return kerangka(judul, null, h('div', { class: 'pesan ' + (tabelBelumAda(error) ? 'peringatan' : 'galat') }, tabelBelumAda(error) ? PESAN_BELUM_PASANG : pesanGalat(error)));
   const semua = data || [];
-  const n = (f) => semua.filter(f).length;
-  const ringkas = h('div', { class: 'ringkas-ppdb' }, [
-    ['Total pendaftar', semua.length], ['Bukti bayar perlu dicek', n(x => x.status_bayar === 'menunggu')],
-    ['Wawancara lengkap', n(x => x.wawancara_lengkap)], ['Lulus tes awal', n(x => x.tes_awal === 'lulus')], ['Dinyatakan LULUS', n(x => x.kelulusan === 'lulus')],
-  ].map(([t, v]) => h('div', null, h('b', null, v), h('small', null, t))));
+  const sp = saklarProgram(semua, () => gambar(), x => x.status_bayar === 'menunggu');
+  const ringkas = h('div', { class: 'ringkas-ppdb' });
+  const gambarRingkas = (basis) => {
+    const n = (f) => basis.filter(f).length;
+    ringkas.replaceChildren(...[
+      ['Total pendaftar', basis.length], ['Bukti bayar perlu dicek', n(x => x.status_bayar === 'menunggu')],
+      ['Wawancara lengkap', n(x => x.wawancara_lengkap)], ['Lulus tes awal', n(x => x.tes_awal === 'lulus')], ['Dinyatakan LULUS', n(x => x.kelulusan === 'lulus')],
+    ].map(([t, v]) => h('div', null, h('b', null, v), h('small', null, t))));
+  };
   const FILTER = {
     semua: ['Semua pendaftar', () => true],
     bayar: ['Perlu cek bukti bayar', x => x.status_bayar === 'menunggu'],
@@ -810,7 +828,9 @@ async function halamanPendaftar() {
   let tersaring = semua;
   const gambar = () => {
     const q = cari.value.trim().toLowerCase();
-    tersaring = semua.filter(FILTER[pilihF.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
+    const basis = semua.filter(sp.cocok);
+    gambarRingkas(basis);
+    tersaring = basis.filter(FILTER[pilihF.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
       .filter(x => !q || [x.nama, x.nomor, x.email, x.no_wa].some(v => String(v || '').toLowerCase().includes(q)));
     tbody.replaceChildren(...(tersaring.length ? tersaring.map(x => h('tr', { class: 'baris-klik', onclick: () => { location.hash = '#/pendaftar/' + x.id; } },
       h('td', null, h('b', null, x.nomor || '-'), h('br'), h('small', null, tglId(x.dibuat))),
@@ -825,9 +845,9 @@ async function halamanPendaftar() {
   [pilihF, pilihJ].forEach(el => el.addEventListener('change', gambar));
   cari.addEventListener('input', gambar);
   gambar();
-  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvPendaftar(tersaring) }, '⬇️ Unduh data (Excel/CSV)');
-  kerangka(judul, 'Klik nama pendaftar untuk melihat berkas, biodata, wawancara, mengisi nilai, dan mengubah status seleksi.',
-    tabPpdb('daftar'), ringkas,
+  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvPendaftar(tersaring, akhiranProgram(sp)) }, '⬇️ Unduh data (Excel/CSV)');
+  kerangka(judul, 'Pilih program di bawah. Data SMP dan SMA setiap program digabung; gunakan saringan jenjang untuk memisahkannya. Klik nama pendaftar untuk melihat berkas, biodata, wawancara, mengisi nilai, dan mengubah status seleksi.',
+    tabPpdb('daftar'), sp.el, ringkas,
     h('div', { class: 'panel' },
       h('div', { class: 'alat-ppdb' }, pilihF, pilihJ, cari, unduh),
       h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb' },
@@ -861,7 +881,7 @@ async function panelGrupWa() {
   return box;
 }
 
-function unduhCsvPendaftar(baris) {
+function unduhCsvPendaftar(baris, akhiran = '') {
   const bio = (window.PPDB_BIODATA || []).flatMap(g => g.isian);
   const tanya = [...new Set(baris.flatMap(x => Object.keys(x.wawancara || {})))];
   const kolom = [['Nomor', x => x.nomor], ['Tanggal daftar', x => tglId(x.dibuat)], ['Nama', x => x.nama], ['Email', x => x.email], ['No. WA', x => x.no_wa],
@@ -872,7 +892,7 @@ function unduhCsvPendaftar(baris) {
     ['Kelulusan', x => ST().kelulusan[x.kelulusan]], ['Pesan panitia', x => x.pesan_panitia]];
   const sel = (v) => { let t = String(v == null ? '' : v).replace(/\r?\n/g, ' '); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
   const csv = [kolom.map(k => sel(k[0])).join(';'), ...baris.map(x => kolom.map(k => sel(k[1](x))).join(';'))].join('\r\n');
-  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'pendaftar-ppdb-' + new Date().toISOString().slice(0, 10) + '.csv' });
+  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'pendaftar-ppdb' + akhiran + '-' + new Date().toISOString().slice(0, 10) + '.csv' });
   document.body.append(a); a.click(); a.remove();
 }
 
@@ -951,6 +971,40 @@ const maksKomponen = (k) => Number(k.maks) > 0 ? Number(k.maks) : 100;
 const bobotKomponen = (k) => (k.bobot === undefined || k.bobot === null || k.bobot === '' || isNaN(Number(k.bobot))) ? 1 : Math.max(0, Number(k.bobot));
 const adaNilai = (v) => v !== undefined && v !== null && v !== '' && !isNaN(Number(v));
 function bacaSesi(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+function catatanPengaturanBersama(apa) {
+  return h('div', { class: 'pesan info', style: 'margin-bottom:16px' }, '⚙️ ' + apa + ' berlaku untuk kedua program, sehingga hanya bisa diubah oleh admin atau panitia semua program.');
+}
+function bacaIngat(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function tulisIngat(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* abaikan */ } }
+// Data pendaftar dipisah per program; SMP & SMA dalam satu program digabung (jenjang tetap bisa disaring).
+const PROGRAM_PPDB = [['takhassus', 'Program Takhassus'], ['tahfizh', 'Program Tahfizh']];
+const kodeProgram = (nama) => { const t = String(nama || '').toLowerCase(); return /takh/.test(t) ? 'takhassus' : /tahf/.test(t) ? 'tahfizh' : t ? 'lain' : 'belum'; };
+// semua: baris pendaftar (berisi .program); ubah(): dipanggil saat program diganti; perluCek(x): penanda pekerjaan yang menunggu (opsional)
+function saklarProgram(semua, ubah, perluCek) {
+  const kunci = programSaya(); // akun khusus satu program: hanya program itu (+ yang belum memilih)
+  let aktif = kunci || bacaIngat('program-ppdb');
+  if (!['takhassus', 'tahfizh', 'belum', 'semua'].includes(aktif)) aktif = 'takhassus';
+  const cocok = (x, k) => k === 'semua' || kodeProgram(x.program) === k;
+  const el = h('div', { class: 'saklar-program', role: 'group', 'aria-label': 'Pilih program' });
+  const gambar = () => {
+    const opsi = [...PROGRAM_PPDB, ['belum', 'Belum memilih program'], ['semua', 'Semua program']]
+      .filter(([k]) => !kunci || k === kunci || k === 'belum')
+      .filter(([k]) => k !== 'belum' || aktif === 'belum' || semua.some(x => cocok(x, 'belum')));
+    el.replaceChildren(...opsi.map(([k, t]) => {
+      const n = semua.filter(x => cocok(x, k)).length;
+      const cek = perluCek && k !== 'semua' && k !== aktif ? semua.filter(x => cocok(x, k) && perluCek(x)).length : 0;
+      return h('button', { type: 'button', class: k === aktif ? 'aktif' : null, 'aria-pressed': String(k === aktif),
+        onclick: () => { if (aktif === k) return; aktif = k; if (!kunci) tulisIngat('program-ppdb', k); gambar(); ubah(); } },
+        h('span', null, t), h('span', { class: 'jml' }, n), cek ? h('span', { class: 'cek' }, cek + ' perlu dicek') : null);
+    }));
+  };
+  gambar();
+  return { el, gambar, cocok: (x) => cocok(x, aktif), kode: () => aktif };
+}
+const akhiranProgram = (sp) => sp && sp.kode() !== 'semua' ? '-' + sp.kode() : '';
+// Program akun yang sedang masuk ('' = semua program). Admin selalu semua program.
+const programSaya = () => (!profil || !peranSaya || (peranSaya.akses || []).includes('*')) ? '' : (profil.program_ppdb || '');
+const namaProgram = (k) => (PROGRAM_PPDB.find(p => p[0] === k) || [])[1] || '';
 function ingatUrutan(baris, asal) { try { sessionStorage.setItem('urutan-ppdb', JSON.stringify(baris.map(x => x.id))); sessionStorage.setItem('asal-ppdb', asal); } catch (e) { /* abaikan */ } }
 function tabPpdb(aktif) {
   return h('nav', { class: 'tab-ppdb' },
@@ -1019,7 +1073,7 @@ async function panelNilai(x) {
   const err = pn.error || nl.error;
   if (err) { box.append(h('div', { class: 'pesan ' + (tabelBelumAda(err) ? 'peringatan' : 'galat') }, tabelBelumAda(err) ? PESAN_NILAI_BELUM : pesanGalat(err))); return box; }
   const komp = pn.komponen.filter(k => berlakuUntuk(k, x.jenjang));
-  const linkAtur = boleh('pendaftar') ? h('a', { href: '#/pendaftar/nilai' }, 'Rekap nilai → Pengaturan nilai') : null;
+  const linkAtur = boleh('pendaftar') && !programSaya() ? h('a', { href: '#/pendaftar/nilai' }, 'Rekap nilai → Pengaturan nilai') : null;
   if (!komp.length) { box.append(h('p', { class: 'ket' }, 'Belum ada komponen nilai' + (x.jenjang ? ' untuk ' + x.jenjang : '') + '. ', linkAtur ? ['Atur dulu di ', linkAtur, '.'] : 'Hubungi panitia SPMB.')); return box; }
   const nilai = salin((nl.data && nl.data.nilai) || {}), catatan = salin((nl.data && nl.data.catatan) || {});
   const akhir = h('div', { class: 'nilai-akhir' });
@@ -1142,9 +1196,8 @@ async function halamanRekapNilai() {
   });
 
   // ----- Saringan & tabel -----
-  const program = [...new Set(semua.map(x => x.program).filter(Boolean))];
+  const sp = saklarProgram(semua, () => gambar());
   const pilihJ = h('select', null, h('option', { value: '' }, 'Semua jenjang'), h('option', { value: 'SMP' }, 'SMP'), h('option', { value: 'SMA' }, 'SMA'));
-  const pilihP = h('select', null, h('option', { value: '' }, 'Semua program'), program.map(p => h('option', { value: p }, p)));
   const SARING = {
     semua: ['Semua pendaftar', () => true],
     dinilai: ['Sudah dinilai lengkap', x => x._r.lengkap],
@@ -1186,12 +1239,13 @@ async function halamanRekapNilai() {
     return sel;
   };
   function gambarRingkas() {
-    const dinilai = semua.filter(x => x._r.lengkap);
+    const basis = semua.filter(sp.cocok);
+    const dinilai = basis.filter(x => x._r.lengkap);
     const rata = dinilai.length ? dinilai.reduce((a, x) => a + x._r.akhir, 0) / dinilai.length : null;
     const tertinggi = dinilai.length ? Math.max(...dinilai.map(x => x._r.akhir)) : null;
     ringkas.replaceChildren(...[
-      ['Pendaftar', semua.length], ['Sudah dinilai lengkap', dinilai.length], ['Rata-rata nilai akhir', angkaId(rata)], ['Nilai tertinggi', angkaId(tertinggi)],
-      ['Memenuhi batas lulus', batas == null ? '–' : dinilai.filter(x => x._r.akhir >= batas).length], ['Dinyatakan LULUS', semua.filter(x => x.kelulusan === 'lulus').length],
+      ['Pendaftar', basis.length], ['Sudah dinilai lengkap', dinilai.length], ['Rata-rata nilai akhir', angkaId(rata)], ['Nilai tertinggi', angkaId(tertinggi)],
+      ['Memenuhi batas lulus', batas == null ? '–' : dinilai.filter(x => x._r.akhir >= batas).length], ['Dinyatakan LULUS', basis.filter(x => x.kelulusan === 'lulus').length],
     ].map(([t, v]) => h('div', null, h('b', null, v), h('small', null, t))));
   }
   function gambarMassal() {
@@ -1216,7 +1270,7 @@ async function halamanRekapNilai() {
   }
   function gambar() {
     const q = cari.value.trim().toLowerCase();
-    tersaring = semua.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value).filter(x => !pilihP.value || x.program === pilihP.value)
+    tersaring = semua.filter(sp.cocok).filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
       .filter(x => !q || [x.nama, x.nomor, x.email].some(v => String(v || '').toLowerCase().includes(q)));
     // Peringkat menurut nilai akhir, hanya yang nilainya lengkap (nilai sama = peringkat sama)
     const berperingkat = tersaring.filter(x => x._r.lengkap).sort((a, b) => b._r.akhir - a._r.akhir);
@@ -1252,21 +1306,21 @@ async function halamanRekapNilai() {
     }) : [h('tr', null, h('td', { colspan: kosongKolom, style: 'text-align:center;color:var(--abu);padding:24px' }, 'Tidak ada pendaftar.'))]));
     gambarRingkas(); gambarMassal();
   }
-  [pilihJ, pilihP, pilihS].forEach(el => el.addEventListener('change', gambar));
+  [pilihJ, pilihS].forEach(el => el.addEventListener('change', gambar));
   cari.addEventListener('input', gambar);
   gambar();
-  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvNilai(tersaring, komp, batas) }, '⬇️ Unduh rekap (Excel/CSV)');
+  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvNilai(tersaring, komp, batas, akhiranProgram(sp)) }, '⬇️ Unduh rekap (Excel/CSV)');
   const cetak = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => window.print() }, '🖨️ Cetak');
   kerangka(judul, 'Klik baris untuk mengisi atau mengubah nilai. Klik judul kolom untuk mengurutkan. Kelulusan bisa diubah langsung di tabel.',
-    tabPpdb('nilai'), ringkas, atur,
+    tabPpdb('nilai'), sp.el, ringkas, programSaya() ? catatanPengaturanBersama('Komponen nilai dan batas lulus') : atur,
     h('div', { class: 'panel' },
-      h('div', { class: 'alat-ppdb alat-nilai' }, pilihS, pilihJ, pilihP, cari, h('div', { class: 'tombol-alat' }, unduh, cetak)),
+      h('div', { class: 'alat-ppdb alat-nilai' }, pilihS, pilihJ, cari, h('div', { class: 'tombol-alat' }, unduh, cetak)),
       massal,
       h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb tabel-nilai' }, thead, tbody)),
       h('p', { class: 'ket' }, 'Hijau = nilai lengkap dan mencapai batas lulus. Merah muda = di bawah batas. Peringkat (#) hanya untuk yang nilainya sudah lengkap. 📝 = ada catatan (arahkan kursor untuk membaca).')));
 }
 
-function unduhCsvNilai(baris, komp, batas) {
+function unduhCsvNilai(baris, komp, batas, akhiran = '') {
   const kolom = [['Nomor', x => x.nomor], ['Nama', x => x.nama], ['Jenjang', x => x.jenjang], ['Program', x => x.program],
     ...komp.flatMap(k => {
       const judulK = k.nama + (k.jenis === 'Jumlah' ? ' (dari ' + maksKomponen(k) + ' ' + (k.satuan || '') + (k.materi ? ', ' + k.materi : '') + ')' : k.materi ? ' (' + k.materi + ')' : '') + (k.berlaku && k.berlaku !== 'Semua jenjang' ? ' - ' + k.berlaku : '');
@@ -1279,7 +1333,7 @@ function unduhCsvNilai(baris, komp, batas) {
     ['Tes awal', x => ST().tes[x.tes_awal]], ['Tes akhir', x => ST().tes[x.tes_akhir]], ['Kelulusan', x => ST().kelulusan[x.kelulusan]], ['Penilai', x => (x._n && x._n.penilai) || '']];
   const sel = (v) => { let t = String(v == null ? '' : v).replace(/\r?\n/g, ' '); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
   const csv = [kolom.map(k => sel(k[0])).join(';'), ...baris.map(x => kolom.map(k => sel(k[1](x))).join(';'))].join('\r\n');
-  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'rekap-nilai-ppdb-' + new Date().toISOString().slice(0, 10) + '.csv' });
+  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'rekap-nilai-ppdb' + akhiran + '-' + new Date().toISOString().slice(0, 10) + '.csv' });
   document.body.append(a); a.click(); a.remove();
 }
 
@@ -1468,7 +1522,7 @@ async function halamanBerkasSyarat() {
     sibuk(btnCfg, false, '💾 Simpan pengaturan berkas');
     if (error || !data || !data.length) return toast('Gagal menyimpan: ' + (error ? (tabelBelumAda(error) ? PESAN_BERKAS_BELUM : pesanGalat(error)) : 'tidak ada akses'), true);
     kotor = false; daftar = window.PPDB_SYARAT_RAPI(baru); cfg.berkas.splice(0, cfg.berkas.length, ...salin(baru));
-    hitungSemua(); gambar();
+    hitungSemua(); sp.gambar(); gambar();
     toast('Pengaturan berkas disimpan. Langsung tampil di dashboard calon santri.');
   });
 
@@ -1487,9 +1541,11 @@ async function halamanBerkasSyarat() {
   const ringkas = h('div', { class: 'ringkas-ppdb' });
   const thead = h('thead'), tbody = h('tbody');
   let tersaring = [];
+  const sp = saklarProgram(semua, () => gambar(), x => x._r.menunggu > 0);
   const gambar = () => {
     const q = cari.value.trim().toLowerCase();
-    tersaring = semua.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
+    const basis = semua.filter(sp.cocok);
+    tersaring = basis.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
       .filter(x => !q || [x.nama, x.nomor, x.email].some(v => String(v || '').toLowerCase().includes(q)));
     ingatUrutan(tersaring, '#/pendaftar/berkas');
     thead.replaceChildren(h('tr', null, h('th', null, 'Nama'), ...daftar.map(i => h('th', { title: i.nama }, i.nama, i.wajib ? '' : h('small', null, ' (tidak wajib)'))),
@@ -1500,26 +1556,26 @@ async function halamanBerkasSyarat() {
       h('td', { class: 'angka' }, x._t.length ? (x._sisa > 0 ? rupiah(x._sisa) : h('span', { class: 'lencana-st hijau' }, 'Lunas')) : '–'),
       h('td', null, lencanaStatus('tes', x.tes_akhir))))
       : [h('tr', null, h('td', { colspan: daftar.length + 3, style: 'text-align:center;color:var(--abu);padding:24px' }, 'Tidak ada pendaftar pada saringan ini.'))]));
-    const akhir = semua.filter(x => x.tes_awal === 'lulus');
+    const akhir = basis.filter(x => x.tes_awal === 'lulus');
     ringkas.replaceChildren(...[
       ['Peserta tahap akhir', akhir.length],
-      ['Berkas perlu dicek', semua.reduce((a, x) => a + x._r.menunggu, 0)],
+      ['Berkas perlu dicek', basis.reduce((a, x) => a + x._r.menunggu, 0)],
       ['Berkas wajib lengkap', akhir.filter(x => x._r.lengkap).length],
-      ['Total sisa tagihan', rupiah(semua.reduce((a, x) => a + x._sisa, 0))],
+      ['Total sisa tagihan', rupiah(basis.reduce((a, x) => a + x._sisa, 0))],
     ].map(([k, v]) => h('div', null, h('b', null, v), h('small', null, k))));
   };
   [pilihS, pilihJ].forEach(el => el.addEventListener('change', gambar));
   cari.addEventListener('input', gambar);
   gambar();
-  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvTagihan(tersaring) }, '⬇️ Unduh tagihan (Excel/CSV)');
+  const unduh = h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => unduhCsvTagihan(tersaring, akhiranProgram(sp)) }, '⬇️ Unduh tagihan (Excel/CSV)');
   kerangka(judul, 'Periksa berkas syarat lulus tes tahap akhir dan pantau tagihan pembayaran. Klik nama untuk memeriksa, menerima, atau menolak berkas.',
-    tabPpdb('berkas'), ringkas, atur,
+    tabPpdb('berkas'), sp.el, ringkas, programSaya() ? catatanPengaturanBersama('Daftar berkas syarat lulus dan biayanya') : atur,
     h('div', { class: 'panel' },
       h('div', { class: 'alat-ppdb' }, pilihS, pilihJ, cari, unduh),
       h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb tabel-berkas' }, thead, tbody))));
 }
 
-function unduhCsvTagihan(baris) {
+function unduhCsvTagihan(baris, akhiran = '') {
   const data = baris.flatMap(x => x._t.map(t => ({ x, t })));
   if (!data.length) return toast('Belum ada tagihan pada daftar ini.', true);
   const kolom = [['Nomor', d => d.x.nomor], ['Nama', d => d.x.nama], ['Jenjang', d => d.x.jenjang], ['Program', d => d.x.program], ['Tagihan', d => d.t.nama || d.t.kode],
@@ -1527,7 +1583,7 @@ function unduhCsvTagihan(baris) {
     ['Diperbarui', d => tglId(d.t.diubah)]];
   const sel = (v) => { let t = String(v == null ? '' : v).replace(/\r?\n/g, ' '); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
   const csv = [kolom.map(k => sel(k[0])).join(';'), ...data.map(d => kolom.map(k => sel(k[1](d))).join(';'))].join('\r\n');
-  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'tagihan-ppdb-' + new Date().toISOString().slice(0, 10) + '.csv' });
+  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'tagihan-ppdb' + akhiran + '-' + new Date().toISOString().slice(0, 10) + '.csv' });
   document.body.append(a); a.click(); a.remove();
 }
 
@@ -1545,7 +1601,7 @@ async function halamanDaftarPenguji() {
   const petaNilai = new Map((rn.data || []).map(r => [r.id, r]));
   const semua = (rp.data || []).map(x => Object.assign(x, { _n: petaNilai.get(x.id) || null }));
   semua.forEach(x => { x._r = hitungNilai(komp, x._n && x._n.nilai, x.jenjang); });
-  const program = [...new Set(semua.map(x => x.program).filter(Boolean))];
+  const sp = saklarProgram(semua, () => gambar());
   const SARING = {
     semua: ['Semua peserta', () => true],
     belum: ['Belum dinilai', x => !x._r.terisi],
@@ -1554,13 +1610,13 @@ async function halamanDaftarPenguji() {
   };
   const pilihS = h('select', null, Object.entries(SARING).map(([k, [t]]) => h('option', { value: k }, t)));
   const pilihJ = h('select', null, h('option', { value: '' }, 'Semua jenjang'), h('option', { value: 'SMP' }, 'SMP'), h('option', { value: 'SMA' }, 'SMA'));
-  const pilihP = h('select', null, h('option', { value: '' }, 'Semua program'), program.map(p => h('option', { value: p }, p)));
   const cari = h('input', { type: 'search', placeholder: 'Cari nama atau nomor…' });
   const tbody = h('tbody');
   const ringkas = h('div', { class: 'ringkas-ppdb' });
   const gambar = () => {
     const q = cari.value.trim().toLowerCase();
-    const t = semua.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value).filter(x => !pilihP.value || x.program === pilihP.value)
+    const basis = semua.filter(sp.cocok);
+    const t = basis.filter(SARING[pilihS.value][1]).filter(x => !pilihJ.value || x.jenjang === pilihJ.value)
       .filter(x => !q || [x.nama, x.nomor].some(v => String(v || '').toLowerCase().includes(q)));
     ingatUrutan(t, '#/nilai-tes');
     tbody.replaceChildren(...(t.length ? t.map(x => h('tr', { class: 'baris-klik ' + (x._r.lengkap ? 'lengkap' : x._r.terisi ? 'sebagian' : 'kosong'), onclick: () => { location.hash = '#/nilai-tes/' + x.id; } },
@@ -1572,17 +1628,17 @@ async function halamanDaftarPenguji() {
       h('td', null, h('small', null, x._n && x._n.penilai ? x._n.penilai : '')),
       h('td', null, h('a', { href: '#/nilai-tes/' + x.id, class: 'btn btn-garis btn-kecil', onclick: e => e.stopPropagation() }, x._r.terisi ? '✏️ Ubah nilai' : '✏️ Isi nilai'))))
       : [h('tr', null, h('td', { colspan: 7, style: 'text-align:center;color:var(--abu);padding:24px' }, 'Tidak ada peserta.'))]));
-    ringkas.replaceChildren(...[['Peserta', semua.length], ['Belum dinilai', semua.filter(x => !x._r.terisi).length], ['Belum lengkap', semua.filter(x => x._r.terisi && !x._r.lengkap).length], ['Sudah lengkap', semua.filter(x => x._r.lengkap).length]]
+    ringkas.replaceChildren(...[['Peserta', basis.length], ['Belum dinilai', basis.filter(x => !x._r.terisi).length], ['Belum lengkap', basis.filter(x => x._r.terisi && !x._r.lengkap).length], ['Sudah lengkap', basis.filter(x => x._r.lengkap).length]]
       .map(([k, v]) => h('div', null, h('b', null, v), h('small', null, k))));
   };
-  [pilihS, pilihJ, pilihP].forEach(el => el.addEventListener('change', gambar));
+  [pilihS, pilihJ].forEach(el => el.addEventListener('change', gambar));
   cari.addEventListener('input', gambar);
   gambar();
   kerangka(judul, 'Pilih peserta, isi nilainya, lalu klik "Simpan & lanjut" untuk berpindah ke peserta berikutnya.',
     boleh('pendaftar') ? h('p', { class: 'ket' }, 'Anda juga punya akses panitia: rekap lengkap, batas lulus, dan kelulusan ada di ', h('a', { href: '#/pendaftar/nilai' }, 'Pendaftar PPDB → Rekap nilai & kelulusan'), '.') : null,
-    ringkas,
+    sp.el, ringkas,
     h('div', { class: 'panel' },
-      h('div', { class: 'alat-ppdb alat-penguji' }, pilihS, pilihJ, pilihP, cari),
+      h('div', { class: 'alat-ppdb alat-penguji' }, pilihS, pilihJ, cari),
       h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb tabel-penguji' },
         h('thead', null, h('tr', null, ['No. pendaftaran', 'Nama', 'Pilihan', 'Status nilai', 'Nilai akhir', 'Diisi oleh', ''].map(t => h('th', null, t)))), tbody))));
 }
