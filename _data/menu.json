@@ -1,8 +1,10 @@
 {
   "daftar": [
     {
+      "sub": [],
       "link": "/",
-      "judul": "Beranda"
+      "judul": "Beranda",
+      "tombol": false
     },
     {
       "sub": [
@@ -36,7 +38,8 @@
         }
       ],
       "link": "/profil.html",
-      "judul": "Profil"
+      "judul": "Profil",
+      "tombol": false
     },
     {
       "sub": [
@@ -49,24 +52,19 @@
           "judul": "Program Takhassus (Asal Mula)"
         },
         {
-          "link": "/sekolah.html#smp",
-          "judul": "SMP IT Darul Marhamah ABS"
-        },
-        {
-          "link": "/sekolah.html#sma",
-          "judul": "SMA IT Darul Marhamah ABS"
-        },
-        {
           "link": "/sekolah.html#ekskul",
           "judul": "Ekstrakurikuler"
         }
       ],
       "link": "/sekolah.html",
-      "judul": "Sekolah"
+      "judul": "Sekolah",
+      "tombol": false
     },
     {
+      "sub": [],
       "link": "/berita.html",
-      "judul": "Berita"
+      "judul": "Berita",
+      "tombol": false
     },
     {
       "sub": [
@@ -84,7 +82,8 @@
         }
       ],
       "link": "/galeri.html",
-      "judul": "Galeri"
+      "judul": "Galeri",
+      "tombol": false
     },
     {
       "sub": [
@@ -106,7 +105,8 @@
         }
       ],
       "link": "/kontak.html",
-      "judul": "Kontak"
+      "judul": "Kontak",
+      "tombol": false
     },
     {
       "sub": [
