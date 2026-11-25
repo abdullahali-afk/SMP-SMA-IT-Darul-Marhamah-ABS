@@ -11,6 +11,9 @@
   const BUCKET = 'ppdb';
   let sb = null, sesi = null, saya = null, terbuka = null;
   let syarat = null; // berkas syarat lulus langkah 09 (null = fitur belum dipasang di database → cara lama: surat kesehatan saja)
+  let grupBaru = null; // link Grup WA Santri Baru (null = belum lulus tahap akhir)
+  const layakGrupBaru = (s) => s.kelulusan === 'lulus' || (s.tes_akhir === 'lulus' && s.kelulusan === 'belum');
+  const LINK_WA = /^https:\/\/(chat\.whatsapp\.com|wa\.me|whatsapp\.com)\//i;
 
   /* ---------- Bantuan ---------- */
   function h(tag, attrs, ...anak) {
@@ -194,7 +197,7 @@
       data = r.data;
     }
     saya = data;
-    await muatSyarat();
+    await Promise.all([muatSyarat(), muatGrupBaru()]);
     tampilDasbor();
   }
   async function muatSyarat() {
@@ -210,6 +213,33 @@
       berkas: Object.fromEntries((b.data || []).map(r => [r.kode, r])),
       tagihan: Object.fromEntries(((!c.error && c.data) || []).map(r => [r.kode, r])),
     };
+  }
+  // Grup WA Santri Baru: otomatis tampil di atas dasbor begitu ananda lulus Tes Tahap Akhir
+  async function muatGrupBaru() {
+    grupBaru = null;
+    if (!layakGrupBaru(saya)) return;
+    const { data, error } = await sb.rpc('grup_santri_baru');
+    grupBaru = { daftar: error ? [] : (Array.isArray(data) ? data : []).filter(g => g && LINK_WA.test(g.link || '')) };
+  }
+  function kartuGrupBaru() {
+    if (!grupBaru) return null;
+    const sudah = !!saya.gabung_santri_baru;
+    const tandai = () => { // dicatat otomatis saat link dibuka, agar panitia tahu siapa yang sudah menuju grup
+      if (saya.gabung_santri_baru) return;
+      sb.from('pendaftar').update({ gabung_santri_baru: true }).eq('id', saya.id).select().maybeSingle()
+        .then(({ data }) => { if (data) { saya = data; tampilDasbor(); } });
+    };
+    const tombol = grupBaru.daftar.map(g => h('a', { class: 'btn btn-wa', href: g.link, target: '_blank', rel: 'noopener', onclick: tandai },
+      '💬 ' + (sudah ? 'Buka ' : 'Gabung ') + (g.nama || 'Grup WhatsApp Santri Baru')));
+    if (sudah) return h('div', { class: 'po-grup-baru sudah' },
+      h('p', null, '✅ Ananda sudah membuka link Grup WhatsApp Santri Baru. Jika belum masuk grup, tekan tombolnya lagi.'),
+      tombol.length ? h('div', { class: 'po-grup' }, tombol) : null);
+    return h('div', { class: 'po-grup-baru' }, h('div', { class: 'po-ikon' }, '🎉'),
+      h('h3', null, saya.kelulusan === 'lulus' ? 'Selamat, ananda dinyatakan LULUS!' : 'Alhamdulillah, ananda lulus Tes Tahap Akhir!'),
+      h('p', null, 'Langkah berikutnya: bergabung ke Grup WhatsApp Santri Baru untuk informasi daftar ulang dan persiapan masuk pondok.'),
+      tombol.length ? h('div', { class: 'po-grup' }, tombol)
+        : h('div', { class: 'po-pesan info' }, 'Link Grup WhatsApp Santri Baru sedang disiapkan panitia. Silakan buka halaman ini lagi nanti, atau ', kontakPanitia() || 'hubungi panitia', '.'),
+      tombol.length ? h('small', null, 'Tekan tombol hijau, lalu pilih "Gabung ke grup" di WhatsApp.') : null);
   }
   function hitungSyarat() {
     const wajib = syarat.daftar.filter(i => i.wajib);
@@ -343,7 +373,7 @@
         h('div', { class: 'po-kemajuan' }, h('div', { class: 'po-bar' }, h('span', { style: 'width:' + (selesai * 10) + '%' })),
           h('small', null, selesai + ' dari 10 langkah selesai')),
         h('button', { type: 'button', class: 'po-link po-keluar', onclick: () => sb.auth.signOut() }, 'Keluar')),
-      ...[pesanPanitia, daftar, bantuan()].filter(Boolean));
+      ...[pesanPanitia, kartuGrupBaru(), daftar, bantuan()].filter(Boolean));
   }
 
   /* ---------- Isi setiap langkah ---------- */
@@ -475,7 +505,7 @@
   function isiGrup() {
     const box = h('div', { class: 'po-grup' }, h('p', { class: 'po-kecil' }, 'Memuat link grup…'));
     sb.from('ppdb_rahasia').select('grup_wa').eq('id', 1).maybeSingle().then(({ data, error }) => {
-      const grup = ((data && data.grup_wa) || []).filter(g => g && /^https:\/\/(chat\.whatsapp\.com|wa\.me|whatsapp\.com)\//i.test(g.link || ''));
+      const grup = ((data && data.grup_wa) || []).filter(g => g && LINK_WA.test(g.link || ''));
       if (error || !grup.length) return box.replaceChildren(h('div', { class: 'po-pesan peringatan' }, 'Link grup WhatsApp belum tersedia. Panitia akan menghubungi Anda, atau ', kontakPanitia() || 'hubungi panitia', '.'));
       box.replaceChildren(...grup.map(g => h('a', { class: 'btn btn-wa', href: g.link, target: '_blank', rel: 'noopener' }, '💬 Gabung ' + (g.nama || 'grup WhatsApp'))));
     });
@@ -493,7 +523,7 @@
   }
 
   function hasilTesAkhir(st) {
-    return st === 'lulus' ? h('div', { class: 'po-pesan sukses' }, '✅ Ananda lulus Tes Tahap Akhir. Tunggu pengumuman kelulusan.')
+    return st === 'lulus' ? h('div', { class: 'po-pesan sukses' }, '✅ Ananda lulus Tes Tahap Akhir.' + (grupBaru ? ' Silakan bergabung ke Grup WhatsApp Santri Baru melalui tombol di bagian atas halaman ini.' : ' Tunggu pengumuman kelulusan.'))
       : st === 'tidak_lulus' ? h('div', { class: 'po-pesan galat' }, 'Mohon maaf, ananda belum lulus Tes Tahap Akhir.')
       : h('div', { class: 'po-pesan info' }, '⏳ Hasil Tes Tahap Akhir akan ditampilkan di sini.');
   }

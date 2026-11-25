@@ -819,6 +819,7 @@ async function halamanPendaftar() {
     proses: ['Sedang mengisi data', x => (x.status_bayar === 'menunggu' || x.status_bayar === 'diterima') && !x.wawancara_lengkap],
     tes_awal: ['Menunggu hasil tes awal', x => x.wawancara_lengkap && x.tes_awal === 'belum'],
     tes_akhir: ['Menunggu hasil tes akhir', x => x.tes_awal === 'lulus' && x.tes_akhir === 'belum'],
+    grup_baru: ['Lulus tahap akhir, belum buka grup Santri Baru', x => layakGrupBaru(x) && !x.gabung_santri_baru],
     lulus: ['Lulus', x => x.kelulusan === 'lulus'], cadangan: ['Cadangan', x => x.kelulusan === 'cadangan'], tidak: ['Tidak lulus', x => x.kelulusan === 'tidak_lulus'],
   };
   const pilihF = h('select', null, Object.entries(FILTER).map(([k, [t]]) => h('option', { value: k }, t)));
@@ -852,7 +853,51 @@ async function halamanPendaftar() {
       h('div', { class: 'alat-ppdb' }, pilihF, pilihJ, cari, unduh),
       h('div', { class: 'tabel-wrap' }, h('table', { class: 'tabel-ppdb' },
         h('thead', null, h('tr', null, ['No. / Tanggal', 'Nama', 'Pilihan', 'Pembayaran', 'Biodata / Wawancara', 'Tes awal', 'Tes akhir', 'Kelulusan'].map(t => h('th', null, t)))), tbody))),
-    await panelGrupWa());
+    await panelGrupWa(), await panelGrupSantriBaru());
+}
+
+// Calon santri yang lulus Tes Tahap Akhir (atau LULUS, bukan cadangan/tidak lulus)
+const layakGrupBaru = (x) => x.kelulusan === 'lulus' || (x.tes_akhir === 'lulus' && x.kelulusan === 'belum');
+const LINK_WA = /^https:\/\/(chat\.whatsapp\.com|wa\.me|whatsapp\.com)\//i;
+const grupUntuk = (daftar, x) => (daftar || []).filter(g => g && LINK_WA.test(g.link || '')
+  && (!g.program || g.program === kodeProgram(x.program)) && (!g.jenjang || g.jenjang === x.jenjang));
+async function panelGrupSantriBaru() {
+  const kunci = programSaya();
+  const box = h('div', { class: 'panel' }, h('h3', null, '🎓 Link grup WhatsApp Santri Baru'),
+    h('p', { class: 'ket' }, 'Tombol gabung grup ini otomatis muncul di bagian atas dashboard calon santri begitu ia dinyatakan lulus Tes Tahap Akhir (atau LULUS). Sebelum itu link tidak terlihat. Calon santri hanya melihat grup yang cocok dengan program dan jenjangnya. Saat ia menekan tombolnya, tanda "sudah membuka link grup" tercatat di datanya.'));
+  const { data, error } = await sb.from('ppdb_grup_lulus').select('grup').eq('id', 1).maybeSingle();
+  if (error) {
+    box.append(h('div', { class: 'pesan ' + (tabelBelumAda(error) ? 'peringatan' : 'galat') }, tabelBelumAda(error)
+      ? 'Fitur grup Santri Baru belum dipasang di database. Jalankan ulang file supabase/ppdb-online.sql (versi terbaru) di Supabase → SQL Editor. File itu aman dijalankan ulang.' : pesanGalat(error)));
+    return box;
+  }
+  const semuaGrup = salin((data && data.grup) || []);
+  const grup = kunci ? semuaGrup.filter(g => (g.program || '') === kunci) : semuaGrup;
+  const lain = semuaGrup.length - grup.length;
+  const opsiProgram = kunci ? [[kunci, namaProgram(kunci)]] : [['', 'Semua program'], ...PROGRAM_PPDB];
+  const daftar = h('div');
+  const gambar = () => daftar.replaceChildren(...grup.map((g, i) => h('div', { class: 'baris-grup baris-grup-baru' },
+    h('input', { type: 'text', placeholder: 'Nama grup, mis. Santri Baru Tahfizh 2027', value: g.nama || '', oninput: e => { g.nama = e.target.value; } }),
+    h('input', { type: 'url', placeholder: 'https://chat.whatsapp.com/…', value: g.link || '', oninput: e => { g.link = e.target.value.trim(); } }),
+    h('select', { title: 'Untuk program', onchange: e => { g.program = e.target.value; } },
+      opsiProgram.map(([k, t]) => h('option', { value: k, selected: (g.program || '') === k }, t))),
+    h('select', { title: 'Untuk jenjang', onchange: e => { g.jenjang = e.target.value; } },
+      [['', 'SMP & SMA'], ['SMP', 'SMP saja'], ['SMA', 'SMA saja']].map(([k, t]) => h('option', { value: k, selected: (g.jenjang || '') === k }, t))),
+    h('button', { class: 'ikon-btn hapus', type: 'button', title: 'Hapus', onclick: () => { grup.splice(i, 1); gambar(); } }, '✕'))));
+  gambar();
+  const btn = h('button', { class: 'btn btn-emas btn-kecil', type: 'button', onclick: async () => {
+    const bersih = grup.filter(g => g.link).map(g => ({ nama: String(g.nama || '').trim(), link: String(g.link).trim(), program: kunci || g.program || '', jenjang: g.jenjang || '' }));
+    if (bersih.some(g => !LINK_WA.test(g.link))) return toast('Link grup harus diawali https://chat.whatsapp.com/', true);
+    sibuk(btn, true, 'Menyimpan…');
+    const { data: d2, error: e2 } = await sb.from('ppdb_grup_lulus').upsert({ id: 1, grup: bersih }).select();
+    sibuk(btn, false, '💾 Simpan grup Santri Baru');
+    if (e2 || !d2 || !d2.length) return toast('Gagal menyimpan: ' + (e2 ? pesanGalat(e2) : 'tidak ada akses'), true);
+    toast('Link grup WhatsApp Santri Baru disimpan.');
+  } }, '💾 Simpan grup Santri Baru');
+  box.append(daftar, h('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px' },
+    h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => { grup.push({ nama: '', link: '', program: kunci || '', jenjang: '' }); gambar(); } }, '+ Tambah grup'), btn));
+  if (kunci && lain) box.append(h('p', { class: 'ket', style: 'margin-top:10px' }, lain + ' grup lain (untuk program lain atau kedua program) diatur admin dan tidak berubah.'));
+  return box;
 }
 
 async function panelGrupWa() {
@@ -889,7 +934,8 @@ function unduhCsvPendaftar(baris, akhiran = '') {
     ...bio.map(([k, label]) => [label, x => (x.biodata || {})[k]]),
     ...tanya.map(q => ['Wawancara: ' + q, x => (x.wawancara || {})[q]]),
     ['Gabung grup WA', x => x.gabung_grup ? 'Ya' : 'Belum'], ['Tes awal', x => ST().tes[x.tes_awal]], ['Tes akhir', x => ST().tes[x.tes_akhir]],
-    ['Kelulusan', x => ST().kelulusan[x.kelulusan]], ['Pesan panitia', x => x.pesan_panitia]];
+    ['Kelulusan', x => ST().kelulusan[x.kelulusan]], ['Grup WA Santri Baru', x => x.gabung_santri_baru ? 'Sudah membuka link' : layakGrupBaru(x) ? 'Belum' : ''],
+    ['Pesan panitia', x => x.pesan_panitia]];
   const sel = (v) => { let t = String(v == null ? '' : v).replace(/\r?\n/g, ' '); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
   const csv = [kolom.map(k => sel(k[0])).join(';'), ...baris.map(x => kolom.map(k => sel(k[1](x))).join(';'))].join('\r\n');
   const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })), download: 'pendaftar-ppdb' + akhiran + '-' + new Date().toISOString().slice(0, 10) + '.csv' });
@@ -907,7 +953,7 @@ async function halamanPendaftarDetail(id, bagian) {
   if (error || !x) return kerangka('🧾 Data pendaftar', null, h('div', { class: 'pesan galat' }, error ? (tabelBelumAda(error) ? PESAN_BELUM_PASANG : pesanGalat(error)) : 'Pendaftar tidak ditemukan.'),
     h('a', { href: asal[0] }, asal[1]));
   const infoBerkas = { lengkap: null, teks: '' };
-  const [navigasi, nilaiPanel, berkasPanel] = await Promise.all([navigasiPendaftar(id, bagian), panelNilai(x), panelBerkas(x, infoBerkas)]);
+  const [navigasi, nilaiPanel, berkasPanel, grupBaruPanel] = await Promise.all([navigasiPendaftar(id, bagian), panelNilai(x), panelBerkas(x, infoBerkas), panelGrupBaruPendaftar(x)]);
   if (location.hash !== awal0) return;
   const ubah = { status_bayar: x.status_bayar, tes_awal: x.tes_awal, tes_akhir: x.tes_akhir, kelulusan: x.kelulusan, pesan_panitia: x.pesan_panitia || '' };
   const pilih = (kolom, jenis, label, ket) => h('div', { class: 'medan' }, h('label', null, label),
@@ -952,6 +998,7 @@ async function halamanPendaftarDetail(id, bagian) {
       h('div', { class: 'medan' }, h('label', null, 'Pesan untuk calon santri (tampil di dashboard-nya)'),
         h('textarea', { value: ubah.pesan_panitia, placeholder: 'Contoh: Bukti transfer kurang jelas, mohon unggah ulang.', oninput: e => { ubah.pesan_panitia = e.target.value; tandaiKotor(); } })),
       h('div', { class: 'aksi-simpan' }, btn)),
+    grupBaruPanel,
     berkasPanel,
     nilaiPanel,
     h('div', { class: 'panel' }, h('h3', null, '05 · Biodata ', x.biodata_lengkap ? '✅' : '(belum lengkap)'), ...biodata),
@@ -961,6 +1008,21 @@ async function halamanPendaftarDetail(id, bagian) {
     h('div', { class: 'panel' }, h('h3', null, 'Hapus data'), h('p', { class: 'ket' }, 'Gunakan hanya untuk data ganda atau pendaftaran yang dibatalkan.'), hapus));
   if (bagian === 'nilai') { const el = document.getElementById('panel-nilai'); if (el) { el.scrollIntoView({ block: 'start' }); const i = el.querySelector('input'); if (i) i.focus({ preventScroll: true }); } }
   if (bagian === 'berkas') { const el = document.getElementById('panel-berkas'); if (el) el.scrollIntoView({ block: 'start' }); }
+}
+
+// Panel di halaman pendaftar: status grup WA Santri Baru + kirim link lewat WhatsApp panitia
+async function panelGrupBaruPendaftar(x) {
+  if (!layakGrupBaru(x) && !x.gabung_santri_baru) return null;
+  const { data, error } = await sb.from('ppdb_grup_lulus').select('grup').eq('id', 1).maybeSingle();
+  if (error) return null; // fitur belum dipasang di database
+  const cocok = grupUntuk(data && data.grup, x);
+  const hp = waLink(x.no_wa);
+  const pesan = 'Assalamu\'alaikum. Alhamdulillah, ananda ' + (x.nama || '') + ' (' + (x.nomor || '') + ') lulus Tes Tahap Akhir PPDB Darul Marhamah. Silakan bergabung ke Grup WhatsApp Santri Baru:\n'
+    + cocok.map(g => (g.nama ? g.nama + ': ' : '') + g.link).join('\n');
+  return h('div', { class: 'panel' }, h('h3', null, '🎓 Grup WhatsApp Santri Baru'),
+    h('p', null, x.gabung_santri_baru ? '✅ Calon santri sudah membuka link grup dari dashboard-nya.' : 'Calon santri belum membuka link grup. Tombol gabung sudah tampil otomatis di dashboard-nya.'),
+    !cocok.length ? h('div', { class: 'pesan peringatan' }, 'Belum ada link grup untuk ' + (x.program || 'program ini') + (x.jenjang ? ' ' + x.jenjang : '') + '. Isi di halaman Pendaftar PPDB → Link grup WhatsApp Santri Baru.')
+      : hp && !x.gabung_santri_baru ? h('a', { class: 'btn btn-garis btn-kecil', href: hp + '?text=' + encodeURIComponent(pesan), target: '_blank', rel: 'noopener' }, '💬 Kirim link grup ke WhatsApp ' + x.no_wa) : null);
 }
 
 /* ---------- Nilai tes & rekap kelulusan PPDB (panitia) ---------- */

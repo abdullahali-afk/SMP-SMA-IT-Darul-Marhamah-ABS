@@ -1,7 +1,7 @@
 -- =====================================================================
 --  PPDB ONLINE — akun calon santri, berkas, status seleksi, nilai tes,
 --  tautan menu ke halaman Program Tahfizh & Program Takhassus, berkas syarat
---  lulus tes tahap akhir, dan tagihan pembayaran
+--  lulus tes tahap akhir, tagihan pembayaran, dan grup WhatsApp Santri Baru
 --  Cara pakai: Supabase → SQL Editor → New query → tempel SELURUH isi file
 --  ini → klik RUN. Aman dijalankan ulang. Tidak perlu mengubah apa pun.
 -- =====================================================================
@@ -33,6 +33,8 @@ create table if not exists public.pendaftar (
   dibuat            timestamptz not null default now(),
   diubah            timestamptz not null default now()
 );
+-- Ditandai otomatis saat calon santri yang lulus membuka link Grup WA Santri Baru
+alter table public.pendaftar add column if not exists gabung_santri_baru boolean not null default false;
 
 -- Calon santri hanya boleh mengubah isiannya sendiri; status seleksi hanya diubah panitia.
 create or replace function public.jaga_pendaftar() returns trigger
@@ -47,6 +49,7 @@ begin
     if not panitia then
       new.status_bayar := case when coalesce(new.bukti_bayar, '') <> '' then 'menunggu' else 'belum' end;
       new.tes_awal := 'belum'; new.tes_akhir := 'belum'; new.kelulusan := 'belum'; new.pesan_panitia := '';
+      new.gabung_santri_baru := false;
     end if;
     new.dibuat := now(); new.diubah := now();
     return new;
@@ -57,6 +60,10 @@ begin
     new.email := old.email;
     new.tes_awal := old.tes_awal; new.tes_akhir := old.tes_akhir;
     new.kelulusan := old.kelulusan; new.pesan_panitia := old.pesan_panitia;
+    -- Tanda grup Santri Baru hanya untuk yang lulus tahap akhir (dan tidak cadangan/tidak lulus)
+    if not (old.kelulusan = 'lulus' or (old.tes_akhir = 'lulus' and old.kelulusan = 'belum')) then
+      new.gabung_santri_baru := old.gabung_santri_baru;
+    end if;
     -- Bukti bayar yang sudah diterima tidak bisa diganti; bukti baru menunggu pemeriksaan
     if old.status_bayar = 'diterima' then
       new.bukti_bayar := old.bukti_bayar; new.status_bayar := 'diterima';
@@ -500,3 +507,68 @@ set data = jsonb_set(k.data, '{online,info_tes_akhir}', to_jsonb('Tes Tahap Akhi
     diubah = now()
 where k.kunci = 'ppdb'
   and k.data->'online'->>'info_tes_akhir' = 'Tes Tahap Akhir hanya untuk calon santri yang lulus Tes Tahap Awal: pemeriksaan hasil kesehatan serta wawancara calon santri dan ibu calon santri. Unggah surat hasil pemeriksaan kesehatan di bawah ini.';
+
+-- ---------- 9. Grup WhatsApp Santri Baru (otomatis tampil setelah lulus Tes Tahap Akhir) ----------
+-- Panitia mengisi link grup di Panel Admin → Pendaftar PPDB (bisa per program dan per jenjang).
+-- Link hanya bisa dibaca calon santri lewat fungsi grup_santri_baru(), dan hanya yang cocok
+-- dengan program/jenjangnya, setelah ia lulus Tes Tahap Akhir atau dinyatakan LULUS.
+create table if not exists public.ppdb_grup_lulus (
+  id     int primary key default 1 check (id = 1),
+  grup   jsonb not null default '[]'::jsonb,
+  diubah timestamptz not null default now()
+);
+insert into public.ppdb_grup_lulus (id) values (1) on conflict (id) do nothing;
+alter table public.ppdb_grup_lulus enable row level security;
+revoke all on public.ppdb_grup_lulus from anon;
+grant select, insert, update on public.ppdb_grup_lulus to authenticated;
+
+drop policy if exists "grup lulus dibaca panitia" on public.ppdb_grup_lulus;
+create policy "grup lulus dibaca panitia" on public.ppdb_grup_lulus for select to authenticated
+  using (public.boleh('pendaftar'));
+drop policy if exists "grup lulus diubah panitia" on public.ppdb_grup_lulus;
+create policy "grup lulus diubah panitia" on public.ppdb_grup_lulus for update to authenticated
+  using (public.boleh('pendaftar')) with check (public.boleh('pendaftar'));
+drop policy if exists "grup lulus ditambah panitia" on public.ppdb_grup_lulus;
+create policy "grup lulus ditambah panitia" on public.ppdb_grup_lulus for insert to authenticated
+  with check (public.boleh('pendaftar'));
+
+-- Panitia khusus satu program hanya bisa mengubah grup programnya sendiri
+create or replace function public.jaga_grup_lulus() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare
+  p text := public.program_saya();
+  lama jsonb := '[]'::jsonb;
+begin
+  new.id := 1;
+  if new.grup is null or jsonb_typeof(new.grup) <> 'array' then raise exception 'Daftar grup tidak valid.'; end if;
+  if p <> '' then
+    if tg_op = 'UPDATE' then lama := coalesce(old.grup, '[]'::jsonb);
+    else lama := coalesce((select g.grup from public.ppdb_grup_lulus g where g.id = 1), '[]'::jsonb);
+    end if;
+    new.grup := coalesce((select jsonb_agg(e.v order by e.i) from jsonb_array_elements(lama) with ordinality e(v, i)
+                           where coalesce(e.v->>'program', '') <> p), '[]'::jsonb)
+             || coalesce((select jsonb_agg(e.v order by e.i) from jsonb_array_elements(new.grup) with ordinality e(v, i)
+                           where coalesce(e.v->>'program', '') = p), '[]'::jsonb);
+  end if;
+  new.diubah := now();
+  return new;
+end $$;
+drop trigger if exists jaga_grup_lulus on public.ppdb_grup_lulus;
+create trigger jaga_grup_lulus before insert or update on public.ppdb_grup_lulus
+  for each row execute function public.jaga_grup_lulus();
+
+-- Link grup untuk calon santri yang sedang masuk (kosong jika belum lulus tahap akhir)
+create or replace function public.grup_santri_baru() returns jsonb
+language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_agg(jsonb_build_object('nama', coalesce(e.v->>'nama', ''), 'link', e.v->>'link') order by e.i), '[]'::jsonb)
+  from public.pendaftar p
+  cross join public.ppdb_grup_lulus g
+  cross join lateral jsonb_array_elements(g.grup) with ordinality e(v, i)
+  where p.id = auth.uid()
+    and (p.kelulusan = 'lulus' or (p.tes_akhir = 'lulus' and p.kelulusan = 'belum'))
+    and coalesce(e.v->>'program', '') in ('', public.kode_program(p.program))
+    and coalesce(e.v->>'jenjang', '') in ('', p.jenjang)
+    and coalesce(e.v->>'link', '') ~* '^https://(chat\.whatsapp\.com|wa\.me|whatsapp\.com)/'
+$$;
+revoke all on function public.grup_santri_baru() from public, anon;
+grant execute on function public.grup_santri_baru() to authenticated;
