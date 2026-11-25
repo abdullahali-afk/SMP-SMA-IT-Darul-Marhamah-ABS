@@ -1,76 +1,90 @@
 {
   "fasilitas": [
     {
-      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795428193526-whatsapp-image-2026-11-23-at-17.31.13.jpeg",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795577390944-9zd1-whatsapp-image-2026-11-24-at-17.59.17.jpeg",
       "ikon": "🕌",
-      "nama": "Masjid"
+      "nama": "Masjid",
+      "program": "Program Takhassus"
     },
     {
       "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427111858-whatsapp-image-2026-11-23-at-17.32.05.jpg",
       "ikon": "🏫",
-      "nama": "Ruang Kelas Nyaman"
+      "nama": "Ruang Kelas Nyaman",
+      "program": ""
     },
     {
-      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795434614261-r1qw-whatsapp-image-2026-01-01-at-12.05.44.jpeg",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795577406966-noy8-whatsapp-image-2026-11-24-at-17.59.23.jpeg",
       "ikon": "💻",
-      "nama": "Laboratorium Komputer"
+      "nama": "Laboratorium Komputer",
+      "program": "Program Takhassus"
     },
     {
       "foto": "",
       "ikon": "🔬",
-      "nama": "Laboratorium IPA"
+      "nama": "Laboratorium IPA",
+      "program": ""
     },
     {
       "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427130283-whatsapp-image-2026-11-23-at-17.31.13.jpeg",
       "ikon": "📚",
-      "nama": "Perpustakaan"
+      "nama": "Perpustakaan",
+      "program": ""
     },
     {
       "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427143541-whatsapp-image-2026-11-23-at-17.33.48.jpg",
       "ikon": "🛏️",
-      "nama": "Asrama Putri"
+      "nama": "Asrama Putri",
+      "program": ""
     },
     {
-      "foto": "",
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795577429941-3q70-whatsapp-image-2026-11-24-at-17.59.19.jpeg",
       "ikon": "🍽️",
-      "nama": "Ruang Makan & Kantin"
+      "nama": "Ruang Makan & Kantin",
+      "program": "Program Takhassus"
     },
     {
       "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795427155856-whatsapp-image-2026-11-23-at-17.32.30.jpg",
       "ikon": "🩺",
-      "nama": "UKS / Klinik"
+      "nama": "UKS / Klinik",
+      "program": ""
     }
   ],
   "ekstrakurikuler": [
     {
       "foto": "",
       "ikon": "🏹",
-      "nama": "Panahan"
+      "nama": "Panahan",
+      "program": ""
     },
     {
       "foto": "",
       "ikon": "🍳",
-      "nama": "Tata Boga"
+      "nama": "Tata Boga",
+      "program": ""
     },
     {
       "foto": "",
       "ikon": "🧵",
-      "nama": "Menjahit & Kriya"
+      "nama": "Menjahit & Kriya",
+      "program": ""
     },
     {
       "foto": "",
       "ikon": "🎤",
-      "nama": "Muhadharah"
+      "nama": "Muhadharah",
+      "program": ""
     },
     {
       "foto": "",
       "ikon": "✍️",
-      "nama": "Jurnalistik"
+      "nama": "Jurnalistik",
+      "program": ""
     },
     {
       "foto": "",
       "ikon": "🔬",
-      "nama": "KIR / Sains"
+      "nama": "KIR / Sains",
+      "program": ""
     }
   ]
 }
