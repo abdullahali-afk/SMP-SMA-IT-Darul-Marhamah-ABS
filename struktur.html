@@ -17,14 +17,13 @@ description: Bagan struktur organisasi SMP & SMA IT Darul Marhamah Al-Qur'an Boa
       <div class="bagan-label">{{ site.data.sekolah.yayasan | default: "Yayasan" }}</div>
       {% if bg_yayasan != "" %}<div class="bagan-isi">{{ bg_yayasan }}</div>{% endif %}
     </div>
-    {%- if bg_direktur != "" %}
+    {%- comment -%} Direktur dan Wakil Direktur selalu tampil di bawah yayasan; bila belum diisi, tampil tempat kosong. {%- endcomment -%}
+    {%- if bg_direktur == "" -%}{%- capture bg_direktur -%}{% include kartu-bagan-kosong.html jabatan="Direktur" %}{%- endcapture -%}{%- endif -%}
+    {%- if bg_wadir == "" -%}{%- capture bg_wadir -%}{% include kartu-bagan-kosong.html jabatan="Wakil Direktur" %}{%- endcapture -%}{%- endif %}
     <div class="bagan-garis"></div>
     <div class="bagan-kotak"><div class="bagan-label">Direktur</div><div class="bagan-isi">{{ bg_direktur }}</div></div>
-    {%- endif %}
-    {%- if bg_wadir != "" %}
     <div class="bagan-garis"></div>
     <div class="bagan-kotak"><div class="bagan-label">Wakil Direktur</div><div class="bagan-isi">{{ bg_wadir }}</div></div>
-    {%- endif %}
     {%- capture bg_cabang -%}
     {%- for jj in bg_jenjang -%}
       {%- capture bg_isi_jenjang -%}

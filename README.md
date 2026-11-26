@@ -78,7 +78,7 @@ Jika sebuah isian ditambahkan ke `admin/skema.js` untuk bagian yang sudah tersim
 - Pemasangan database (sekali, aman diulang): jalankan `supabase/ppdb-online.sql` di Supabase → SQL Editor. File ini juga menambahkan tautan Program Tahfizh & Program Takhassus ke submenu "Sekolah". Di Supabase → Authentication → Sign In / Providers: pastikan **Allow new users to sign up** aktif, dan matikan **Confirm email** kecuali sudah memasang SMTP sendiri (email bawaan Supabase hanya terkirim ke anggota tim).
 
 ### Bagan struktur organisasi
-- Halaman `struktur.html` menampilkan bagan: Yayasan → Direktur → Wakil Direktur → dua cabang (bagan SMP dan bagan SMA), masing-masing Kepala Sekolah → Wakil Kepala Sekolah → Pembantu Kepala Sekolah. Kotak yang belum ada orangnya tidak ditampilkan.
+- Halaman `struktur.html` menampilkan bagan: Yayasan → Direktur → Wakil Direktur → dua cabang (bagan SMP dan bagan SMA), masing-masing Kepala Sekolah → Wakil Kepala Sekolah → Pembantu Kepala Sekolah. Kotak Direktur dan Wakil Direktur selalu tampil (bertanda "Nama menyusul" bila belum diisi); kotak lain yang belum ada orangnya tidak ditampilkan.
 - Isi dari Panel Admin → **Struktur Organisasi**: setiap orang punya Jabatan, **Posisi di bagan**, **Bagan jenjang** (SMP / SMA / SMP & SMA), Nama, dan Foto. Jika Posisi atau Jenjang dikosongkan, ditentukan dari jabatan (mis. "Wakil Kepala SMA Bidang Umum" → Wakil Kepala Sekolah, bagan SMA). Logika: `_includes/posisi-bagan.html`, kartu: `_includes/kartu-bagan.html`.
 
 ### Program Tahfizh & Program Takhassus
