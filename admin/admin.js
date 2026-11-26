@@ -373,12 +373,33 @@ function daftarMedan(f, obj, kunci) {
   const box = h('div', { class: 'daftar-item' });
   const arr = obj[f.name];
   const sederhana = f.type !== 'object';
+  // Daftar yang punya isian "Program" (fasilitas, ekstrakurikuler, unggulan, galeri, …) dipisah per program,
+  // agar item Program Tahfizh dan Program Takhassus diisi sendiri-sendiri, tidak saling menimpa.
+  const fProg = !sederhana && (f.fields || []).find(x => x.name === 'program' && x.type === 'select');
+  const opsiProg = fProg ? (fProg.options || []) : [];
+  const nilaiProg = (k) => k === 'kedua' ? (opsiProg.find(o => !/takh|tahf/i.test(o)) || '') : (opsiProg.find(o => kodeProgram(o) === k) || namaProgram(k));
+  const kodeItem = (it) => { const k = kodeProgram(it && it.program); return k === 'takhassus' || k === 'tahfizh' ? k : 'kedua'; };
+  const TAB = [...PROGRAM_PPDB, ['kedua', 'Kedua program'], ['semua', 'Semua']];
+  const kunciIngat = 'program-daftar-' + kunci + '-' + f.name;
+  let tab = fProg ? bacaIngat(kunciIngat) : 'semua';
+  if (fProg && !TAB.some(t => t[0] === tab)) tab = arr.some(it => kodeItem(it) !== 'kedua') ? 'takhassus' : 'kedua';
+  const saklar = fProg ? h('div', { class: 'saklar-program saklar-daftar', role: 'group', 'aria-label': 'Pilih program' }) : null;
+  const gambarSaklar = () => saklar && saklar.replaceChildren(...TAB.map(([k, t]) =>
+    h('button', { type: 'button', class: k === tab ? 'aktif' : null, 'aria-pressed': String(k === tab),
+      onclick: () => { if (tab === k) return; tab = k; tulisIngat(kunciIngat, k); gambar(); } },
+      h('span', null, t), h('span', { class: 'jml' }, k === 'semua' ? arr.length : arr.filter(it => kodeItem(it) === k).length))));
+  if (saklar) box.addEventListener('change', (e) => { if (e.target.tagName === 'SELECT') gambarSaklar(); });
   function gambar() {
     box.replaceChildren();
-    arr.forEach((item, i) => {
+    gambarSaklar();
+    if (saklar) box.append(saklar);
+    const tampil = arr.map((_, i) => i).filter(i => !fProg || tab === 'semua' || kodeItem(arr[i]) === tab);
+    tampil.forEach((i, p) => {
+      const item = arr[i];
+      const tukar = (q) => { const j = tampil[q]; [arr[j], arr[i]] = [arr[i], arr[j]]; gambar(); };
       const kontrol = [
-        h('button', { class: 'ikon-btn', title: 'Naikkan', type: 'button', disabled: i === 0, onclick: (e) => { e.stopPropagation(); [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; gambar(); } }, '↑'),
-        h('button', { class: 'ikon-btn', title: 'Turunkan', type: 'button', disabled: i === arr.length - 1, onclick: (e) => { e.stopPropagation(); [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]]; gambar(); } }, '↓'),
+        h('button', { class: 'ikon-btn', title: 'Naikkan', type: 'button', disabled: p === 0, onclick: (e) => { e.stopPropagation(); tukar(p - 1); } }, '↑'),
+        h('button', { class: 'ikon-btn', title: 'Turunkan', type: 'button', disabled: p === tampil.length - 1, onclick: (e) => { e.stopPropagation(); tukar(p + 1); } }, '↓'),
         h('button', { class: 'ikon-btn hapus', title: 'Hapus', type: 'button', onclick: (e) => { e.stopPropagation(); if (confirm('Hapus item ini?')) { arr.splice(i, 1); gambar(); } } }, '✕')];
       if (sederhana) {
         box.append(h('div', { class: 'baris-teks' },
@@ -386,23 +407,45 @@ function daftarMedan(f, obj, kunci) {
       } else {
         const judul = () => {
           const fs = f.fields || [];
-          const p = fs.find(x => x.type === 'string' && item[x.name]) || fs.find(x => x.type === 'text' && item[x.name]);
-          const t = String((p && item[p.name]) || '').replace(/\s+/g, ' ').trim();
+          const pj = fs.find(x => x.type === 'string' && item[x.name]) || fs.find(x => x.type === 'text' && item[x.name]);
+          const t = String((pj && item[pj.name]) || '').replace(/\s+/g, ' ').trim();
           return t ? (t.length > 90 ? t.slice(0, 88) + '…' : t) : '(baru)';
         };
-        const jd = h('span', { class: 'judul-item' }, (i + 1) + '. ' + judul());
+        const jd = h('span', { class: 'judul-item' }, (p + 1) + '. ' + judul());
+        const lencana = fProg ? h('span', { class: 'lencana-prog' }) : null;
+        const isiLencana = () => { if (lencana) { const k = kodeItem(item); lencana.textContent = k === 'kedua' ? 'Kedua program' : namaProgram(k).replace('Program ', ''); lencana.className = 'lencana-prog lp-' + k; } };
+        isiLencana();
         const badan = h('div', { class: 'badan-item' }, ...(f.fields || []).map(x => medan(x, item, kunci)));
-        badan.addEventListener('input', () => jd.textContent = (i + 1) + '. ' + judul());
-        const el = h('div', { class: 'item tutup' }, h('div', { class: 'kepala-item', onclick: () => el.classList.toggle('tutup') }, h('span', null, '▸'), jd, ...kontrol), badan);
+        badan.addEventListener('input', () => jd.textContent = (p + 1) + '. ' + judul());
+        badan.addEventListener('change', isiLencana);
+        const el = h('div', { class: 'item tutup' }, h('div', { class: 'kepala-item', onclick: () => el.classList.toggle('tutup') }, h('span', null, '▸'), jd, lencana, ...kontrol), badan);
         if (item.__baru) { el.classList.remove('tutup'); delete item.__baru; }
         box.append(el);
       }
     });
-    box.append(h('div', null, h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
+    if (fProg && !tampil.length) box.append(h('p', { class: 'ket kosong-daftar' }, tab === 'semua' ? 'Belum ada item.'
+      : 'Belum ada item untuk ' + (tab === 'kedua' ? 'kedua program' : namaProgram(tab)) + '. Klik "+ Tambah item" di bawah.'));
+    const aksi = h('div', { class: 'aksi-daftar' }, h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
       const baru = sederhana ? '' : nilaiAwal({ ...f, list: false });
       if (!sederhana) baru.__baru = true;
+      if (fProg && tab !== 'semua') baru.program = nilaiProg(tab);
       arr.push(baru); gambar();
-    } }, '+ Tambah ' + (sederhana ? '' : 'item'))));
+    } }, '+ Tambah ' + (sederhana ? '' : 'item') + (fProg && tab !== 'semua' ? ' ' + (tab === 'kedua' ? 'untuk kedua program' : namaProgram(tab)) : '')));
+    // Salin nama & ikon dari program lain (tanpa foto) agar cepat mengisi daftar program ini
+    const lain = tab === 'takhassus' ? 'tahfizh' : tab === 'tahfizh' ? 'takhassus' : null;
+    const sumber = lain ? arr.filter(it => kodeItem(it) === lain) : [];
+    if (sumber.length) aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
+      const fs = f.fields || [], pj = fs.find(x => x.type === 'string');
+      const sudah = new Set(arr.filter(it => kodeItem(it) === tab).map(it => pj ? String(it[pj.name] || '').trim().toLowerCase() : ''));
+      const salinan = sumber.filter(it => !pj || !sudah.has(String(it[pj.name] || '').trim().toLowerCase())).map(it => {
+        const c = salin(it); fs.forEach(x => { if (x.type === 'image' || x.type === 'file' || x.type === 'video') c[x.name] = nilaiAwal(x); });
+        c.program = nilaiProg(tab); return c; });
+      if (!salinan.length) return toast('Semua item ' + namaProgram(lain) + ' sudah ada di ' + namaProgram(tab) + '.');
+      if (!confirm('Salin ' + salinan.length + ' item dari ' + namaProgram(lain) + ' ke ' + namaProgram(tab) + '? Nama dan ikon ikut tersalin, fotonya dikosongkan agar Anda unggah foto ' + namaProgram(tab) + ' sendiri.')) return;
+      arr.push(...salinan); gambar(); tandaiKotor();
+      toast(salinan.length + ' item disalin. Unggah fotonya, lalu klik Simpan.');
+    } }, '📋 Salin daftar dari ' + namaProgram(lain) + ' (tanpa foto)'));
+    box.append(aksi);
   }
   gambar();
   return box;

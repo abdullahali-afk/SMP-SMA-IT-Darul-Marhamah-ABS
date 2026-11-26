@@ -243,3 +243,12 @@ td.tengah,th.tengah{text-align:center}
 .baris-grup.baris-grup-baru{grid-template-columns:1fr 1.3fr minmax(140px,.8fr) minmax(110px,.6fr) 30px}
 .baris-grup select{width:100%;padding:9px 12px;border:1px solid var(--garis);border-radius:8px;background:#fff}
 @media(max-width:760px){.baris-grup.baris-grup-baru{grid-template-columns:1fr 1fr 30px;border-bottom:1px dashed var(--garis);padding-bottom:10px}.baris-grup.baris-grup-baru input{grid-column:1/-1}.baris-grup.baris-grup-baru select{padding:9px 6px;font-size:.85rem}}
+/* Daftar isi per program (fasilitas, ekstrakurikuler, unggulan, galeri, …) */
+.saklar-daftar{margin:4px 0 12px;min-width:0}
+.daftar-item{grid-template-columns:minmax(0,1fr)}
+.saklar-daftar button{padding:7px 12px;font-size:.85rem}
+.lencana-prog{flex:none;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:99px;background:#eef1ef;color:#55635b;white-space:nowrap}
+.lencana-prog.lp-takhassus{background:#fdecdc;color:#9a4a12}
+.lencana-prog.lp-tahfizh{background:var(--hijau-muda);color:var(--hijau-tua)}
+.aksi-daftar{display:flex;gap:8px;flex-wrap:wrap}
+.kosong-daftar{padding:10px 0}
