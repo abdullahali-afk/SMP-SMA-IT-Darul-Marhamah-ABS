@@ -445,6 +445,23 @@ function daftarMedan(f, obj, kunci) {
       arr.push(...salinan); gambar(); tandaiKotor();
       toast(salinan.length + ' item disalin. Unggah fotonya, lalu klik Simpan.');
     } }, '📋 Salin daftar dari ' + namaProgram(lain) + ' (tanpa foto)'));
+    // Item "Kedua program" dipakai bersama; bisa dipisah agar tiap program punya item & foto sendiri
+    const bersama = fProg ? arr.filter(it => kodeItem(it) === 'kedua') : [];
+    if (bersama.length && (tab === 'takhassus' || tab === 'tahfizh'))
+      box.append(h('p', { class: 'ket catatan-bersama' }, bersama.length + ' item "Kedua program" juga tampil di halaman ' + namaProgram(tab)
+        + '. Agar tiap program punya item dan foto sendiri, buka tombol "Kedua program" lalu klik "Pisahkan per program".'));
+    if (bersama.length && tab === 'kedua') aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
+      if (!confirm('Pisahkan ' + bersama.length + ' item "Kedua program" menjadi item Program Takhassus dan item Program Tahfizh sendiri-sendiri? Foto yang sudah ada ikut tersalin ke keduanya, lalu bisa Anda ganti per program.')) return;
+      const hasil = [];
+      arr.forEach(it => {
+        if (kodeItem(it) !== 'kedua') return hasil.push(it);
+        const a1 = salin(it), a2 = salin(it);
+        a1.program = nilaiProg('takhassus'); a2.program = nilaiProg('tahfizh');
+        hasil.push(a1, a2);
+      });
+      arr.splice(0, arr.length, ...hasil); tab = 'takhassus'; tulisIngat(kunciIngat, tab); gambar(); tandaiKotor();
+      toast('Item dipisah per program. Periksa fotonya, lalu klik Simpan.');
+    } }, '✂️ Pisahkan per program (Takhassus & Tahfizh)'));
     box.append(aksi);
   }
   gambar();
