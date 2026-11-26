@@ -11,6 +11,7 @@ document.querySelectorAll('.filter').forEach(g=>g.querySelectorAll('button').for
     const ok=grup.every(f=>{const a=f.querySelector('button.aktif'),v=a?a.dataset.k:'semua',kn=f.dataset.kunci||'k',isi=el.dataset[kn]||'';
       return v==='semua'||isi===v||(kn==='p'&&isi==='');});
     el.style.display=ok?'':'none';});
+  w.querySelectorAll('.grup-saring').forEach(gp=>{gp.style.display=[...gp.querySelectorAll('.saring')].some(e=>e.style.display!=='none')?'':'none';});
 })));
 // Lightbox galeri (hanya untuk foto asli)
 const lb=document.querySelector('.lightbox');

@@ -979,6 +979,18 @@ window.SKEMA = [
       ]
      },
      {
+      "name": "program",
+      "label": "Program",
+      "type": "select",
+      "options": [
+       "Kedua program",
+       "Program Tahfizh",
+       "Program Takhassus"
+      ],
+      "description": "Pilih program tempat testimoni ini tampil (halaman program tersebut dan saringan di halaman Testimoni). \"Kedua program\" = tampil di kedua halaman program.",
+      "salin": false
+     },
+     {
       "name": "keterangan",
       "label": "Keterangan (wali santriwati / alumni)",
       "type": "string"

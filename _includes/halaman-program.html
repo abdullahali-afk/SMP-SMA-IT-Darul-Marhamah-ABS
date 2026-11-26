@@ -76,6 +76,15 @@ Semua variabel diberi awalan hp_ karena variabel include di Jekyll 3 terbawa ke 
 </div></section>
 {%- endif %}
 
+{%- capture hp_testi -%}{%- for t in site.data.testimoni.daftar -%}{% include program-kode.html v=t.program %}{%- if pk == "" or pk == hp_kode -%}{% include kartu-testi.html t=t %}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- if hp_testi != "" %}
+{%- capture hp_judul_testi -%}Kata Mereka tentang {{ hp.nama }}{%- endcapture %}
+<section class="bg-hijau-muda" id="testimoni"><div class="wadah">
+  {% include judul.html k="Testimoni" t=hp_judul_testi %}
+  <div class="grid g3">{{ hp_testi }}</div>
+</div></section>
+{%- endif %}
+
 {%- assign hp_foto_n = 0 -%}
 {%- capture hp_galeri -%}{%- for i in site.data.galeri.daftar -%}{% include program-kode.html v=i.program %}{%- if pk == "" or pk == hp_kode -%}{%- if i.foto and i.foto != "" and hp_foto_n < 12 -%}{%- assign hp_foto_n = hp_foto_n | plus: 1 -%}<figure>{% include media.html foto=i.foto ikon=i.ikon alt=i.judul %}<figcaption>{{ i.judul }}</figcaption></figure>{%- endif -%}{%- endif -%}{%- endfor -%}{%- endcapture -%}
 {%- assign hp_vid_n = 0 -%}

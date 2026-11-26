@@ -432,7 +432,9 @@ function daftarMedan(f, obj, kunci) {
       arr.push(baru); gambar();
     } }, '+ Tambah ' + (sederhana ? '' : 'item') + (fProg && tab !== 'semua' ? ' ' + (tab === 'kedua' ? 'untuk kedua program' : namaProgram(tab)) : '')));
     // Salin nama & ikon dari program lain (tanpa foto) agar cepat mengisi daftar program ini
-    const lain = tab === 'takhassus' ? 'tahfizh' : tab === 'tahfizh' ? 'takhassus' : null;
+    // Daftar yang itemnya milik satu orang (mis. testimoni) tidak disalin/dipisah, cukup ubah isian Program
+    const bolehSalin = fProg && fProg.salin !== false;
+    const lain = !bolehSalin ? null : tab === 'takhassus' ? 'tahfizh' : tab === 'tahfizh' ? 'takhassus' : null;
     const sumber = lain ? arr.filter(it => kodeItem(it) === lain) : [];
     if (sumber.length) aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
       const fs = f.fields || [], pj = fs.find(x => x.type === 'string');
@@ -447,10 +449,14 @@ function daftarMedan(f, obj, kunci) {
     } }, '📋 Salin daftar dari ' + namaProgram(lain) + ' (tanpa foto)'));
     // Item "Kedua program" dipakai bersama; bisa dipisah agar tiap program punya item & foto sendiri
     const bersama = fProg ? arr.filter(it => kodeItem(it) === 'kedua') : [];
-    if (bersama.length && (tab === 'takhassus' || tab === 'tahfizh'))
+    if (fProg && !bolehSalin && bersama.length && tab !== 'semua')
+      box.append(h('p', { class: 'ket catatan-bersama' }, tab === 'kedua'
+        ? bersama.length + ' item tampil di kedua program. Untuk memindahkan ke satu program, buka itemnya lalu ubah isian Program.'
+        : bersama.length + ' item "Kedua program" juga tampil di halaman ' + namaProgram(tab) + '. Untuk memindahkannya, buka tombol "Kedua program" lalu ubah isian Program pada itemnya.'));
+    if (bolehSalin && bersama.length && (tab === 'takhassus' || tab === 'tahfizh'))
       box.append(h('p', { class: 'ket catatan-bersama' }, bersama.length + ' item "Kedua program" juga tampil di halaman ' + namaProgram(tab)
         + '. Agar tiap program punya item dan foto sendiri, buka tombol "Kedua program" lalu klik "Pisahkan per program".'));
-    if (bersama.length && tab === 'kedua') aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
+    if (bolehSalin && bersama.length && tab === 'kedua') aksi.append(h('button', { class: 'btn btn-garis btn-kecil', type: 'button', onclick: () => {
       if (!confirm('Pisahkan ' + bersama.length + ' item "Kedua program" menjadi item Program Takhassus dan item Program Tahfizh sendiri-sendiri? Foto yang sudah ada ikut tersalin ke keduanya, lalu bisa Anda ganti per program.')) return;
       const hasil = [];
       arr.forEach(it => {

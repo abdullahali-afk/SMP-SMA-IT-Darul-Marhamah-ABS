@@ -55,7 +55,7 @@
 </div><div class="hak">© {{ site.time | date: "%Y" }} {{ s.nama_lengkap }}</div></footer>
 {% include kontak-wa.html gaya="mengambang" %}
 <div class="lightbox"><img alt=""></div>
-<script src="{{ '/assets/script.js' | relative_url }}"></script>
+<script src="{{ '/assets/script.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 {%- for x in page.skrip %}
 <script src="{% if x contains '://' %}{{ x }}{% else %}{{ x | relative_url }}{% endif %}"></script>
 {%- endfor %}

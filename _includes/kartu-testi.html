@@ -1,5 +1,9 @@
 {%- assign t = include.t -%}
-<div class="testi{% if t.video_embed and t.video_embed != "" %} ada-video{% endif %}">
+{%- assign kt_ada = t.nama | append: t.isi | append: t.video | strip -%}
+{%- if kt_ada != "" -%}
+{% include program-kode.html v=t.program %}
+<div class="testi saring{% if t.video_embed and t.video_embed != "" %} ada-video{% endif %}" data-p="{{ pk }}">
+{%- if pk != "" %}<span class="lencana-program {{ pk }} testi-program">{{ pk | capitalize }}</span>{% endif -%}
 {%- if t.video_embed and t.video_embed != "" -%}
   {%- capture kt_judul %}Video testimoni {{ t.nama | remove: "[" | remove: "]" }}{% endcapture -%}
   <div class="testi-video {{ t.video_jenis }}{% if t.video_tegak %} tegak{% endif %}">
@@ -16,3 +20,4 @@
 {%- if t.isi and t.isi != "" %}<p>{{ t.isi }}</p>{% endif -%}
 {%- if t.video_link and t.video_link != "" and t.video_embed == nil %}<a class="btn btn-hijau btn-kecil testi-tonton" href="{{ t.video_link | escape }}" target="_blank" rel="noopener">▶ Tonton video testimoni</a>{% endif -%}
 </div>
+{%- endif -%}

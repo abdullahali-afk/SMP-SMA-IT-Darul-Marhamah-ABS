@@ -5,9 +5,13 @@ description: Testimoni orang tua, alumni, dan tokoh tentang Darul Marhamah Al-Qu
 ---
 {% include hero.html judul="Testimoni" sub="Kata mereka tentang Darul Marhamah" induk="Tentang Kami" %}
 {% assign grup = site.data.testimoni.daftar | group_by: "kategori" %}
-{% for g in grup %}
-<section class="{% cycle '', 'bg-putih' %}"><div class="wadah">
-  {% include judul.html k="Testimoni" t=g.name %}
-  <div class="grid g3">{% for t in g.items %}{% include kartu-testi.html t=t %}{% endfor %}</div>
+<section><div class="wadah">
+  {% include filter-program.html %}
+  {% for g in grup %}{%- capture tm_isi -%}{% for t in g.items %}{% include kartu-testi.html t=t %}{% endfor %}{%- endcapture -%}
+  {%- if tm_isi != "" %}
+  <div class="grup-saring grup-testi">
+    {% include judul.html k="Testimoni" t=g.name %}
+    <div class="grid g3">{{ tm_isi }}</div>
+  </div>
+  {%- endif %}{% endfor %}
 </div></section>
-{% endfor %}

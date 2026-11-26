@@ -480,3 +480,6 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
   .bagan-orang{width:calc(50% - 8px);max-width:150px}
   .bagan-kotak{padding:12px 10px 16px;width:100%}
 }
+.testi .testi-program{position:absolute;top:14px;right:14px;margin:0;z-index:1}
+.testi.ada-video .testi-program{top:10px;right:10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.grup-testi+.grup-testi{margin-top:56px}
