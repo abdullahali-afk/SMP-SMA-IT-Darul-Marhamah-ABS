@@ -47,6 +47,48 @@
       "ikon": "🩺",
       "nama": "UKS / Klinik",
       "program": "Program Takhassus"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704449233-i99o-aula.jpg",
+      "ikon": "🕌",
+      "nama": "Masjid",
+      "program": "Program Tahfizh"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704492526-scfn-whatsapp-image-2026-11-25-at-17.47.35.jpeg",
+      "ikon": "🏫",
+      "nama": "Ruang Kelas Nyaman",
+      "program": "Program Tahfizh"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704513272-5029-whatsapp-image-2026-11-25-at-17.47.35.jpg",
+      "ikon": "💻",
+      "nama": "Laboratorium Komputer",
+      "program": "Program Tahfizh"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704561809-zt8d-img-2058.jpg",
+      "ikon": "📚",
+      "nama": "Perpustakaan",
+      "program": "Program Tahfizh"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704583136-474k-whatsapp-image-2026-11-25-at-17.53.37.jpeg",
+      "ikon": "🛏️",
+      "nama": "Asrama Putri",
+      "program": "Program Tahfizh"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704599958-ez65-whatsapp-image-2026-11-25-at-17.49.38.jpeg",
+      "ikon": "🍽️",
+      "nama": "Ruang Makan & Kantin",
+      "program": "Program Tahfizh"
+    },
+    {
+      "foto": "https://utnbooeoaaolcuymgelb.supabase.co/storage/v1/object/public/media/fasilitas/1795704619263-qw4v-img-2035.jpg",
+      "ikon": "🩺",
+      "nama": "UKS / Klinik",
+      "program": "Program Tahfizh"
     }
   ],
   "ekstrakurikuler": [
