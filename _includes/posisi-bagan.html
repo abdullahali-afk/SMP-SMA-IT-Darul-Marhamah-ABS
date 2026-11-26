@@ -1,0 +1,22 @@
+{%- comment -%} Posisi satu orang di bagan struktur. Hasil: bt = tingkat (Yayasan / Direktur / Wakil Direktur /
+Kepala Sekolah / Wakil Kepala Sekolah / Pembantu Kepala Sekolah), bj = "SMP" / "SMA" / "SMP & SMA".
+Isian "tingkat" dan "jenjang" dari panel admin dipakai bila diisi; jika kosong ditentukan dari jabatan. {%- endcomment -%}
+{%- assign pb_j = include.o.jabatan | default: "" | downcase | prepend: " " | append: " " -%}
+{%- assign bt = include.o.tingkat | default: "" -%}
+{%- if bt == "" -%}
+  {%- if pb_j contains "yayasan" or pb_j contains "pembina" -%}{%- assign bt = "Yayasan" -%}
+  {%- elsif pb_j contains "wakil direktur" or pb_j contains " wadir" -%}{%- assign bt = "Wakil Direktur" -%}
+  {%- elsif pb_j contains "direktur" -%}{%- assign bt = "Direktur" -%}
+  {%- elsif pb_j contains "wakil kepala" or pb_j contains " wakasek" or pb_j contains " waka " -%}{%- assign bt = "Wakil Kepala Sekolah" -%}
+  {%- elsif pb_j contains "kepala sekolah" or pb_j contains "kepala smp" or pb_j contains "kepala sma" -%}{%- assign bt = "Kepala Sekolah" -%}
+  {%- else -%}{%- assign bt = "Pembantu Kepala Sekolah" -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign bj = include.o.jenjang | default: "" -%}
+{%- if bj == "" -%}
+  {%- if pb_j contains " smp" and pb_j contains " sma" -%}{%- assign bj = "SMP & SMA" -%}
+  {%- elsif pb_j contains " smp" -%}{%- assign bj = "SMP" -%}
+  {%- elsif pb_j contains " sma" -%}{%- assign bj = "SMA" -%}
+  {%- else -%}{%- assign bj = "SMP & SMA" -%}
+  {%- endif -%}
+{%- endif -%}

@@ -449,3 +449,31 @@ footer .sosmed a{display:grid;place-items:center;color:#fff}
 .filter+.filter{margin-top:-14px}
 .video-program{margin-top:32px}
 .video-program.satu{grid-template-columns:1fr;max-width:860px;margin-inline:auto}
+
+/* Bagan struktur organisasi: Yayasan → Direktur → Wakil Direktur → bagan SMP & SMA */
+.bagan{display:flex;flex-direction:column;align-items:center}
+.bagan-kotak{background:#fff;border:1px solid #e3ece6;border-radius:14px;padding:14px 18px 18px;box-shadow:var(--bayang);text-align:center;max-width:100%}
+.bagan-yayasan{border-top:4px solid var(--emas);min-width:min(320px,100%)}
+.bagan-label{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--hijau);margin-bottom:12px}
+.bagan-yayasan .bagan-label{font-size:.9rem;letter-spacing:.02em;color:var(--hijau-tua);margin-bottom:12px}
+.bagan-isi{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 16px}
+.bagan-orang{width:150px}
+.bagan-orang .foto{width:88px;height:88px;border-radius:50%;margin:0 auto 8px;overflow:hidden;border:3px solid var(--emas);background:var(--hijau-muda);display:grid;place-items:center;font-weight:700;color:var(--hijau-tua);font-size:1.4rem;text-transform:uppercase}
+.bagan-orang .foto img{width:100%;height:100%;object-fit:cover}
+.bagan-orang b{display:block;font-size:.88rem;line-height:1.35;color:var(--hijau-tua)}
+.bagan-orang small{display:block;font-size:.76rem;line-height:1.35;color:var(--abu);margin-top:3px}
+.bagan-garis{width:2px;height:26px;background:var(--mint);flex:none}
+.bagan-cabang{--jarak:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:var(--jarak);width:100%;position:relative;padding-top:26px}
+.bagan-cabang::before{content:"";position:absolute;top:0;left:calc((100% - var(--jarak)) / 4);right:calc((100% - var(--jarak)) / 4);height:2px;background:var(--mint)}
+.bagan-cabang:has(> .bagan-jenjang:only-child)::before{display:none}
+.bagan-jenjang{display:flex;flex-direction:column;align-items:center;position:relative;min-width:0;background:#f4f9f6;border-radius:18px;padding:18px 12px 20px}
+.bagan-jenjang::before{content:"";position:absolute;top:-26px;left:50%;width:2px;height:26px;background:var(--mint)}
+.bagan-judul-jenjang{background:var(--hijau);color:#fff;border-radius:99px;padding:6px 20px;font-weight:700;font-size:.95rem}
+.bagan-jenjang .bagan-kotak{width:100%}
+@media(max-width:760px){
+  .bagan-cabang{grid-template-columns:1fr;--jarak:40px}
+  .bagan-cabang::before{display:none}
+  .bagan-jenjang+.bagan-jenjang::before{top:-40px;height:40px}
+  .bagan-orang{width:calc(50% - 8px);max-width:150px}
+  .bagan-kotak{padding:12px 10px 16px;width:100%}
+}

@@ -1,0 +1,3 @@
+{%- assign kb = include.o -%}
+{%- assign kb_nama = kb.nama | default: kb.jabatan | default: "" | split: "," | first | split: " " -%}
+<div class="bagan-orang"><div class="foto">{% if kb.foto and kb.foto != "" %}<img src="{{ kb.foto | relative_url }}" alt="{{ kb.nama | escape }}" loading="lazy">{% else %}<span>{{ kb_nama[0] | slice: 0 }}{{ kb_nama[1] | slice: 0 }}</span>{% endif %}</div><b>{{ kb.nama }}</b><small>{{ kb.jabatan }}</small></div>

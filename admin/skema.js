@@ -814,7 +814,7 @@ window.SKEMA = [
   "fields": [
    {
     "name": "daftar",
-    "label": "Pengurus (paling atas tampil sendiri di puncak)",
+    "label": "Pengurus di bagan struktur",
     "type": "object",
     "list": true,
     "fields": [
@@ -822,6 +822,31 @@ window.SKEMA = [
       "name": "jabatan",
       "label": "Jabatan",
       "type": "string"
+     },
+     {
+      "name": "tingkat",
+      "label": "Posisi di bagan",
+      "type": "select",
+      "options": [
+       "Yayasan",
+       "Direktur",
+       "Wakil Direktur",
+       "Kepala Sekolah",
+       "Wakil Kepala Sekolah",
+       "Pembantu Kepala Sekolah"
+      ],
+      "description": "Kosong = ditentukan otomatis dari jabatan (mis. \"Wakil Kepala SMP Bidang Kurikulum\" → Wakil Kepala Sekolah)."
+     },
+     {
+      "name": "jenjang",
+      "label": "Bagan jenjang",
+      "type": "select",
+      "options": [
+       "SMP",
+       "SMA",
+       "SMP & SMA"
+      ],
+      "description": "Untuk Kepala Sekolah, wakil, dan pembantu kepala sekolah. Kosong = ditentukan dari jabatan (SMP/SMA). Yayasan, Direktur, dan Wakil Direktur selalu di atas kedua bagan."
      },
      {
       "name": "nama",
@@ -833,7 +858,8 @@ window.SKEMA = [
       "label": "Foto",
       "type": "image"
      }
-    ]
+    ],
+    "description": "Bagan: Yayasan → Direktur → Wakil Direktur → bagan SMP dan bagan SMA (Kepala Sekolah → Wakil Kepala Sekolah → Pembantu Kepala Sekolah). Urutan di setiap kotak mengikuti urutan daftar ini."
    }
   ]
  },

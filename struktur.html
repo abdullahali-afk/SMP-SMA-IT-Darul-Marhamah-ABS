@@ -1,10 +1,44 @@
 ---
 layout: default
 title: Struktur Organisasi
-description: Struktur organisasi SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School.
+description: Bagan struktur organisasi SMP & SMA IT Darul Marhamah Al-Qur'an Boarding School, dari yayasan hingga pimpinan setiap jenjang.
 ---
 {% include hero.html judul="Struktur Organisasi" sub=site.data.sekolah.yayasan induk="Tentang Kami" %}
-{% assign st = site.data.struktur.daftar %}
-<section><div class="wadah struktur">
-  {% for o in st %}{% if forloop.first %}<div class="baris-puncak">{% include kartu-orang.html o=o %}</div><div class="grid g4">{% else %}{% include kartu-orang.html o=o %}{% endif %}{% endfor %}</div>
+{%- assign st = site.data.struktur.daftar -%}
+{%- capture bg_yayasan -%}{%- for o in st -%}{% include posisi-bagan.html o=o %}{%- if bt == "Yayasan" -%}{% include kartu-bagan.html o=o %}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- capture bg_direktur -%}{%- for o in st -%}{% include posisi-bagan.html o=o %}{%- if bt == "Direktur" -%}{% include kartu-bagan.html o=o %}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- capture bg_wadir -%}{%- for o in st -%}{% include posisi-bagan.html o=o %}{%- if bt == "Wakil Direktur" -%}{% include kartu-bagan.html o=o %}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- assign bg_jenjang = "SMP,SMA" | split: "," -%}
+{%- assign bg_tingkat = "Kepala Sekolah,Wakil Kepala Sekolah,Pembantu Kepala Sekolah" | split: "," -%}
+<section><div class="wadah">
+  {% include judul.html k="Bagan Organisasi" t="Dari Yayasan hingga Pimpinan Sekolah" %}
+  <div class="bagan">
+    <div class="bagan-kotak bagan-yayasan">
+      <div class="bagan-label">{{ site.data.sekolah.yayasan | default: "Yayasan" }}</div>
+      {% if bg_yayasan != "" %}<div class="bagan-isi">{{ bg_yayasan }}</div>{% endif %}
+    </div>
+    {%- if bg_direktur != "" %}
+    <div class="bagan-garis"></div>
+    <div class="bagan-kotak"><div class="bagan-label">Direktur</div><div class="bagan-isi">{{ bg_direktur }}</div></div>
+    {%- endif %}
+    {%- if bg_wadir != "" %}
+    <div class="bagan-garis"></div>
+    <div class="bagan-kotak"><div class="bagan-label">Wakil Direktur</div><div class="bagan-isi">{{ bg_wadir }}</div></div>
+    {%- endif %}
+    {%- capture bg_cabang -%}
+    {%- for jj in bg_jenjang -%}
+      {%- capture bg_isi_jenjang -%}
+      {%- for tt in bg_tingkat -%}
+        {%- capture bg_kartu -%}{%- for o in st -%}{% include posisi-bagan.html o=o %}{%- if bt == tt -%}{%- if bj == jj or bj == "SMP & SMA" -%}{% include kartu-bagan.html o=o %}{%- endif -%}{%- endif -%}{%- endfor -%}{%- endcapture -%}
+        {%- if bg_kartu != "" -%}<div class="bagan-garis"></div><div class="bagan-kotak"><div class="bagan-label">{{ tt }}</div><div class="bagan-isi">{{ bg_kartu }}</div></div>{%- endif -%}
+      {%- endfor -%}
+      {%- endcapture -%}
+      {%- if bg_isi_jenjang != "" -%}<div class="bagan-jenjang" id="bagan-{{ jj | downcase }}"><div class="bagan-judul-jenjang">{{ jj }} Islam Terpadu</div>{{ bg_isi_jenjang }}</div>{%- endif -%}
+    {%- endfor -%}
+    {%- endcapture -%}
+    {%- if bg_cabang != "" %}
+    <div class="bagan-garis"></div>
+    <div class="bagan-cabang">{{ bg_cabang }}</div>
+    {%- endif %}
+  </div>
 </div></section>
